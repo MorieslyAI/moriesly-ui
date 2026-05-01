@@ -930,6 +930,15 @@ export async function postAddonScan(
   });
 }
 
+export async function postSkinScan(
+  base64Image: string,
+): Promise<ScanResponse> {
+  return request<ScanResponse>("/scan", {
+    method: "POST",
+    body: JSON.stringify({ base64Image, scanMode: "skin" }),
+  });
+}
+
 // ─── Session Restore ──────────────────────────────────────────────────────────
 // Dipanggil saat app pertama kali mount untuk restore session dari cookie.
 

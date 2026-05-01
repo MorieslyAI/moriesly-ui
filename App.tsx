@@ -44,7 +44,7 @@ import { GeminiLiveService } from './services/geminiLiveService';
 import { ConnectionState, HistoryItem, LedgerState, LogEntry, UserProfile, ActiveCrash, PendingScanResult, WeightEntry, GoalConfig, ConsumptionTrigger, ConsultationSession, ReceiptAnalysis as ReceiptData, VersusResult, SkinAnalysis, FaceZone, DietPlan, OperationPlan, LabelScanResult, BarcodeScanResult } from './types';
 import { MANUAL_SCAN_MODEL, GET_SYSTEM_INSTRUCTION, LABEL_SCAN_PROMPT, FOOD_SCAN_PROMPT, IDENTIFY_SCAN_PROMPT, QR_SCAN_PROMPT, RECEIPT_SCAN_PROMPT, VERSUS_SCAN_PROMPT, SKIN_SCAN_PROMPT, API_KEY, safeGenerateContent } from './constants';
 import { getLocalDateString } from './utils';
-import { postScanImage, postVersusScan, saveDashboardHistoryItem, startVideoCallSession, endVideoCallSession, getSocketToken } from './services/api';
+import { postScanImage, postVersusScan, postSkinScan, saveDashboardHistoryItem, startVideoCallSession, endVideoCallSession, getSocketToken } from './services/api';
 
 function App() {
     const [showOnboarding, setShowOnboarding] = useState(() => {
@@ -487,7 +487,7 @@ function App() {
 
         try {
             const response = await api.postAddonScan(text);
-            
+
             if (response.success && response.data) {
                 const data = sanitizeNutritionalData(response.data);
                 const item = history.find(h => h.id === itemId);
@@ -533,75 +533,49 @@ function App() {
         e.target.value = '';
     };
 
-    // --- NEW: FACE SCAN HANDLER ---
+    // --- FACE SCAN HANDLER (fully delegated to BE) ---
     const handleSkinScan = async (file: File) => {
         if (isScanning) return;
         setIsScanning(true);
-        setSkinResult(null); // Clear previous
+        setSkinResult(null);
 
         try {
-            // 1. Check API Key
-            let apiKey = process.env.API_KEY || API_KEY;
-            if ((!apiKey || (window as any).aistudio) && (window as any).aistudio) {
-                const hasKey = await (window as any).aistudio.hasSelectedApiKey();
-                if (!hasKey) await (window as any).aistudio.openSelectKey();
-                apiKey = process.env.API_KEY || apiKey;
+            // 1. Baca file menjadi base64
+            const base64Image = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve((reader.result as string).split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+
+            // 2. Kirim ke BE — semua logika AI ada di MasterAPI
+            const apiRes = await postSkinScan(base64Image);
+
+            if (apiRes.success && apiRes.data) {
+                const data = apiRes.data;
+                setSkinResult(data);
+                addXp(50);
+
+                // Catat ke history
+                addHistoryItem({
+                    id: uuidv4(),
+                    name: `Bio-Scan: Age ${data.biologicalAge}`,
+                    sugarg: 0,
+                    action: 'scanned',
+                    itemType: 'skin',
+                    timestamp: new Date(),
+                    aiVerdict: `Glycation: ${data.glycationLevel}`,
+                    imageBase64: base64Image,
+                    metadata: data
+                });
+            } else {
+                alert("Scan gagal. Coba lagi.");
             }
-            if (!apiKey) { alert("API Key required"); setIsScanning(false); return; }
-
-            // 2. Process Image
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-                const base64Image = (reader.result as string).split(',')[1];
-
-                try {
-                    // 3. Call AI
-                    const ai = new GoogleGenAI({ apiKey: apiKey! });
-                    const response = await safeGenerateContent(ai, MANUAL_SCAN_MODEL, [
-                        {
-                            role: 'user', parts: [
-                                { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
-                                { text: SKIN_SCAN_PROMPT }
-                            ]
-                        }
-                    ], { responseMimeType: "application/json" });
-
-                    if (response.text) {
-                        try {
-                            const data = JSON5.parse(response.text.replace(/```json/g, '').replace(/```/g, '').trim());
-                            setSkinResult(data);
-                            addXp(50); // Reward for scan
-
-                            // Log to history for record keeping
-                            addHistoryItem({
-                                id: uuidv4(),
-                                name: `Bio-Scan: Age ${data.biologicalAge}`,
-                                sugarg: 0,
-                                action: 'scanned',
-                                itemType: 'skin',
-                                timestamp: new Date(),
-                                aiVerdict: `Glycation: ${data.glycationLevel}`,
-                                imageBase64: base64Image,
-                                metadata: data
-                            });
-                        } catch (err) {
-                            console.error("Failed to parse skin scan result:", err);
-                            alert("Failed to analyze image. Please try again.");
-                        }
-                    }
-                } catch (err) {
-                    console.error("Skin scan API error", err);
-                    alert("Scan failed to process image. Please try again.");
-                } finally {
-                    setIsScanning(false);
-                }
-            };
-            reader.readAsDataURL(file);
-
-        } catch (e) {
-            console.error(e);
+        } catch (err) {
+            console.error("Skin scan error:", err);
+            alert("Scan gagal diproses. Pastikan kamu sudah login.");
+        } finally {
             setIsScanning(false);
-            alert("Error initiating scan.");
         }
     };
 
@@ -989,7 +963,7 @@ function App() {
     };
 
     // --- VOICE MODE RE-INTEGRATION ---
-    const finalizeVideoSession = async (reason: string, transcript?: Array<{role: string, text: string}>) => {
+    const finalizeVideoSession = async (reason: string, transcript?: Array<{ role: string, text: string }>) => {
         if (isFinalizingVideoRef.current) return;
         isFinalizingVideoRef.current = true;
 
@@ -1010,7 +984,7 @@ function App() {
         return { ...summaryData, sessionId };
     };
 
-    const disconnectVoiceLink = async (reason: string = 'manual_end', transcript?: Array<{role: string, text: string}>) => {
+    const disconnectVoiceLink = async (reason: string = 'manual_end', transcript?: Array<{ role: string, text: string }>) => {
         if (serviceRef.current) {
             try {
                 await serviceRef.current.disconnect();
@@ -1129,7 +1103,7 @@ function App() {
         }
     };
 
-    const handleDisconnect = async (transcriptOrReason?: Array<{role: string, text: string}> | string) => {
+    const handleDisconnect = async (transcriptOrReason?: Array<{ role: string, text: string }> | string) => {
         if (Array.isArray(transcriptOrReason)) {
             return await disconnectVoiceLink('manual_end', transcriptOrReason);
         } else if (typeof transcriptOrReason === 'string') {
@@ -1169,11 +1143,11 @@ function App() {
             </div>
         );
     }
-    if (showOnboarding) { 
+    if (showOnboarding) {
         return <OnboardingScreen onComplete={() => {
             setShowOnboarding(false);
             localStorage.setItem('hasSeenOnboarding', 'true');
-        }} />; 
+        }} />;
     }
     if (!isLoggedIn) { return <LoginScreen onLogin={handleLoginSuccess} />; }
     if (showLegal) { return <LegalReminder onAccept={() => setShowLegal(false)} />; }

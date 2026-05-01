@@ -2460,19 +2460,6 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             )
           },
           {
-            label: 'Intel',
-            action: () => onNavigate('blog'),
-            gradient: 'from-blue-500 to-indigo-600',
-            shadow: 'shadow-blue-500/25',
-            icon: <Brain className="w-6 h-6 text-white" strokeWidth={2.5} />,
-            graphic: (
-              <>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 border border-white/20 rounded-full"></div>
-                <div className="absolute top-0 left-0 w-4 h-4 bg-white/20 rounded-full blur-sm"></div>
-              </>
-            )
-          },
-          {
             label: 'Bio',
             action: () => onNavigate('medical'),
             gradient: 'from-teal-400 to-emerald-500',
