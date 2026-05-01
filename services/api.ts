@@ -276,6 +276,37 @@ export async function saveDashboardHistoryItem(
   });
 }
 
+// ─── Status Endpoint ──────────────────────────────────────────────────────────
+
+export interface UserStatusAlert {
+  type: "danger" | "warning" | "info";
+  title: string;
+  message: string;
+}
+
+export interface UserStatusResponse {
+  name: string;
+  rankTitle: string;
+  level: number;
+  currentXp: number;
+  nextLevelXp: number;
+  streak: number;
+  weight: number | null;
+  performanceScore: number;
+  dietAdherence: number;
+  activeAlerts: UserStatusAlert[];
+  targetCalories: number;
+  caloriesConsumedToday: number;
+  nextEvaluation: string;
+}
+
+export async function getUserStatus(dateStr?: string): Promise<UserStatusResponse> {
+  const query = dateStr ? `?date=${dateStr}` : "";
+  return request<UserStatusResponse>(`/dashboard/status${query}`, {
+    method: "GET",
+  });
+}
+
 // ─── Diet Endpoints ─────────────────────────────────────────────────────────
 
 export interface DietMeal {
