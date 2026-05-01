@@ -1287,7 +1287,7 @@ function App() {
             <main className={`max-w-500 mx-auto w-full px-4 py-4 md:py-8 flex flex-col gap-8 ${currentView === 'profile' || currentView === 'notifications' ? 'p-0 max-w-full' : ''}`}>
 
                 {currentView === 'status' ? (<StatusScreen />)
-                    : currentView === 'track' ? (<TrackScreen weightHistory={weightHistory} goal={currentGoal} ledger={ledger} history={history} onAddWeight={(w) => { setWeightHistory(prev => [...prev, { date: getLocalDateString(), weight: w }]); setUserStats(prev => ({ ...prev, weight: w })); setCurrentGoal(prev => ({ ...prev, currentWeight: w })); }} />)
+                    : currentView === 'track' ? (<TrackScreen />)
                         : currentView === 'explore' ? (<ExploreScreen userStats={userStats} ledger={ledger} history={history} />)
                             : currentView === 'diet' ? (<DietPlanScreen userProfile={userStats} onAddXp={addXp} dietPlan={dietPlan} setDietPlan={setDietPlan} />)
                                 : currentView === 'training' ? (<TacticalTrainingScreen userProfile={userStats} ledger={ledger} onAddXp={addXp} plan={trainingPlan} setPlan={setTrainingPlan} completedWorkouts={completedWorkouts} setCompletedWorkouts={setCompletedWorkouts} completedMeals={completedMeals} setCompletedMeals={setCompletedMeals} />)

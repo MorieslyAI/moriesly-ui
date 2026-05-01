@@ -307,6 +307,91 @@ export async function getUserStatus(dateStr?: string): Promise<UserStatusRespons
   });
 }
 
+// ─── Track Endpoints ──────────────────────────────────────────────────────────
+
+export interface TrackWeightEntry {
+  date: string;
+  weight: number;
+}
+
+export interface TrackDailySugarPoint {
+  date: string;
+  dateKey: string;
+  sugar: number;
+}
+
+export interface TrackMacroSummary {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  fiber: number;
+  sugar: number;
+  vitamins: Array<{ name: string; amount: string; percent: number }>;
+}
+
+export interface TrackGoal {
+  eventName: string;
+  startDate: string;
+  targetDate: string;
+  startWeight: number;
+  currentWeight: number;
+  targetWeight: number;
+}
+
+export interface TrackDataResponse {
+  goal: TrackGoal;
+  weightHistory: TrackWeightEntry[];
+  sugarLast7Days: TrackDailySugarPoint[];
+  todayMacros: TrackMacroSummary;
+  sugarLimit: number;
+  calorieTarget: number;
+}
+
+export interface TrackFieldNote {
+  id: string;
+  text: string;
+  date: string;
+  createdAt: string;
+}
+
+export async function getTrackData(dateStr?: string): Promise<TrackDataResponse> {
+  const query = dateStr ? `?date=${dateStr}` : "";
+  return request<TrackDataResponse>(`/track/data${query}`, { method: "GET" });
+}
+
+export async function logWeight(
+  weight: number,
+  dateStr?: string,
+): Promise<{ success: boolean; entry: TrackWeightEntry }> {
+  return request<{ success: boolean; entry: TrackWeightEntry }>("/track/weight", {
+    method: "POST",
+    body: JSON.stringify({ weight, date: dateStr }),
+  });
+}
+
+export async function getTrackNotes(): Promise<{ notes: TrackFieldNote[] }> {
+  return request<{ notes: TrackFieldNote[] }>("/track/notes", { method: "GET" });
+}
+
+export async function createTrackNote(
+  text: string,
+  dateStr?: string,
+): Promise<{ success: boolean; note: TrackFieldNote }> {
+  return request<{ success: boolean; note: TrackFieldNote }>("/track/notes", {
+    method: "POST",
+    body: JSON.stringify({ text, date: dateStr }),
+  });
+}
+
+export async function deleteTrackNote(
+  noteId: string,
+): Promise<{ success: boolean }> {
+  return request<{ success: boolean }>(`/track/notes/${noteId}`, {
+    method: "DELETE",
+  });
+}
+
 // ─── Diet Endpoints ─────────────────────────────────────────────────────────
 
 export interface DietMeal {
