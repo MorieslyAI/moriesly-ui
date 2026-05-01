@@ -1,0 +1,9 @@
+{
+  "name": "Remix: Remix: Remix: Update V2 Moriesly AI",
+  "description": "A no-nonsense health detective AI that identifies sugary foods in real-time video and delivers shocking visualizations of their sugar content.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
