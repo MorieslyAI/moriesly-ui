@@ -142,7 +142,7 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
                         stroke="currentColor"
                         strokeWidth="1"
                         strokeDasharray="2,2"
-                        className="opacity-30 text-zinc-300 dark:text-zinc-700"
+                        className="opacity-30 text-zinc-300 dark:text-zinc-700 dark:text-zinc-300"
                       />
                   ))}
                   
@@ -181,14 +181,14 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
               {/* Mini Projection Card */}
               <button 
                   onClick={() => setShowDetails(true)}
-                  className="bg-white rounded-[2rem] p-5 border border-zinc-100 shadow-sm hover:shadow-md transition-all flex flex-col items-start justify-between h-28 relative overflow-hidden group"
+                  className="bg-white dark:bg-zinc-900 rounded-[2rem] p-5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all flex flex-col items-start justify-between h-28 relative overflow-hidden group"
               >
                   <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                       <svg className="w-16 h-16 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </div>
                   <div className="text-[10px] font-bold uppercase text-zinc-400 tracking-widest mb-1">1-Year Gain</div>
                   <div className="relative z-10">
-                      <div className="text-3xl font-black text-zinc-900 tracking-tighter leading-none mb-1">
+                      <div className="text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tighter leading-none mb-1">
                         +{projection.yearProjectionKg.toFixed(1)}<span className="text-sm text-zinc-400 font-bold ml-0.5">kg</span>
                       </div>
                       <div className="text-[10px] font-bold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full inline-block truncate max-w-full">
@@ -200,7 +200,7 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
               {/* Mini Weakness Card */}
               <button 
                   onClick={() => setShowDetails(true)}
-                  className="bg-white rounded-[2rem] p-5 border border-zinc-100 shadow-sm hover:shadow-md transition-all flex flex-col items-start justify-between h-28 relative overflow-hidden group"
+                  className="bg-white dark:bg-zinc-900 rounded-[2rem] p-5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all flex flex-col items-start justify-between h-28 relative overflow-hidden group"
               >
                   <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                       <svg className="w-16 h-16 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
@@ -228,7 +228,7 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
             {/* Close Button */}
             <button 
                 onClick={() => setShowDetails(false)}
-                className="absolute top-4 right-4 z-50 p-2 bg-zinc-100 dark:bg-black/50 hover:bg-zinc-200 dark:hover:bg-black/80 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors border border-zinc-200 dark:border-white/10"
+                className="absolute top-4 right-4 z-50 p-2 bg-zinc-100 dark:bg-black/50 hover:bg-zinc-200 dark:hover:bg-black/80 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:hover:text-white transition-colors border border-zinc-200 dark:border-white/10"
             >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -240,13 +240,13 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
                     <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(0,0,0,0.05) 5px, rgba(0,0,0,0.05) 6px)' }}></div>
 
                     <div className="relative z-10">
-                        <div className="text-xs font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mb-2">Future Projection</div>
-                        <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">The 1-Year Accumulation</h3>
+                        <div className="text-xs font-bold uppercase text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 tracking-wider mb-2">Future Projection</div>
+                        <h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 dark:text-white mb-2">The 1-Year Accumulation</h3>
                         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">If current daily average ({Math.round(projection.dailyAvg)}g) continues...</p>
 
                         <div className="flex flex-col items-center justify-center py-4">
-                            <div className="text-6xl font-black text-zinc-900 dark:text-white tracking-tighter mb-3 drop-shadow-lg">
-                                {projection.yearProjectionKg.toFixed(1)} <span className="text-2xl text-zinc-400 dark:text-zinc-500">kg</span>
+                            <div className="text-6xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter mb-3 drop-shadow-lg">
+                                {projection.yearProjectionKg.toFixed(1)} <span className="text-2xl text-zinc-400 dark:text-zinc-500 dark:text-zinc-400">kg</span>
                             </div>
                             <div className="bg-rose-600 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide animate-pulse">
                                 Equivalent To
@@ -258,7 +258,7 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
                     </div>
 
                     <div className="relative z-10 mt-auto pt-6 border-t border-zinc-200 dark:border-zinc-800 text-center">
-                        <div className="text-[10px] text-zinc-500 uppercase font-mono">
+                        <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-mono">
                             System Recommendation: Reduce Daily Avg by {Math.round(projection.dailyAvg * 0.2)}g.
                         </div>
                     </div>
@@ -266,32 +266,32 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
 
                 {/* RIGHT SIDE: Psych-Ops Profile */}
                 <div className="p-8 relative flex flex-col min-h-[350px] bg-zinc-50/50 dark:bg-zinc-900/50">
-                    <div className="absolute top-0 right-0 p-4 opacity-5 text-zinc-900 dark:text-white pointer-events-none">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 text-zinc-900 dark:text-zinc-100 dark:text-white pointer-events-none">
                         <svg className="w-32 h-32" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                     </div>
                     
                     <div className="relative z-10 flex flex-col h-full">
                         <div className="flex items-center justify-between mb-6">
-                            <div className="text-xs font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Psych-Ops Profile</div>
+                            <div className="text-xs font-bold uppercase text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 tracking-wider">Psych-Ops Profile</div>
                             
                             {/* Tab Switcher */}
                             <div className="flex bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1">
                                 <button 
                                     onClick={() => setProfileMode('weakness')}
-                                    className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${profileMode === 'weakness' ? 'bg-teal-500 text-white dark:text-black shadow-lg' : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'}`}
+                                    className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${profileMode === 'weakness' ? 'bg-teal-500 text-white dark:text-black shadow-lg' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:text-zinc-400 dark:hover:text-white'}`}
                                 >
                                     Weakness
                                 </button>
                                 <button 
                                     onClick={() => setProfileMode('taste')}
-                                    className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${profileMode === 'taste' ? 'bg-rose-500 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'}`}
+                                    className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${profileMode === 'taste' ? 'bg-rose-500 text-white shadow-lg' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:text-zinc-400 dark:hover:text-white'}`}
                                 >
                                     Taste
                                 </button>
                             </div>
                         </div>
 
-                        <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">
+                        <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 dark:text-white mb-4">
                             {profileMode === 'weakness' ? (
                                 <>Primary Weakness: <span className="text-teal-600 dark:text-teal-500">{triggerStats.maxTrigger}</span></>
                             ) : (

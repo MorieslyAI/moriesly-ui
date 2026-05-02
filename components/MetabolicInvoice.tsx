@@ -12,7 +12,7 @@ const MetabolicInvoice: React.FC<MetabolicInvoiceProps> = ({ focusTax, agingGrad
 
   return (
     <div className="mt-4 animate-in slide-in-from-top-4 duration-700">
-      <div className="relative bg-white text-zinc-900 font-mono p-5 rounded-sm shadow-xl border-t-8 border-zinc-200 mx-2 transform rotate-1">
+      <div className="relative bg-white dark:bg-zinc-900 text-zinc-900 font-mono p-5 rounded-sm shadow-xl border-t-8 border-zinc-200 mx-2 transform rotate-1">
         
         {/* Receipt Cut Pattern Top */}
         <div className="absolute -top-2 left-0 right-0 h-2 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBkPSJNMCAxMEw1IDBMMTAgMTBIMFoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] bg-repeat-x"></div>

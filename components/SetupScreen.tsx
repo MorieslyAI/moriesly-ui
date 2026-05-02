@@ -382,7 +382,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onComplete, initialStats }) =
                                                 <label className="text-[9px] font-bold text-zinc-500 uppercase block mb-2 tracking-widest">Int</label>
                                                 <div className="flex bg-black p-1 rounded-xl">
                                                     {(['low', 'mod', 'high'] as const).map(lvl => (
-                                                        <button key={lvl} onClick={() => setWorkoutIntensity(lvl)} className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase ${workoutIntensity === lvl ? 'bg-white text-black' : 'text-zinc-600'}`}>{lvl.substring(0,1)}</button>
+                                                        <button key={lvl} onClick={() => setWorkoutIntensity(lvl)} className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold uppercase ${workoutIntensity === lvl ? 'bg-white dark:bg-zinc-900 text-black' : 'text-zinc-600'}`}>{lvl.substring(0,1)}</button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -541,7 +541,7 @@ const SetupScreen: React.FC<SetupScreenProps> = ({ onComplete, initialStats }) =
                 <button 
                     onClick={handleNext}
                     disabled={!canProceed}
-                    className="flex-1 h-14 bg-white text-black rounded-2xl font-black uppercase text-xs tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-zinc-200 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
+                    className="flex-1 h-14 bg-white dark:bg-zinc-900 text-black rounded-2xl font-black uppercase text-xs tracking-widest shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-zinc-200 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
                 >
                     {step === totalSteps ? 'Confirm Protocol' : 'Next Step'}
                     <div className="w-1 h-1 bg-black rounded-full group-hover:scale-150 transition-transform"></div>

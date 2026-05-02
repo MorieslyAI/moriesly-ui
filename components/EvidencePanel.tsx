@@ -1,4 +1,4 @@
-
+﻿
 import React from 'react';
 
 interface EvidencePanelProps {
@@ -19,10 +19,10 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({ confidence, sugarSources,
     <div className="mt-4 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm animate-in slide-in-from-bottom-2">
       
       {/* Header */}
-      <div className="bg-zinc-50 px-4 py-2 flex items-center justify-between border-b border-zinc-200">
+      <div className="bg-zinc-50 px-4 py-2 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Validation Protocol</span>
+              <svg className="w-4 h-4 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Validation Protocol</span>
           </div>
           <div className="flex items-center gap-1.5">
               <span className={`text-[10px] font-bold ${confText}`}>{confidence}% Match</span>
@@ -37,7 +37,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({ confidence, sugarSources,
           {/* 1. Reasoning & Sources */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Chemical Breakdown */}
-              <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800 dark:border-zinc-800">
                   <h4 className="text-[10px] font-bold uppercase text-zinc-400 mb-2 flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
                       Detected Sources
@@ -54,7 +54,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({ confidence, sugarSources,
               </div>
 
               {/* Visual Evidence */}
-              <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl border border-zinc-100 dark:border-zinc-800 dark:border-zinc-800">
                   <h4 className="text-[10px] font-bold uppercase text-zinc-400 mb-2 flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                       Visual Indicators
@@ -95,7 +95,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({ confidence, sugarSources,
 
                   {/* Healthy Ref (Apple) */}
                   <div className="flex items-center gap-2 opacity-50">
-                      <div className="w-20 text-right text-[10px] font-bold text-zinc-500">Apple</div>
+                      <div className="w-20 text-right text-[10px] font-bold text-zinc-500 dark:text-zinc-400">Apple</div>
                       <div className="flex-1 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                           <div className="h-full bg-emerald-500" style={{ width: `${19 * 1.5}%` }}></div>
                       </div>
@@ -104,7 +104,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({ confidence, sugarSources,
 
                   {/* Bad Ref (Cola) */}
                   <div className="flex items-center gap-2 opacity-50">
-                      <div className="w-20 text-right text-[10px] font-bold text-zinc-500">Cola Can</div>
+                      <div className="w-20 text-right text-[10px] font-bold text-zinc-500 dark:text-zinc-400">Cola Can</div>
                       <div className="flex-1 h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                           <div className="h-full bg-rose-500" style={{ width: `${39 * 1.5}%` }}></div>
                       </div>
@@ -119,3 +119,4 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({ confidence, sugarSources,
 };
 
 export default EvidencePanel;
+

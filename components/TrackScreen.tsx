@@ -152,7 +152,7 @@ const TrackScreen: React.FC = () => {
   const renderError = (msg: string, onRetry: () => void) => (
     <div className="flex flex-col items-center gap-4 py-16">
       <AlertTriangle className="w-10 h-10 text-rose-400" />
-      <p className="text-zinc-500 text-sm text-center max-w-xs">{msg}</p>
+      <p className="text-zinc-500 dark:text-zinc-400 text-sm text-center max-w-xs">{msg}</p>
       <button onClick={onRetry} className="flex items-center gap-2 px-4 py-2 bg-brand-500 text-white rounded-full text-sm font-bold">
         <RefreshCw className="w-4 h-4" /> Coba Lagi
       </button>
@@ -177,7 +177,7 @@ const TrackScreen: React.FC = () => {
             onClick={() => setActiveTab(tab)}
             className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${
               activeTab === tab
-                ? 'bg-white dark:bg-zinc-800 text-brand-600 shadow-sm'
+                ? 'bg-white dark:bg-zinc-900 dark:bg-zinc-800 text-brand-600 shadow-sm'
                 : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
             }`}
           >
@@ -203,19 +203,19 @@ const TrackScreen: React.FC = () => {
 
                 <div className="flex justify-between items-end mb-6">
                   <div>
-                    <div className="text-4xl font-black">{trackData.goal.currentWeight}<span className="text-lg text-white/50 dark:text-zinc-500">kg</span></div>
-                    <div className="text-[10px] text-white/50 dark:text-zinc-500 uppercase">Current Weight</div>
+                    <div className="text-4xl font-black">{trackData.goal.currentWeight}<span className="text-lg text-white/50 dark:text-zinc-500 dark:text-zinc-400">kg</span></div>
+                    <div className="text-[10px] text-white/50 dark:text-zinc-500 dark:text-zinc-400 uppercase">Current Weight</div>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-bold text-white dark:text-brand-500">
                       {Math.abs(trackData.goal.currentWeight - trackData.goal.targetWeight).toFixed(1)}kg
                     </div>
-                    <div className="text-[10px] text-white/50 dark:text-zinc-500 uppercase">To Target</div>
+                    <div className="text-[10px] text-white/50 dark:text-zinc-500 dark:text-zinc-400 uppercase">To Target</div>
                   </div>
                 </div>
 
                 {/* Quick Log Input */}
-                <div className="flex gap-2 bg-white/10 dark:bg-black/30 p-2 rounded-xl border border-white/20 dark:border-zinc-800">
+                <div className="flex gap-2 bg-white dark:bg-zinc-900/10 dark:bg-black/30 p-2 rounded-xl border border-white/20 dark:border-zinc-800">
                   <input
                     type="number"
                     value={newWeight}
@@ -227,7 +227,7 @@ const TrackScreen: React.FC = () => {
                   <button
                     onClick={handleAddWeight}
                     disabled={isLoggingWeight}
-                    className="bg-white dark:bg-brand-600 text-brand-600 dark:text-white hover:bg-zinc-100 dark:hover:bg-brand-500 px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors disabled:opacity-50"
+                    className="bg-white dark:bg-zinc-900 dark:bg-brand-600 text-brand-600 dark:text-white hover:bg-zinc-100 dark:hover:bg-brand-500 px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors disabled:opacity-50"
                   >
                     {isLoggingWeight ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Log'}
                   </button>
@@ -237,7 +237,7 @@ const TrackScreen: React.FC = () => {
 
             {/* Weight Chart */}
             <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm h-64">
-              <h3 className="text-sm font-bold uppercase text-zinc-500 mb-4">Weight Trajectory</h3>
+              <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400 mb-4">Weight Trajectory</h3>
               {weightChartData.length > 1 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={weightChartData}>
@@ -272,7 +272,7 @@ const TrackScreen: React.FC = () => {
           <div className="space-y-6">
             {/* Sugar Timeline */}
             <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm h-64">
-              <h3 className="text-sm font-bold uppercase text-zinc-500 mb-4">Sugar Consumption (7 Days)</h3>
+              <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400 mb-4">Sugar Consumption (7 Days)</h3>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={trackData.sugarLast7Days}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -293,7 +293,7 @@ const TrackScreen: React.FC = () => {
               {/* Calories */}
               <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-bold uppercase text-zinc-500">Calories</h3>
+                  <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400">Calories</h3>
                   <Zap className="w-4 h-4 text-orange-500" />
                 </div>
                 <div className="flex items-end gap-2">
@@ -310,7 +310,7 @@ const TrackScreen: React.FC = () => {
 
               {/* Macros */}
               <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                <h3 className="text-sm font-bold uppercase text-zinc-500 mb-4">Macros</h3>
+                <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400 mb-4">Macros</h3>
                 <div className="flex gap-2 h-24 items-end">
                   {macroData.map((macro, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -320,7 +320,7 @@ const TrackScreen: React.FC = () => {
                           style={{ height: `${Math.min((macro.value / 150) * 100, 100)}%`, backgroundColor: macro.color }}
                         />
                       </div>
-                      <span className="text-[10px] font-bold text-zinc-500">{macro.name}</span>
+                      <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">{macro.name}</span>
                     </div>
                   ))}
                 </div>
@@ -331,7 +331,7 @@ const TrackScreen: React.FC = () => {
             <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <FlaskConical className="w-4 h-4 text-brand-600" />
-                <h3 className="text-sm font-bold uppercase text-zinc-500">Specific Nutrients</h3>
+                <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400">Specific Nutrients</h3>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {trackData.todayMacros.vitamins.length > 0 ? (
@@ -354,7 +354,7 @@ const TrackScreen: React.FC = () => {
       {activeTab === 'notes' && (
         <div className="space-y-4">
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-            <h3 className="text-sm font-bold uppercase text-zinc-500 mb-4">Field Notes</h3>
+            <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400 mb-4">Field Notes</h3>
 
             <div className="flex gap-2 mb-6">
               <input

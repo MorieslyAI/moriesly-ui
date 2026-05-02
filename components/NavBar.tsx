@@ -1,4 +1,4 @@
-
+﻿
 import React, { useState } from 'react';
 import { Home, Compass, Calendar, MessageSquare, User } from 'lucide-react';
 
@@ -9,7 +9,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-900 px-4 pb-2 pt-2 z-[90] h-16 rounded-t-[1.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-800 dark:border-zinc-900 px-4 pb-2 pt-2 z-[90] h-16 rounded-t-[1.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
       
       {/* Grid Layout for Balance */}
       <div className="grid grid-cols-2 h-full relative">
@@ -103,3 +103,4 @@ const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
 };
 
 export default NavBar;
+

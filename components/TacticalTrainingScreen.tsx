@@ -27,7 +27,7 @@ const MealVisualizer: React.FC<{ name: string, isCompleted: boolean }> = ({ name
         const n = (name || '').toLowerCase();
         let icon = '🍱'; // Default Bento
         let label = 'RATION';
-        let color = 'text-zinc-500';
+        let color = 'text-zinc-500 dark:text-zinc-400';
         let bgGradient = 'from-zinc-800 to-zinc-900';
 
         // --- PROTEIN HEAVY ---
@@ -339,7 +339,7 @@ const TacticalVisualizer: React.FC<{ actionName: string, isBurn: boolean }> = ({
       </svg>
       
       {/* Status Text Overlay */}
-      <div className="absolute bottom-1 right-2 text-[6px] md:text-[8px] font-mono font-bold text-zinc-500 uppercase">
+      <div className="absolute bottom-1 right-2 text-[6px] md:text-[8px] font-mono font-bold text-zinc-500 dark:text-zinc-400 uppercase">
           {animType}
       </div>
     </div>
@@ -621,7 +621,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                       <h2 className="text-2xl font-black text-white leading-none uppercase">Tactical Schedule</h2>
                   </div>
                   <div className="bg-zinc-800 p-2 rounded-lg border border-zinc-700">
-                      <div className="text-[10px] text-zinc-500 uppercase text-center">Load</div>
+                      <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase text-center">Load</div>
                       <div className={`text-xl font-black text-center ${sugarToBurn > 20 ? 'text-rose-500' : 'text-emerald-500'}`}>
                           {sugarToBurn}g
                       </div>
@@ -633,16 +633,16 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                   
                   {/* 1. OBJECTIVE */}
                   <div>
-                      <label className="text-[10px] font-bold text-zinc-500 uppercase mb-2 block">Objective</label>
+                      <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2 block">Objective</label>
                       <div className="flex bg-black p-1 rounded-xl">
-                          <button onClick={() => setMode('burn')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'burn' ? 'bg-rose-600 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}>Fat Burn</button>
-                          <button onClick={() => setMode('build')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'build' ? 'bg-orange-500 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}>Muscle Build</button>
+                          <button onClick={() => setMode('burn')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'burn' ? 'bg-rose-600 text-white' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-300'}`}>Fat Burn</button>
+                          <button onClick={() => setMode('build')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'build' ? 'bg-orange-500 text-white' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-300'}`}>Muscle Build</button>
                       </div>
                   </div>
 
                   {/* 2. FOCUS AREA */}
                   <div>
-                      <label className="text-[10px] font-bold text-zinc-500 uppercase mb-2 block">Target Zone</label>
+                      <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2 block">Target Zone</label>
                       <div className="grid grid-cols-3 gap-2">
                           {(['Full Body', 'Upper', 'Lower', 'Core', 'Cardio', 'Custom'] as const).map(zone => (
                               <button
@@ -651,7 +651,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                   className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all ${
                                       focusArea === zone 
                                       ? 'bg-zinc-800 border-teal-500 text-teal-500 shadow-lg' 
-                                      : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:bg-zinc-800'
+                                      : 'bg-zinc-900 border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-800'
                                   }`}
                               >
                                   {/* RESPONSIVE ICON CONTAINER: Scale SVG to fit container */}
@@ -677,7 +677,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                   <div className="grid grid-cols-2 gap-4">
                       {/* Loadout */}
                       <div className="relative" ref={loadoutRef}>
-                          <label className="text-[10px] font-bold text-zinc-500 uppercase mb-2 block">Equipment</label>
+                          <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2 block">Equipment</label>
                           <button 
                               onClick={() => setShowLoadoutMenu(!showLoadoutMenu)}
                               className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 flex items-center justify-between text-xs text-white"
@@ -707,7 +707,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
 
                       {/* Intensity */}
                       <div>
-                          <label className="text-[10px] font-bold text-zinc-500 uppercase mb-2 block">Intensity</label>
+                          <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2 block">Intensity</label>
                           <div className="flex bg-black p-1 rounded-xl h-[42px]">
                               {(['Low', 'Medium', 'High'] as const).map(lvl => (
                                   <button
@@ -716,7 +716,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                       className={`flex-1 rounded-lg text-[9px] font-bold uppercase transition-all ${
                                           intensity === lvl 
                                           ? (lvl === 'High' ? 'bg-rose-600 text-white' : lvl === 'Medium' ? 'bg-orange-500 text-white' : 'bg-teal-500 text-white')
-                                          : 'text-zinc-500 hover:text-zinc-300'
+                                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-300'
                                       }`}
                                   >
                                       {lvl}
@@ -730,7 +730,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                   <div className="flex items-center gap-2">
                       <button 
                           onClick={() => setInputMode(inputMode === 'auto' ? 'manual' : 'auto')}
-                          className="text-[10px] text-zinc-500 underline hover:text-zinc-300"
+                          className="text-[10px] text-zinc-500 dark:text-zinc-400 underline hover:text-zinc-300"
                       >
                           {inputMode === 'auto' ? 'Switch to Manual Prompt' : 'Switch to Auto Selector'}
                       </button>
@@ -751,7 +751,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                           <div className="text-2xl">🔒</div>
                           <div className="flex-1 min-w-0">
                               <div className="text-[11px] font-bold text-zinc-300 uppercase tracking-widest">Daily Mission Locked</div>
-                              <div className="text-[10px] text-zinc-500 mt-0.5">
+                              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
                                   Today's protocol has been created. Resets at midnight — available again in:
                               </div>
                           </div>
@@ -767,7 +767,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                   <button
                     onClick={generateMission}
                     disabled={loading || !canGenerate}
-                    className="w-full py-4 bg-white hover:bg-zinc-200 text-black font-black uppercase rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-white dark:bg-zinc-900 hover:bg-zinc-200 text-black font-black uppercase rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                       {loading ? (
                           <>
@@ -793,11 +793,11 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
               
               <div className="flex justify-between items-end px-2">
                   <div>
-                      <div className="text-[10px] font-bold text-zinc-500 uppercase">Active Operation</div>
+                      <div className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">Active Operation</div>
                       <h3 className="text-xl font-black text-white uppercase tracking-tight">{plan.codename}</h3>
                   </div>
                   <div className="text-right">
-                      <div className="text-[10px] font-bold text-zinc-500 uppercase">Est. Burn</div>
+                      <div className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">Est. Burn</div>
                       <div className="text-lg font-black text-orange-500">~{plan.totalCaloriesBurn} kcal</div>
                   </div>
               </div>
@@ -880,7 +880,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                                                   </button>
                                                                   <button 
                                                                       onClick={() => setActiveVerification(null)}
-                                                                      className="px-3 text-zinc-500 text-xs hover:text-white"
+                                                                      className="px-3 text-zinc-500 dark:text-zinc-400 text-xs hover:text-white"
                                                                   >
                                                                       Cancel
                                                                   </button>
@@ -919,7 +919,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                                       {block.fuelName}
                                                   </h4>
                                               </div>
-                                              <p className="text-xs text-zinc-500 leading-relaxed mb-3">
+                                              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed mb-3">
                                                   {block.fuelDetail}
                                               </p>
 
@@ -947,7 +947,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                                               ) : (
                                                                   <div className="flex gap-2">
                                                                       <button onClick={() => mealFileInputRef.current?.click()} className="flex-1 py-2 border border-zinc-500 hover:bg-zinc-800 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-colors">📷 Scan Meal</button>
-                                                                      <button onClick={() => setActiveMealVerification(null)} className="px-2 text-zinc-500 text-[10px] hover:text-white">X</button>
+                                                                      <button onClick={() => setActiveMealVerification(null)} className="px-2 text-zinc-500 dark:text-zinc-400 text-[10px] hover:text-white">X</button>
                                                                   </div>
                                                               )}
                                                           </div>
@@ -973,7 +973,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
 
       {/* EMPTY STATE */}
       {!plan && !loading && (
-          <div className="flex flex-col items-center justify-center py-12 text-zinc-500 opacity-50">
+          <div className="flex flex-col items-center justify-center py-12 text-zinc-500 dark:text-zinc-400 opacity-50">
               <div className="text-4xl mb-2">📋</div>
               <p className="text-sm text-center">Awaiting mission parameters.<br/>Define constraints to receive orders.</p>
           </div>
@@ -984,3 +984,4 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
 };
 
 export default TacticalTrainingScreen;
+

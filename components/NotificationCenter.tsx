@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+﻿import React, { useEffect, useState, useCallback } from 'react';
 import { Loader2, Trash2, CheckCheck, Bell } from 'lucide-react';
 import { LedgerState, UserProfile } from '../types';
 import {
@@ -8,7 +8,7 @@ import {
   type AppNotification,
 } from '../services/api';
 
-// ─── Props ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Props â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface NotificationCenterProps {
   userProfile: UserProfile;
@@ -18,8 +18,8 @@ interface NotificationCenterProps {
   onMarkedAllRead?: () => void;
 }
 
-// ─── Ephemeral (client-side) alert builder ─────────────────────────────────
-// These are NOT stored on the backend — they reflect real-time state derived
+// â”€â”€â”€ Ephemeral (client-side) alert builder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// These are NOT stored on the backend â€” they reflect real-time state derived
 // from the user's profile and ledger (medical conditions, streak, hydration).
 
 function buildEphemeralAlerts(
@@ -29,7 +29,7 @@ function buildEphemeralAlerts(
   const list: AppNotification[] = [];
   const now = new Date();
 
-  // Medical conditions — constant reminders
+  // Medical conditions â€” constant reminders
   if (userProfile.medicalConditions && userProfile.medicalConditions.length > 0) {
     userProfile.medicalConditions.forEach((cond, i) => {
       list.push({
@@ -39,7 +39,7 @@ function buildEphemeralAlerts(
         title: 'MEDICAL WATCH',
         message: `Monitoring glucose spikes strictly due to active condition: ${cond}.`,
         timestamp: new Date().toISOString(),
-        read: true, // ephemeral — don't count toward unread badge
+        read: true, // ephemeral â€” don't count toward unread badge
       });
     });
   }
@@ -86,7 +86,7 @@ function buildEphemeralAlerts(
   return list;
 }
 
-// ─── Helper: relative time label ──────────────────────────────────────────────
+// â”€â”€â”€ Helper: relative time label â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function relativeTime(isoStr: string): string {
   const diff = Date.now() - new Date(isoStr).getTime();
@@ -101,7 +101,7 @@ function relativeTime(isoStr: string): string {
   return new Date(isoStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-// ─── Style map ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Style map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const CARD_STYLE: Record<string, string> = {
   critical: 'bg-rose-50   dark:bg-rose-950/20   border-rose-200   dark:border-rose-500/50',
@@ -125,13 +125,13 @@ const TITLE_STYLE: Record<string, string> = {
 };
 
 const EMOJI: Record<string, string> = {
-  critical: '⚠️',
-  warning:  '⚡',
-  success:  '🛡️',
-  info:     'ℹ️',
+  critical: 'âš ï¸',
+  warning:  'âš¡',
+  success:  'ðŸ›¡ï¸',
+  info:     'â„¹ï¸',
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const NotificationCenter: React.FC<NotificationCenterProps> = ({
   userProfile,
@@ -161,7 +161,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
 
   const unreadFromBackend = persisted.filter((n) => !n.read).length;
 
-  // ── Fetch from backend on mount ──────────────────────────────────────────
+  // â”€â”€ Fetch from backend on mount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const fetchAlerts = useCallback(async () => {
     setIsLoading(true);
     setFetchError(null);
@@ -180,7 +180,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
     fetchAlerts();
   }, [fetchAlerts]);
 
-  // ── Mark all read ─────────────────────────────────────────────────────────
+  // â”€â”€ Mark all read â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleMarkAllRead = async () => {
     if (unreadFromBackend === 0) return;
     setIsMarkingRead(true);
@@ -195,7 +195,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
     }
   };
 
-  // ── Delete one notification ───────────────────────────────────────────────
+  // â”€â”€ Delete one notification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleDelete = async (id: string) => {
     // Ephemeral (client-only) alerts have ids starting with "ephemeral-"
     if (id.startsWith('ephemeral-')) return;
@@ -214,13 +214,13 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
     }
   };
 
-  // ─── Render ───────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   return (
     <div className="pb-24 animate-in slide-in-from-right-4 duration-300">
 
-      {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30 p-4 flex items-center justify-between">
+      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="bg-white/80 dark:bg-zinc-900/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30 p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
@@ -266,7 +266,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
         </div>
       </div>
 
-      {/* ── Content ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="p-4 space-y-3">
 
         {/* Loading skeleton */}
@@ -280,7 +280,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
         {/* Fetch error */}
         {!isLoading && fetchError && (
           <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-500/30 rounded-2xl p-3 text-xs text-amber-600 dark:text-amber-400 font-medium">
-            ⚠️ {fetchError}
+            âš ï¸ {fetchError}
           </div>
         )}
 
@@ -346,7 +346,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
 
               {/* Background emoji decor */}
               <div className={`absolute -right-4 -bottom-4 opacity-5 text-6xl pointer-events-none grayscale group-hover:grayscale-0 transition-all ${TITLE_STYLE[alert.type] ?? ''}`}>
-                {EMOJI[alert.type] ?? 'ℹ️'}
+                {EMOJI[alert.type] ?? 'â„¹ï¸'}
               </div>
             </div>
           );
@@ -358,3 +358,4 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({
 };
 
 export default NotificationCenter;
+

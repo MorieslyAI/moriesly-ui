@@ -73,7 +73,7 @@ const GlucosePredictor: React.FC<GlucosePredictorProps> = ({ sugar, gi }) => {
   const isHighSugar = sugar > 20;
 
   return (
-    <div className="mt-4 bg-white rounded-2xl p-5 border border-zinc-200 shadow-sm relative overflow-hidden group">
+    <div className="mt-4 bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-zinc-200 dark:border-zinc-800 shadow-sm relative overflow-hidden group">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 relative z-10">
             <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ const GlucosePredictor: React.FC<GlucosePredictorProps> = ({ sugar, gi }) => {
             <div className="absolute inset-0 flex flex-col justify-between text-[9px] text-zinc-500 dark:text-zinc-600 font-mono pointer-events-none">
                 <div className="border-b border-zinc-100 dark:border-zinc-800/50 w-full h-px"></div>
                 <div className="border-b border-dashed border-zinc-200 dark:border-zinc-700 w-full h-px flex items-center">
-                    <span className="bg-white px-1 ml-1 text-zinc-500 dark:text-zinc-500">Baseline</span>
+                    <span className="bg-white dark:bg-zinc-900 px-1 ml-1 text-zinc-500 dark:text-zinc-500">Baseline</span>
                 </div>
                 <div className="border-b border-zinc-100 dark:border-zinc-800/50 w-full h-px"></div>
             </div>
@@ -156,7 +156,7 @@ const GlucosePredictor: React.FC<GlucosePredictorProps> = ({ sugar, gi }) => {
         </div>
 
         {/* Verdict Text */}
-        <div className="mt-3 text-[10px] bg-zinc-50 p-2 rounded-lg text-zinc-600 dark:text-zinc-400 border border-zinc-100 dark:border-zinc-700/50 leading-relaxed">
+        <div className="mt-3 text-[10px] bg-zinc-50 dark:bg-zinc-800/50 p-2 rounded-lg text-zinc-600 dark:text-zinc-400 border border-zinc-100 dark:border-zinc-700/50 leading-relaxed">
             {isHighGi && isHighSugar ? (
                 <span>
                     <strong className="text-zinc-900 dark:text-white">Warning:</strong> Expect a short burst of energy followed by brain fog and hunger in ~90 mins. Not ideal for productivity.

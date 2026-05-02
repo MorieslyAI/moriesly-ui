@@ -134,8 +134,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 pb-24 animate-in fade-in duration-500">
         {/* HEADER */}
-        <div className="sticky top-0 z-50 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800 px-4 py-3 flex justify-between items-center shadow-sm">
-            <button onClick={onBack} className="flex items-center gap-2 text-zinc-500 hover:text-teal-600 transition-colors group">
+        <div className="sticky top-0 z-50 bg-white dark:bg-zinc-900/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800 px-4 py-3 flex justify-between items-center shadow-sm">
+            <button onClick={onBack} className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-teal-600 transition-colors group">
                 <div className="p-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 group-hover:bg-teal-50 transition-colors">
                     <ChevronRight className="w-5 h-5 rotate-180" />
                 </div>
@@ -172,7 +172,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                     className="flex items-center justify-between p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm transition-all active:scale-95"
                 >
                     <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-xl ${isDarkMode ? 'bg-zinc-800 text-yellow-400' : 'bg-zinc-100 text-zinc-600'}`}>
+                        <div className={`p-2 rounded-xl ${isDarkMode ? 'bg-zinc-800 text-yellow-400' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600'}`}>
                             {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                         </div>
                         <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider">Theme</span>
@@ -185,7 +185,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                     className={`flex items-center justify-between p-4 rounded-2xl border transition-all active:scale-95 ${
                         isWearableConnected 
                         ? 'bg-teal-50 border-teal-100 dark:bg-teal-900/20 dark:border-teal-800' 
-                        : 'bg-white border-zinc-100 dark:bg-zinc-900 dark:border-zinc-800'
+                        : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:bg-zinc-900 dark:border-zinc-800'
                     }`}
                 >
                     <div className="flex items-center gap-3">
@@ -208,7 +208,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                         onClick={() => setActiveTab(tab)}
                         className={`flex-1 py-2.5 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all whitespace-nowrap ${
                             activeTab === tab 
-                            ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-lg' 
+                            ? 'bg-zinc-900 dark:bg-zinc-100 dark:bg-zinc-800 text-white dark:text-zinc-900 shadow-lg' 
                             : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
                         }`}
                     >
@@ -262,14 +262,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                                     <Smartphone className="w-5 h-5 text-zinc-400" />
                                     <div>
                                         <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200">Wearable Integration</div>
-                                        <div className="text-[10px] text-zinc-500">Sync with Apple Health / Garmin</div>
+                                        <div className="text-[10px] text-zinc-500 dark:text-zinc-400">Sync with Apple Health / Garmin</div>
                                     </div>
                                 </div>
                                 <button 
                                     onClick={() => setIsWearableConnected(!isWearableConnected)}
                                     className={`w-12 h-6 rounded-full relative transition-colors ${isWearableConnected ? 'bg-teal-500' : 'bg-zinc-300 dark:bg-zinc-600'}`}
                                 >
-                                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isWearableConnected ? 'left-7' : 'left-1'}`}></div>
+                                    <div className={`absolute top-1 w-4 h-4 bg-white dark:bg-zinc-900 rounded-full transition-all ${isWearableConnected ? 'left-7' : 'left-1'}`}></div>
                                 </button>
                             </div>
                         </div>
@@ -299,8 +299,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                             <div>
                                 <label className="text-[10px] font-black uppercase text-zinc-400 mb-1.5 block px-1">Gender</label>
                                 <div className="flex bg-zinc-50 dark:bg-zinc-800 rounded-xl border border-zinc-100 dark:border-zinc-700 p-1">
-                                    <button onClick={() => setGender('male')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${gender === 'male' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-400'}`}>Male</button>
-                                    <button onClick={() => setGender('female')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${gender === 'female' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-400'}`}>Female</button>
+                                    <button onClick={() => setGender('male')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${gender === 'male' ? 'bg-white dark:bg-zinc-900 dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-400'}`}>Male</button>
+                                    <button onClick={() => setGender('female')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${gender === 'female' ? 'bg-white dark:bg-zinc-900 dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-400'}`}>Female</button>
                                 </div>
                             </div>
                             <div>
@@ -341,13 +341,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                                         className={`flex items-center gap-4 p-4 rounded-2xl border text-left transition-all ${
                                             archetypeId === arch.id 
                                             ? 'bg-teal-50 border-teal-200 dark:bg-teal-900/20 dark:border-teal-800' 
-                                            : 'bg-zinc-50 border-zinc-100 dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+                                            : 'bg-zinc-50 border-zinc-100 dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700'
                                         }`}
                                     >
                                         <div className="text-2xl">{arch.icon}</div>
                                         <div className="flex-1">
                                             <div className={`text-xs font-bold ${archetypeId === arch.id ? 'text-teal-700 dark:text-teal-400' : 'text-zinc-700 dark:text-zinc-300'}`}>{arch.title}</div>
-                                            <div className="text-[10px] text-zinc-500">{arch.desc}</div>
+                                            <div className="text-[10px] text-zinc-500 dark:text-zinc-400">{arch.desc}</div>
                                         </div>
                                         {archetypeId === arch.id && <div className="w-2 h-2 bg-teal-500 rounded-full"></div>}
                                     </button>
@@ -359,13 +359,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                             <div className="flex justify-between items-center mb-4">
                                 <div>
                                     <label className="text-[10px] font-black uppercase text-zinc-400 block">Manual Sugar Override</label>
-                                    <div className="text-[9px] text-zinc-500">Bypass auto-calculations</div>
+                                    <div className="text-[9px] text-zinc-500 dark:text-zinc-400">Bypass auto-calculations</div>
                                 </div>
                                 <button 
                                     onClick={() => setIsManualLimit(!isManualLimit)}
                                     className={`w-10 h-5 rounded-full relative transition-colors ${isManualLimit ? 'bg-rose-500' : 'bg-zinc-300 dark:bg-zinc-600'}`}
                                 >
-                                    <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${isManualLimit ? 'left-6' : 'left-1'}`}></div>
+                                    <div className={`absolute top-1 w-3 h-3 bg-white dark:bg-zinc-900 rounded-full transition-all ${isManualLimit ? 'left-6' : 'left-1'}`}></div>
                                 </button>
                             </div>
                             {isManualLimit ? (
@@ -408,11 +408,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                                         className={`p-4 rounded-2xl border text-left transition-all ${
                                             goalMode === g.id
                                             ? `bg-${g.color}-50 border-${g.color}-200 dark:bg-${g.color}-900/20 dark:border-${g.color}-800`
-                                            : 'bg-zinc-50 border-zinc-100 dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+                                            : 'bg-zinc-50 border-zinc-100 dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700'
                                         }`}
                                     >
                                         <div className="text-2xl mb-2">{g.icon}</div>
-                                        <div className={`text-[10px] font-black uppercase tracking-wider ${goalMode === g.id ? `text-${g.color}-600 dark:text-${g.color}-400` : 'text-zinc-500'}`}>{g.name}</div>
+                                        <div className={`text-[10px] font-black uppercase tracking-wider ${goalMode === g.id ? `text-${g.color}-600 dark:text-${g.color}-400` : 'text-zinc-500 dark:text-zinc-400'}`}>{g.name}</div>
                                         <div className="text-[9px] text-zinc-400 mt-1">{g.desc}</div>
                                     </button>
                                 ))}

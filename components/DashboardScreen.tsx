@@ -68,7 +68,7 @@ const DEFAULT_AGENT = {
   id: 'default_agent', name: 'System Initializing', role: 'Awaiting User Data', desc: 'No data available. Please log food, complete a workout, or generate a diet plan to activate an agent.', icon: <Activity className="w-4 h-4" />,
   tags: ['AWAITING DATA'], completion: 0, status: 'IDLE', nextAction: 'Log your first meal or workout', successProb: '0%',
   workoutName: 'No Active Workout', bodyHighlight: 'none', dietFocus: 'No Active Diet', targetBmi: 22.0,
-  classes: { bg: 'bg-white', border: 'border-zinc-200', text: 'text-zinc-900', roleBg: 'bg-zinc-100', roleText: 'text-zinc-600', descText: 'text-zinc-500', check: 'text-zinc-400', statusBg: 'bg-zinc-100', statusText: 'text-zinc-600', statusDot: 'bg-zinc-400' }
+  classes: { bg: 'bg-white dark:bg-zinc-900', border: 'border-zinc-200 dark:border-zinc-700', text: 'text-zinc-900 dark:text-zinc-100', roleBg: 'bg-zinc-100 dark:bg-zinc-800', roleText: 'text-zinc-600', descText: 'text-zinc-500 dark:text-zinc-400', check: 'text-zinc-400', statusBg: 'bg-zinc-100 dark:bg-zinc-800', statusText: 'text-zinc-600', statusDot: 'bg-zinc-400' }
 };
 
 const AGENTS = [
@@ -76,25 +76,25 @@ const AGENTS = [
     id: 'hypertrophy_bot', name: 'Hypertrophy Bot', role: 'Summer Shred Protocol', desc: 'Aggressive fat loss phase preserving lean muscle mass via metabolic modulation.', icon: <Zap className="w-4 h-4" />,
     tags: ['INSULIN SENSITIVITY', 'VISCERAL FAT'], completion: 65, status: 'ACTIVE', nextAction: 'Increase protein intake by 10g', successProb: '92%',
     workoutName: 'Chest Session', bodyHighlight: 'chest', dietFocus: 'High Protein', targetBmi: 22.5,
-    classes: { bg: 'bg-white', border: 'border-zinc-200', text: 'text-zinc-900', roleBg: 'bg-zinc-100', roleText: 'text-zinc-600', descText: 'text-zinc-500', check: 'text-emerald-500', statusBg: 'bg-emerald-50', statusText: 'text-emerald-600', statusDot: 'bg-emerald-500' }
+    classes: { bg: 'bg-white dark:bg-zinc-900', border: 'border-zinc-200 dark:border-zinc-700', text: 'text-zinc-900 dark:text-zinc-100', roleBg: 'bg-zinc-100 dark:bg-zinc-800', roleText: 'text-zinc-600', descText: 'text-zinc-500 dark:text-zinc-400', check: 'text-emerald-500', statusBg: 'bg-emerald-50', statusText: 'text-emerald-600', statusDot: 'bg-emerald-500' }
   },
   {
     id: 'bio_chemist_ai', name: 'Bio-Chemist AI', role: 'Gut Microbiome Reset', desc: 'Elimination diet sequence to identify inflammatory triggers and repair gut lining.', icon: <Activity className="w-4 h-4" />,
     tags: ['INFLAMMATION', 'DIGESTION'], completion: 30, status: 'WARNING', nextAction: 'Pending: Stool sample analysis', successProb: '45%',
     workoutName: 'Core & Mobility', bodyHighlight: 'core', dietFocus: 'Elimination Diet', targetBmi: 23.0,
-    classes: { bg: 'bg-white', border: 'border-zinc-200', text: 'text-zinc-900', roleBg: 'bg-zinc-100', roleText: 'text-zinc-600', descText: 'text-zinc-500', check: 'text-rose-500', statusBg: 'bg-rose-50', statusText: 'text-rose-600', statusDot: 'bg-rose-500' }
+    classes: { bg: 'bg-white dark:bg-zinc-900', border: 'border-zinc-200 dark:border-zinc-700', text: 'text-zinc-900 dark:text-zinc-100', roleBg: 'bg-zinc-100 dark:bg-zinc-800', roleText: 'text-zinc-600', descText: 'text-zinc-500 dark:text-zinc-400', check: 'text-rose-500', statusBg: 'bg-rose-50', statusText: 'text-rose-600', statusDot: 'bg-rose-500' }
   },
   {
     id: 'endurance_logic', name: 'Endurance Logic', role: 'Marathon Prep (Zone 2)', desc: 'Mitochondrial efficiency training and carbohydrate loading strategy.', icon: <Clock className="w-4 h-4" />,
     tags: ['VO2 MAX', 'RESTING HR'], completion: 100, status: 'COMPLETED', nextAction: 'Protocol complete. Maintenance mode.', successProb: '99%',
     workoutName: 'Long Run (Zone 2)', bodyHighlight: 'legs', dietFocus: 'Carb Loading', targetBmi: 21.0,
-    classes: { bg: 'bg-white', border: 'border-zinc-200', text: 'text-zinc-900', roleBg: 'bg-zinc-100', roleText: 'text-zinc-600', descText: 'text-zinc-500', check: 'text-blue-500', statusBg: 'bg-blue-50', statusText: 'text-blue-600', statusDot: 'bg-blue-500' }
+    classes: { bg: 'bg-white dark:bg-zinc-900', border: 'border-zinc-200 dark:border-zinc-700', text: 'text-zinc-900 dark:text-zinc-100', roleBg: 'bg-zinc-100 dark:bg-zinc-800', roleText: 'text-zinc-600', descText: 'text-zinc-500 dark:text-zinc-400', check: 'text-blue-500', statusBg: 'bg-blue-50', statusText: 'text-blue-600', statusDot: 'bg-blue-500' }
   },
   {
     id: 'neural_net', name: 'Neural Net', role: 'Cognitive Focus Stack', desc: 'Nootropic deployment and intermittent fasting schedule for peak clarity.', icon: <Brain className="w-4 h-4" />,
     tags: ['FOCUS', 'DEEP SLEEP'], completion: 12, status: 'ACTIVE', nextAction: 'Adjust caffeine timing window', successProb: '88%',
     workoutName: 'HIIT & Meditation', bodyHighlight: 'head', dietFocus: 'Intermittent Fasting', targetBmi: 24.0,
-    classes: { bg: 'bg-white', border: 'border-zinc-200', text: 'text-zinc-900', roleBg: 'bg-zinc-100', roleText: 'text-zinc-600', descText: 'text-zinc-500', check: 'text-emerald-500', statusBg: 'bg-emerald-50', statusText: 'text-emerald-600', statusDot: 'bg-emerald-500' }
+    classes: { bg: 'bg-white dark:bg-zinc-900', border: 'border-zinc-200 dark:border-zinc-700', text: 'text-zinc-900 dark:text-zinc-100', roleBg: 'bg-zinc-100 dark:bg-zinc-800', roleText: 'text-zinc-600', descText: 'text-zinc-500 dark:text-zinc-400', check: 'text-emerald-500', statusBg: 'bg-emerald-50', statusText: 'text-emerald-600', statusDot: 'bg-emerald-500' }
   },
 ];
 
@@ -273,14 +273,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     const level = userStats.level;
     if (level <= 5) {
       return {
-        card: "bg-white border-zinc-200",
-        iconBg: "bg-zinc-50 border-zinc-100",
+        card: "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 dark:border-zinc-700",
+        iconBg: "bg-zinc-50 border-zinc-100 dark:border-zinc-800",
         iconColor: "text-zinc-400",
         progressBar: "bg-zinc-900",
-        rankText: "text-zinc-900",
+        rankText: "text-zinc-900 dark:text-zinc-100",
         levelText: "text-zinc-400",
-        xpText: "text-zinc-500",
-        divider: "border-zinc-100",
+        xpText: "text-zinc-500 dark:text-zinc-400",
+        divider: "border-zinc-100 dark:border-zinc-800",
         pattern: "opacity-[0.03] grayscale"
       };
     } else if (level <= 15) {
@@ -289,7 +289,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         iconBg: "bg-blue-100/50 border-blue-200",
         iconColor: "text-blue-600",
         progressBar: "bg-blue-600",
-        rankText: "text-zinc-900",
+        rankText: "text-zinc-900 dark:text-zinc-100",
         levelText: "text-blue-600",
         xpText: "text-blue-600/70",
         divider: "border-blue-200/50",
@@ -301,7 +301,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         iconBg: "bg-emerald-100/50 border-emerald-200",
         iconColor: "text-emerald-600",
         progressBar: "bg-emerald-600",
-        rankText: "text-zinc-900",
+        rankText: "text-zinc-900 dark:text-zinc-100",
         levelText: "text-emerald-600",
         xpText: "text-emerald-600/70",
         divider: "border-emerald-200/50",
@@ -312,10 +312,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         card: "bg-gradient-to-br from-zinc-900 to-zinc-950 border-zinc-800 shadow-xl",
         iconBg: "bg-zinc-800 border-zinc-700",
         iconColor: "text-zinc-300",
-        progressBar: "bg-white",
+        progressBar: "bg-white dark:bg-zinc-900",
         rankText: "text-white",
         levelText: "text-zinc-400",
-        xpText: "text-zinc-500",
+        xpText: "text-zinc-500 dark:text-zinc-400",
         divider: "border-zinc-800",
         pattern: "opacity-[0.1] invert"
       };
@@ -1012,7 +1012,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const Icon = intelDisplay.icon;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#fafafa] text-zinc-900 pb-32 pt-8 md:pt-12 font-sans px-4">
+    <div className="min-h-screen bg-white dark:bg-zinc-900 dark:bg-[#fafafa] text-zinc-900 dark:text-zinc-100 pb-32 pt-8 md:pt-12 font-sans px-4">
 
       {/* --- HIGHLIGHT SLIDER (Restored & Optimized) --- */}
       <div className="flex gap-4 overflow-x-auto snap-x scrollbar-hide mb-8 -mx-4 px-4 pb-4">
@@ -1034,17 +1034,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <div className="absolute bottom-4 left-4 right-4">
                   <h3 className="text-white font-bold text-lg mb-2 leading-tight">{directive?.title || 'Optimize Performance'}</h3>
                   <div className="flex gap-2">
-                    <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+                    <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                       <Activity className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
                       <span className="text-[9px] text-zinc-300 uppercase">{directive?.actions?.[0]?.label || 'Hydrate'}</span>
                       <span className="text-[10px] font-black text-white">{directive?.actions?.[0]?.value || '+500ml'}</span>
                     </div>
-                    <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+                    <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                       <Brain className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
                       <span className="text-[9px] text-zinc-300 uppercase">{directive?.actions?.[1]?.label || 'Focus'}</span>
                       <span className="text-[10px] font-black text-white">{directive?.actions?.[1]?.value || 'Deep Work'}</span>
                     </div>
-                    <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+                    <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                       <Clock className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
                       <span className="text-[9px] text-zinc-300 uppercase">{directive?.actions?.[2]?.label || 'Sleep'}</span>
                       <span className="text-[10px] font-black text-white">{directive?.actions?.[2]?.value || 'By 23:00'}</span>
@@ -1072,17 +1072,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="absolute bottom-4 left-4 right-4">
             <h3 className="text-white font-bold text-lg mb-2 leading-tight">Microplastics in Water</h3>
             <div className="flex gap-2">
-              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <AlertTriangle className="w-3.5 h-3.5 text-rose-400 mb-0.5" />
                 <span className="text-[9px] text-blue-200 uppercase">Risk</span>
                 <span className="text-[10px] font-bold text-white">High</span>
               </div>
-              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <FlaskConical className="w-3.5 h-3.5 text-blue-400 mb-0.5" />
                 <span className="text-[9px] text-blue-200 uppercase">Focus</span>
                 <span className="text-[10px] font-bold text-white">Toxins</span>
               </div>
-              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Clock className="w-3.5 h-3.5 text-zinc-300 mb-0.5" />
                 <span className="text-[9px] text-blue-200 uppercase">Time</span>
                 <span className="text-[10px] font-bold text-white">2h ago</span>
@@ -1105,17 +1105,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="absolute bottom-4 left-4 right-4">
             <h3 className="text-white font-bold text-lg mb-2 leading-tight">Metabolic Sync Training</h3>
             <div className="flex gap-2">
-              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Dumbbell className="w-3.5 h-3.5 text-purple-400 mb-0.5" />
                 <span className="text-[9px] text-purple-200 uppercase">Type</span>
                 <span className="text-[10px] font-bold text-white">HIIT</span>
               </div>
-              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Flame className="w-3.5 h-3.5 text-orange-400 mb-0.5" />
                 <span className="text-[9px] text-purple-200 uppercase">Burn</span>
                 <span className="text-[10px] font-bold text-white">Max</span>
               </div>
-              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Zap className="w-3.5 h-3.5 text-yellow-400 mb-0.5" />
                 <span className="text-[9px] text-purple-200 uppercase">Energy</span>
                 <span className="text-[10px] font-bold text-white">High</span>
@@ -1144,7 +1144,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   {/* Timer Box */}
                   <div className={`border rounded-2xl p-3 flex flex-col items-center justify-center w-20 shrink-0 backdrop-blur-sm ${alert.type === 'sugar' ? 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900/50' : 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-900/50'}`}>
                     <span className={`text-[9px] font-black uppercase tracking-widest mb-1 ${alert.type === 'sugar' ? 'text-rose-500' : 'text-orange-500'}`}>T-Minus</span>
-                    <span className="text-xl font-mono font-black text-zinc-900 dark:text-white tracking-tighter">{timerDisplay}</span>
+                    <span className="text-xl font-mono font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter">{timerDisplay}</span>
                   </div>
 
                   <div className="flex-1">
@@ -1180,7 +1180,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       {/* --- COMPACT BLINDSPOT INTEL CARD (SLEEK REDESIGN) --- */}
       <div
         onClick={() => setIsIntelExpanded(!isIntelExpanded)}
-        className="w-full bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-zinc-100 relative overflow-hidden mb-8 transition-all duration-300 cursor-pointer hover:shadow-md active:scale-[0.99]"
+        className="w-full bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-zinc-100 dark:border-zinc-800 relative overflow-hidden mb-8 transition-all duration-300 cursor-pointer hover:shadow-md active:scale-[0.99]"
       >
         <div className="p-5">
           <div className="flex items-start gap-4">
@@ -1195,10 +1195,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 text-${intelDisplay.color}-600`}>
                     {intelDisplay.color === 'emerald' ? 'Metabolik Optimal' : 'Blindspot Detected'}
                   </div>
-                  <h3 className="text-zinc-900 text-base font-bold leading-tight">{intelDisplay.title}</h3>
+                  <h3 className="text-zinc-900 dark:text-zinc-100 text-base font-bold leading-tight">{intelDisplay.title}</h3>
                   {/* Deskripsi selalu tampil (tidak perlu expand) jika dari backend */}
                   {backendBlindspot && (
-                    <p className="text-zinc-500 text-sm leading-relaxed mt-2">
+                    <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed mt-2">
                       {intelDisplay.desc}
                     </p>
                   )}
@@ -1212,7 +1212,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         e.stopPropagation();
                         generateIntel();
                       }}
-                      className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors"
+                      className="p-1.5 rounded-full hover:bg-zinc-100 dark:bg-zinc-800 text-zinc-400 hover:text-zinc-600 transition-colors"
                     >
                       <RotateCw className="w-4 h-4" />
                     </button>
@@ -1227,7 +1227,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               {/* Expand fallback — hanya saat pakai data lokal */}
               {!backendBlindspot && isIntelExpanded && (
                 <div className="mt-3 pt-3 border-t border-zinc-50 animate-in slide-in-from-top-1">
-                  <p className="text-zinc-500 text-sm leading-relaxed">
+                  <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
                     {intelDisplay.desc}
                   </p>
                 </div>
@@ -1240,10 +1240,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="text-[10px] font-bold text-zinc-500 tracking-wider uppercase mb-0.5">
+          <h2 className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 tracking-wider uppercase mb-0.5">
             {selectedDate.toDateString() === new Date().toDateString() ? 'Today, ' : ''}{selectedDate.toLocaleDateString('en-US', { weekday: 'long' })}
           </h2>
-          <h1 className="text-xl md:text-3xl font-black tracking-tight text-zinc-900">
+          <h1 className="text-xl md:text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">
             {selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </h1>
         </div>
@@ -1277,7 +1277,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </h3>
                   <span className={`text-[9px] font-medium ${levelStyles.xpText} transition-colors duration-500`}>{userStats.currentXp} / {userStats.nextLevelXp} XP</span>
                 </div>
-                <div className="h-1 bg-zinc-100/10 bg-opacity-10 dark:bg-zinc-800/50 rounded-full overflow-hidden">
+                <div className="h-1 bg-zinc-100 dark:bg-zinc-800/10 bg-opacity-10 dark:bg-zinc-800/50 rounded-full overflow-hidden">
                   <div
                     className={`h-full ${levelStyles.progressBar} rounded-full transition-all duration-1000 ease-out`}
                     style={{ width: `${Math.min(100, (userStats.currentXp / userStats.nextLevelXp) * 100)}%` }}
@@ -1343,7 +1343,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     ? 'border-zinc-900 bg-zinc-900 text-white shadow-md scale-105 z-10'
                     : day.isCheckedIn
                       ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
-                      : 'bg-zinc-50 border-zinc-100 text-zinc-400'
+                      : 'bg-zinc-50 border-zinc-100 dark:border-zinc-800 text-zinc-400'
                     }`}
                 >
                   <span className={`text-[6px] font-black uppercase mb-0.5 ${isToday ? 'text-zinc-400' : day.isCheckedIn ? 'text-emerald-500/70' : 'text-zinc-300'}`}>
@@ -1362,14 +1362,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
       {/* Agent Selection Modal */}
       {showAgentModal && (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-white/95 backdrop-blur-md p-4 sm:p-8 overflow-y-auto">
+        <div className="fixed inset-0 z-[100] flex flex-col bg-white dark:bg-zinc-900/95 backdrop-blur-md p-4 sm:p-8 overflow-y-auto">
           <div className="max-w-[2000px] mx-auto w-full px-4 animate-in fade-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="text-2xl font-black text-zinc-900">Initialize Protocol</h3>
-                <p className="text-sm font-medium text-zinc-500 mt-1">Launch a new targeted health intervention managed by Moriesly AI.</p>
+                <h3 className="text-2xl font-black text-zinc-900 dark:text-zinc-100">Initialize Protocol</h3>
+                <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-1">Launch a new targeted health intervention managed by Moriesly AI.</p>
               </div>
-              <button onClick={() => setShowAgentModal(false)} className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-900 transition-colors border border-zinc-200">
+              <button onClick={() => setShowAgentModal(false)} className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:text-zinc-100 transition-colors border border-zinc-200 dark:border-zinc-700 dark:border-zinc-700">
                 ✕
               </button>
             </div>
@@ -1383,8 +1383,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 const displayStatus = hasActivity ? agent.status : 'PENDING';
                 const displayNextAction = hasActivity ? agent.nextAction : 'Awaiting initial data input';
                 const displaySuccessProb = hasActivity ? agent.successProb : '--';
-                const statusBgClass = hasActivity ? agent.classes.statusBg : 'bg-zinc-100';
-                const statusTextClass = hasActivity ? agent.classes.statusText : 'text-zinc-500';
+                const statusBgClass = hasActivity ? agent.classes.statusBg : 'bg-zinc-100 dark:bg-zinc-800';
+                const statusTextClass = hasActivity ? agent.classes.statusText : 'text-zinc-500 dark:text-zinc-400';
                 const statusDotClass = hasActivity ? agent.classes.statusDot : 'bg-zinc-400';
 
                 return (
@@ -1397,8 +1397,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       setShowAgentModal(false);
                     }}
                     className={`w-full text-left rounded-3xl border transition-all flex flex-col overflow-hidden relative group ${isSelected
-                      ? `border-brand-500 bg-white shadow-[0_0_30px_rgba(51,173,174,0.15)]`
-                      : 'border-zinc-200 bg-white hover:border-zinc-300'
+                      ? `border-brand-500 bg-white dark:bg-zinc-900 shadow-[0_0_30px_rgba(51,173,174,0.15)]`
+                      : 'border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:border-zinc-300'
                       }`}
                   >
                     {isSelected && (
@@ -1408,26 +1408,26 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <div className="p-6 flex-1">
                       <div className="flex items-start justify-between mb-6">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${isSelected ? 'bg-brand-50 border-brand-200 text-brand-600' : 'bg-zinc-50 border-zinc-200 text-zinc-400'}`}>
+                          <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${isSelected ? 'bg-brand-50 border-brand-200 text-brand-600' : 'bg-zinc-50 border-zinc-200 dark:border-zinc-700 text-zinc-400'}`}>
                             {agent.icon}
                           </div>
                           <div>
                             <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Assigned Agent</p>
-                            <p className="text-sm font-bold text-zinc-900">{agent.name}</p>
+                            <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{agent.name}</p>
                           </div>
                         </div>
-                        <div className={`px-3 py-1 rounded-full flex items-center gap-1.5 border border-zinc-200/50 ${statusBgClass}`}>
+                        <div className={`px-3 py-1 rounded-full flex items-center gap-1.5 border border-zinc-200 dark:border-zinc-700/50 ${statusBgClass}`}>
                           <div className={`w-1.5 h-1.5 rounded-full ${statusDotClass}`}></div>
                           <span className={`text-[9px] font-bold uppercase tracking-wider ${statusTextClass}`}>{displayStatus}</span>
                         </div>
                       </div>
 
-                      <h4 className="text-xl font-bold text-zinc-900 mb-3">{agent.role}</h4>
-                      <p className="text-sm text-zinc-500 leading-relaxed mb-6">{agent.desc}</p>
+                      <h4 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-3">{agent.role}</h4>
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-6">{agent.desc}</p>
 
                       <div className="flex flex-wrap gap-2 mb-8">
                         {agent.tags.map(tag => (
-                          <span key={tag} className="px-2.5 py-1 rounded-md bg-zinc-50 border border-zinc-200 text-[9px] font-bold text-zinc-500 uppercase tracking-wider">
+                          <span key={tag} className="px-2.5 py-1 rounded-md bg-zinc-50 border border-zinc-200 dark:border-zinc-700 text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                             {tag}
                           </span>
                         ))}
@@ -1436,25 +1436,25 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
                           <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Completion</span>
-                          <span className="text-[10px] font-bold text-zinc-500">{displayCompletion}%</span>
+                          <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">{displayCompletion}%</span>
                         </div>
-                        <div className="h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                           <div className={`h-full ${isSelected ? 'bg-brand-500' : 'bg-zinc-300'}`} style={{ width: `${displayCompletion}%` }}></div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-4 bg-zinc-50 border-t border-zinc-100">
+                    <div className="p-4 bg-zinc-50 border-t border-zinc-100 dark:border-zinc-800">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-1.5">
                           <Target className="w-3 h-3 text-zinc-400" />
                           <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Next AI Action</span>
                         </div>
-                        <span className={`text-[9px] font-bold uppercase tracking-wider ${isSelected ? 'text-brand-600' : 'text-zinc-500'}`}>{displaySuccessProb}</span>
+                        <span className={`text-[9px] font-bold uppercase tracking-wider ${isSelected ? 'text-brand-600' : 'text-zinc-500 dark:text-zinc-400'}`}>{displaySuccessProb}</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <ChevronRight className={`w-3.5 h-3.5 mt-0.5 ${isSelected ? 'text-brand-500' : 'text-zinc-400'}`} />
-                        <p className="text-xs font-medium text-zinc-700">{displayNextAction}</p>
+                        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">{displayNextAction}</p>
                       </div>
                     </div>
                   </button>
@@ -1467,105 +1467,105 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
       {/* Diet Details Modal */}
       {showDietDetails && (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-white">
-          <div className="flex items-center justify-between p-4 border-b border-zinc-100">
-            <h3 className="text-lg font-black text-zinc-900">Sugar & Nutrition Details</h3>
-            <button onClick={() => setShowDietDetails(false)} className="text-zinc-400 hover:text-zinc-900 p-2">✕</button>
+        <div className="fixed inset-0 z-[100] flex flex-col bg-white dark:bg-zinc-900">
+          <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800">
+            <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100">Sugar & Nutrition Details</h3>
+            <button onClick={() => setShowDietDetails(false)} className="text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 p-2">✕</button>
           </div>
 
           <div className="flex-1 overflow-y-auto p-6">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
               {/* Sugar Metric */}
-              <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Activity className="w-4 h-4 text-rose-500" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Sugar</span>
                 </div>
-                <p className={`text-3xl font-black ${filteredConsumed > ledger.limit ? 'text-rose-500' : 'text-zinc-900'}`}>
-                  {Math.round(filteredConsumed)}<span className="text-sm text-zinc-500 ml-0.5">g</span>
+                <p className={`text-3xl font-black ${filteredConsumed > ledger.limit ? 'text-rose-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
+                  {Math.round(filteredConsumed)}<span className="text-sm text-zinc-500 dark:text-zinc-400 ml-0.5">g</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 font-bold">Limit: {ledger.limit}g</p>
               </div>
 
               {/* Calories Metric */}
-              <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Flame className="w-4 h-4 text-orange-500" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Calories</span>
                 </div>
-                <p className="text-3xl font-black text-zinc-900">
-                  {Math.round(dailyCalories)}<span className="text-sm text-zinc-500 ml-0.5">kcal</span>
+                <p className="text-3xl font-black text-zinc-900 dark:text-zinc-100">
+                  {Math.round(dailyCalories)}<span className="text-sm text-zinc-500 dark:text-zinc-400 ml-0.5">kcal</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 font-bold">Target: 2100</p>
               </div>
 
               {/* Protein Metric */}
-              <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Zap className="w-4 h-4 text-blue-500" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Protein</span>
                 </div>
-                <p className="text-3xl font-black text-zinc-900">
-                  {Math.round(dailyProtein)}<span className="text-sm text-zinc-500 ml-0.5">g</span>
+                <p className="text-3xl font-black text-zinc-900 dark:text-zinc-100">
+                  {Math.round(dailyProtein)}<span className="text-sm text-zinc-500 dark:text-zinc-400 ml-0.5">g</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 font-bold">Muscle Fuel</p>
               </div>
 
               {/* Hydration Metric */}
-              <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Droplet className="w-4 h-4 text-cyan-500" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Hydration</span>
                 </div>
-                <p className="text-3xl font-black text-zinc-900">
-                  {hydrationPercent}<span className="text-sm text-zinc-500 ml-0.5">%</span>
+                <p className="text-3xl font-black text-zinc-900 dark:text-zinc-100">
+                  {hydrationPercent}<span className="text-sm text-zinc-500 dark:text-zinc-400 ml-0.5">%</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 font-bold">{dailyDrinksCount}/4 Drinks</p>
               </div>
 
               {/* Fiber Metric */}
-              <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Wheat className="w-4 h-4 text-emerald-500" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Fiber</span>
                 </div>
-                <p className="text-3xl font-black text-zinc-900">
-                  {Math.round(dailyFiber)}<span className="text-sm text-zinc-500 ml-0.5">g</span>
+                <p className="text-3xl font-black text-zinc-900 dark:text-zinc-100">
+                  {Math.round(dailyFiber)}<span className="text-sm text-zinc-500 dark:text-zinc-400 ml-0.5">g</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 font-bold">Gut Health</p>
               </div>
 
               {/* Metabolic Score Metric */}
-              <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100 text-center">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Activity className="w-4 h-4 text-indigo-500" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-wider">Score</span>
                 </div>
-                <p className="text-3xl font-black text-zinc-900">
-                  {metabolicScore.toFixed(0)}<span className="text-sm text-zinc-500 ml-0.5">/100</span>
+                <p className="text-3xl font-black text-zinc-900 dark:text-zinc-100">
+                  {metabolicScore.toFixed(0)}<span className="text-sm text-zinc-500 dark:text-zinc-400 ml-0.5">/100</span>
                 </p>
                 <p className="text-[10px] text-zinc-400 font-bold">Health Index</p>
               </div>
             </div>
 
             {/* Nutrient Breakdown */}
-            <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100 mb-8">
+            <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <FlaskConical className="w-4 h-4 text-brand-600" />
-                <h4 className="text-sm font-black text-zinc-900 uppercase tracking-wider">Specific Nutrient Breakdown</h4>
+                <h4 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Specific Nutrient Breakdown</h4>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {vitamins.filter(v => v.percent > 0).length > 0 ? (
                   vitamins.filter(v => v.percent > 0).map((vit, i) => (
-                    <div key={i} className="bg-white p-3 rounded-2xl border border-zinc-100 shadow-sm">
+                    <div key={i} className="bg-white dark:bg-zinc-900 p-3 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-lg">{vit.icon}</span>
                         <span className="text-[10px] font-black text-brand-600">{vit.percent}%</span>
                       </div>
-                      <div className="text-[11px] font-black text-zinc-900 truncate">{vit.name}</div>
-                      <div className="text-[9px] text-zinc-500 font-bold">{vit.amount}</div>
-                      <div className="w-full h-1 bg-zinc-100 rounded-full mt-2">
+                      <div className="text-[11px] font-black text-zinc-900 dark:text-zinc-100 truncate">{vit.name}</div>
+                      <div className="text-[9px] text-zinc-500 dark:text-zinc-400 font-bold">{vit.amount}</div>
+                      <div className="w-full h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full mt-2">
                         <div className={`h-full rounded-full ${vit.color}`} style={{ width: `${Math.min(vit.percent, 100)}%` }}></div>
                       </div>
                     </div>
@@ -1655,8 +1655,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 return Object.entries(groups).map(([name, data], idx) => (
                   <div key={idx} className="flex items-center gap-3 p-3 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: data.color }}></div>
-                    <span className="text-[11px] font-black text-zinc-900 dark:text-white truncate flex-1">{name}</span>
-                    <span className="text-[10px] text-zinc-500 font-bold">{Math.round((data.value / total) * 100)}%</span>
+                    <span className="text-[11px] font-black text-zinc-900 dark:text-zinc-100 dark:text-white truncate flex-1">{name}</span>
+                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-bold">{Math.round((data.value / total) * 100)}%</span>
                   </div>
                 ));
               })()}
@@ -1682,13 +1682,13 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       )}
 
       {/* Goals Tracking Card (Super Sleek & Compact) */}
-      <div className="bg-white rounded-3xl p-4 mb-8 shadow-sm border border-zinc-100">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 mb-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
         <div className="flex flex-col mb-4 gap-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Goals Tracking</span>
             <button
               onClick={() => setShowAgentModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all border border-zinc-100"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-50 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:bg-zinc-800 transition-all border border-zinc-100 dark:border-zinc-800"
             >
               <Settings2 className="w-3.5 h-3.5 shrink-0" />
               <span className="text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">Change Agent</span>
@@ -1696,7 +1696,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-base font-black text-zinc-900 flex items-center gap-1.5">
+            <span className="text-base font-black text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
               <span className="shrink-0">{currentAgent.icon}</span>
               <span className="truncate">{currentAgent.name}</span>
             </span>
@@ -1709,75 +1709,75 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         <div className="space-y-4">
           {/* Header Row - Compact Horizontal Scroll */}
           <div className="flex overflow-x-auto gap-2 pb-2 -mx-2 px-2 [&::-webkit-scrollbar]:hidden snap-x">
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
               <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
                 <User className="w-4 h-4" />
               </div>
               <div className="flex flex-col justify-center">
                 <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider leading-none mb-1">Gender</p>
-                <p className="text-sm font-black text-zinc-900 capitalize leading-none">{userStats.gender}</p>
+                <p className="text-sm font-black text-zinc-900 dark:text-zinc-100 capitalize leading-none">{userStats.gender}</p>
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
               <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
                 <Activity className="w-4 h-4" />
               </div>
               <div className="flex flex-col justify-center">
                 <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider leading-none mb-1">Bio Age</p>
-                <p className="text-sm font-black text-zinc-900 leading-none">{dashboardData?.bioAge ?? userStats.age} <span className="text-[10px] text-zinc-500 font-medium">yrs</span></p>
+                <p className="text-sm font-black text-zinc-900 dark:text-zinc-100 leading-none">{dashboardData?.bioAge ?? userStats.age} <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">yrs</span></p>
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
               <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                 <Calendar className="w-4 h-4" />
               </div>
               <div className="flex flex-col justify-center">
                 <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider leading-none mb-1">Age</p>
-                <p className="text-sm font-black text-zinc-900 leading-none">{userStats.age} <span className="text-[10px] text-zinc-500 font-medium">yrs</span></p>
+                <p className="text-sm font-black text-zinc-900 dark:text-zinc-100 leading-none">{userStats.age} <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">yrs</span></p>
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
               <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
                 <Ruler className="w-4 h-4" />
               </div>
               <div className="flex flex-col justify-center">
                 <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider leading-none mb-1">Height</p>
-                <p className="text-sm font-black text-zinc-900 leading-none">{userStats.height} <span className="text-[10px] text-zinc-500 font-medium">cm</span></p>
+                <p className="text-sm font-black text-zinc-900 dark:text-zinc-100 leading-none">{userStats.height} <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">cm</span></p>
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                 <Scale className="w-4 h-4" />
               </div>
               <div className="flex flex-col justify-center">
                 <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider leading-none mb-1">Weight</p>
-                <p className="text-sm font-black text-zinc-900 leading-none">{userStats.weight} <span className="text-[10px] text-zinc-500 font-medium">kg</span></p>
+                <p className="text-sm font-black text-zinc-900 dark:text-zinc-100 leading-none">{userStats.weight} <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">kg</span></p>
               </div>
             </div>
           </div>
 
           {/* Weight Goal Progress — dari dashboardData.goals */}
           {dashboardData?.goals && (
-            <div className="bg-zinc-50 rounded-2xl p-3 border border-zinc-100">
+            <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-3 border border-zinc-100 dark:border-zinc-800">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1">
                   <Target className="w-3 h-3" /> Weight Goal
                 </span>
-                <span className="text-[9px] font-bold text-zinc-500">
+                <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400">
                   Target: {new Date(dashboardData.goals.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </span>
               </div>
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex flex-col">
                   <span className="text-[8px] font-bold text-zinc-400 uppercase">Sekarang</span>
-                  <span className="text-base font-black text-zinc-900">{dashboardData.goals.currentWeight} <span className="text-[10px] text-zinc-400 font-medium">kg</span></span>
+                  <span className="text-base font-black text-zinc-900 dark:text-zinc-100">{dashboardData.goals.currentWeight} <span className="text-[10px] text-zinc-400 font-medium">kg</span></span>
                 </div>
                 <div className="flex-1 mx-3">
-                  <div className="h-2 bg-zinc-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                     {(() => {
                       const start = dashboardData.goals.currentWeight;
                       const target = dashboardData.goals.targetWeight;
@@ -1806,7 +1806,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="grid grid-cols-2 gap-3">
             {/* Daily Calories Card */}
             <div
-              className="bg-white rounded-2xl p-3 sm:p-4 border border-zinc-100 shadow-sm cursor-pointer hover:border-zinc-200 transition-colors flex flex-col h-full"
+              className="bg-white dark:bg-zinc-900 rounded-2xl p-3 sm:p-4 border border-zinc-100 dark:border-zinc-800 shadow-sm cursor-pointer hover:border-zinc-200 dark:border-zinc-700 transition-colors flex flex-col h-full"
               onClick={() => setShowDietDetails(true)}
             >
               <div className="flex items-center justify-between mb-2">
@@ -1819,14 +1819,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex flex-col sm:flex-row sm:items-baseline gap-0 sm:gap-1">
-                  <p className={`text-2xl sm:text-3xl font-black leading-none ${dailyCalories > 2100 ? 'text-rose-500' : 'text-zinc-900'}`}>
-                    {Math.round(dailyCalories)}<span className="text-xs sm:text-lg text-zinc-500 font-bold ml-0.5">kcal</span>
+                  <p className={`text-2xl sm:text-3xl font-black leading-none ${dailyCalories > 2100 ? 'text-rose-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
+                    {Math.round(dailyCalories)}<span className="text-xs sm:text-lg text-zinc-500 dark:text-zinc-400 font-bold ml-0.5">kcal</span>
                   </p>
                   <p className="text-[10px] sm:text-xs font-bold text-zinc-400 mt-1 sm:mt-0">/ 2100 kcal</p>
                 </div>
                 {/* Calories Progress Visualization */}
                 <div className="relative w-full h-6 sm:h-8 mt-1">
-                  <div className="absolute inset-0 bg-zinc-100 rounded-lg overflow-hidden">
+                  <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
                     <div
                       className={`h-full rounded-lg transition-all duration-500 ${dailyCalories > 2100 ? 'bg-rose-500 animate-pulse' : 'bg-gradient-to-r from-amber-400 to-orange-500'}`}
                       style={{ width: `${Math.min(100, (dailyCalories / 2100) * 100)}%` }}
@@ -1837,32 +1837,32 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
               {/* Intake Nutrition Score & Macros */}
               <div className="mt-3 flex gap-2">
-                <div className="w-[35%] flex flex-col justify-center items-center bg-zinc-50 rounded-xl p-2 border border-zinc-100">
+                <div className="w-[35%] flex flex-col justify-center items-center bg-zinc-50 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
                   <div className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full flex items-center justify-center mb-1 ${energyScore >= 80 ? 'bg-emerald-100 text-emerald-600' : energyScore >= 50 ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600'}`}>
                     <Activity className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
-                  <span className="text-[7px] sm:text-[8px] font-bold text-zinc-500 uppercase tracking-wider text-center leading-tight mb-0.5">Intake<br />Score</span>
+                  <span className="text-[7px] sm:text-[8px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-center leading-tight mb-0.5">Intake<br />Score</span>
                   <span className={`text-sm sm:text-lg font-black leading-none ${energyScore >= 80 ? 'text-emerald-600' : energyScore >= 50 ? 'text-amber-600' : 'text-rose-600'}`}>
                     {energyScore}%
                   </span>
                 </div>
 
-                <div className="w-[65%] flex flex-col justify-center gap-1.5 bg-zinc-50 rounded-xl p-2 sm:p-2.5 border border-zinc-100">
+                <div className="w-[65%] flex flex-col justify-center gap-1.5 bg-zinc-50 rounded-xl p-2 sm:p-2.5 border border-zinc-100 dark:border-zinc-800">
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[7px] sm:text-[8px] font-bold text-zinc-400 uppercase">Trans Fat</span>
-                      <span className="text-[8px] sm:text-[9px] font-black text-zinc-700">{dailyTransFat.toFixed(1)}g</span>
+                      <span className="text-[8px] sm:text-[9px] font-black text-zinc-700 dark:text-zinc-300">{dailyTransFat.toFixed(1)}g</span>
                     </div>
-                    <div className="w-full h-1.5 bg-zinc-200 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                       <div className={`h-full rounded-full ${dailyTransFat > 2 ? 'bg-rose-500' : 'bg-amber-500'}`} style={{ width: `${Math.min(100, (dailyTransFat / 2) * 100)}%` }}></div>
                     </div>
                   </div>
                   <div className="mt-0.5">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[7px] sm:text-[8px] font-bold text-zinc-400 uppercase">Fiber</span>
-                      <span className="text-[8px] sm:text-[9px] font-black text-zinc-700">{Math.round(dailyFiber)}g</span>
+                      <span className="text-[8px] sm:text-[9px] font-black text-zinc-700 dark:text-zinc-300">{Math.round(dailyFiber)}g</span>
                     </div>
-                    <div className="w-full h-1.5 bg-zinc-200 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${Math.min(100, (dailyFiber / 30) * 100)}%` }}></div>
                     </div>
                   </div>
@@ -1870,23 +1870,23 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
 
               {/* Agent Goals Tracking */}
-              <div className="mt-auto pt-3 border-t border-zinc-100 flex flex-col gap-2">
+              <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
                 <div>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
-                    <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-zinc-500 uppercase">
+                    <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">
                       <Target className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
                       <span className="truncate">{currentAgent.name}</span>
                     </span>
-                    <span className={`text-[8px] sm:text-[9px] font-bold ${currentAgent.status === 'ACTIVE' ? 'text-indigo-500' : 'text-zinc-500'}`}>
+                    <span className={`text-[8px] sm:text-[9px] font-bold ${currentAgent.status === 'ACTIVE' ? 'text-indigo-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
                       {currentAgent.status === 'ACTIVE' ? 'Active' : currentAgent.status}
                     </span>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-medium text-zinc-500">
+                    <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-medium text-zinc-500 dark:text-zinc-400">
                       <span className="truncate pr-2">{currentAgent.nextAction}</span>
                       <span className="font-bold text-zinc-700 shrink-0">{currentAgent.completion}%</span>
                     </div>
-                    <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-indigo-500 rounded-full transition-all duration-500"
                         style={{ width: `${currentAgent.completion}%` }}
@@ -1898,17 +1898,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
 
             {/* Training Card */}
-            <div className="bg-white rounded-2xl p-3 border border-zinc-100 flex flex-col gap-2 cursor-pointer hover:shadow-lg transition-shadow h-full" onClick={() => setShowTrainingModal(true)}>
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl p-3 border border-zinc-100 dark:border-zinc-800 flex flex-col gap-2 cursor-pointer hover:shadow-lg transition-shadow h-full" onClick={() => setShowTrainingModal(true)}>
               <div className="flex items-center gap-2.5">
                 <Dumbbell className="w-6 h-6 text-indigo-500" />
                 <div className="flex flex-col">
-                  <h3 className="text-xs font-bold text-zinc-900">{currentAgent.workoutName}</h3>
-                  <p className="text-[9px] font-medium text-zinc-500 leading-none">Tap to view details</p>
+                  <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">{currentAgent.workoutName}</h3>
+                  <p className="text-[9px] font-medium text-zinc-500 dark:text-zinc-400 leading-none">Tap to view details</p>
                 </div>
               </div>
 
               {/* Simplified Body Diagram Placeholder */}
-              <div className="w-full flex-1 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg flex items-center justify-center border border-zinc-100 dark:border-white/5 relative overflow-hidden min-h-[120px]">
+              <div className="w-full flex-1 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg flex items-center justify-center border border-zinc-100 dark:border-zinc-800 dark:border-white/5 relative overflow-hidden min-h-[120px]">
                 <div className="w-full h-full drop-shadow-sm flex justify-center">
                   <AnatomySVG highlight={currentAgent.bodyHighlight} />
                 </div>
@@ -1918,34 +1918,34 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             {/* Training Modal */}
             {showTrainingModal && (
               <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setShowTrainingModal(false)}>
-                <div className="bg-white rounded-t-[2rem] sm:rounded-[2rem] w-full max-w-lg shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
+                <div className="bg-white dark:bg-zinc-900 rounded-t-[2rem] sm:rounded-[2rem] w-full max-w-lg shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
                   <div className="absolute top-0 left-0 w-full h-1.5 bg-blue-500 shrink-0"></div>
 
-                  <div className="flex justify-between items-start p-5 sm:p-6 pb-3 shrink-0 border-b border-zinc-100">
+                  <div className="flex justify-between items-start p-5 sm:p-6 pb-3 shrink-0 border-b border-zinc-100 dark:border-zinc-800">
                     <div>
                       <div className="flex items-center gap-2 mb-1.5">
                         <div className="bg-blue-50 text-blue-600 p-2 rounded-xl shadow-sm">
                           {currentAgent.icon}
                         </div>
-                        <h2 className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight">{currentAgent.workoutName}</h2>
+                        <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">{currentAgent.workoutName}</h2>
                       </div>
-                      <p className="text-xs sm:text-sm font-medium text-zinc-500 flex items-center gap-1.5">
+                      <p className="text-xs sm:text-sm font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         Active Protocol Analysis
                       </p>
                     </div>
-                    <button onClick={() => setShowTrainingModal(false)} className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 hover:text-zinc-900 transition-colors shrink-0">
+                    <button onClick={() => setShowTrainingModal(false)} className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:text-zinc-100 transition-colors shrink-0">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
 
                   <div className="flex-1 flex flex-col gap-6 p-5 sm:p-6 overflow-y-auto scrollbar-hide bg-zinc-50/30">
                     {/* Human Body SVG & Highlight */}
-                    <div className="bg-blue-50/30 rounded-3xl p-6 sm:p-8 border border-zinc-100 shadow-sm flex flex-col relative overflow-hidden min-h-[320px] sm:min-h-[380px] shrink-0">
+                    <div className="bg-blue-50/30 rounded-3xl p-6 sm:p-8 border border-zinc-100 dark:border-zinc-800 shadow-sm flex flex-col relative overflow-hidden min-h-[320px] sm:min-h-[380px] shrink-0">
 
                       {/* Top Label */}
                       <div className="flex justify-end w-full z-20 mb-2">
-                        <div className="bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-zinc-200 shadow-sm flex flex-col items-end">
+                        <div className="bg-white dark:bg-zinc-900/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-sm flex flex-col items-end">
                           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Target Area</p>
                           <p className="text-sm font-black text-blue-600 capitalize flex items-center gap-1.5">
                             <Target className="w-3.5 h-3.5" />
@@ -1960,12 +1960,12 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
                       {/* Bottom Label */}
                       <div className="flex justify-start w-full z-20 mt-2">
-                        <div className="bg-white/90 backdrop-blur-md px-3 py-2 rounded-xl border border-zinc-200 shadow-sm flex items-center gap-2">
+                        <div className="bg-white dark:bg-zinc-900/90 backdrop-blur-md px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center gap-2">
                           <div className="flex gap-0.5">
                             <div className="w-1.5 h-3 bg-blue-600 rounded-full"></div>
                             <div className="w-1.5 h-4 bg-blue-600 rounded-full"></div>
                             <div className="w-1.5 h-5 bg-blue-600 rounded-full"></div>
-                            <div className="w-1.5 h-3 bg-zinc-200 rounded-full"></div>
+                            <div className="w-1.5 h-3 bg-zinc-200 dark:bg-zinc-700 rounded-full"></div>
                           </div>
                           <span className="text-[10px] font-bold text-zinc-600 uppercase">High Intensity</span>
                         </div>
@@ -1980,26 +1980,26 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           <h4 className="font-black text-blue-900 text-base tracking-tight">Protocol Objective: {currentAgent.tags[0]}</h4>
                         </div>
                         <p className="text-sm text-blue-800/80 leading-relaxed relative z-10 font-medium">
-                          {currentAgent.desc} This targeted approach specifically stresses the <span className="font-bold text-blue-600 bg-white/50 px-1.5 py-0.5 rounded-md">{currentAgent.bodyHighlight !== 'none' ? currentAgent.bodyHighlight : 'entire body'}</span> region to induce optimal adaptation and align with your broader health protocol.
+                          {currentAgent.desc} This targeted approach specifically stresses the <span className="font-bold text-blue-600 bg-white dark:bg-zinc-900/50 px-1.5 py-0.5 rounded-md">{currentAgent.bodyHighlight !== 'none' ? currentAgent.bodyHighlight : 'entire body'}</span> region to induce optimal adaptation and align with your broader health protocol.
                         </p>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-zinc-200 shadow-sm hover:border-blue-200 transition-colors">
+                        <div className="bg-white dark:bg-zinc-900 rounded-2xl p-4 sm:p-5 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-blue-200 transition-colors">
                           <div className="flex items-center gap-2 mb-2">
                             <div className="bg-emerald-50 p-1.5 rounded-lg text-emerald-600">
                               <Activity className="w-4 h-4" />
                             </div>
-                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Expected Impact</p>
+                            <p className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Expected Impact</p>
                           </div>
                           <p className="text-sm font-bold text-zinc-800 leading-snug">Metabolic rate increase & localized tissue adaptation.</p>
                         </div>
-                        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-zinc-200 shadow-sm hover:border-blue-200 transition-colors">
+                        <div className="bg-white dark:bg-zinc-900 rounded-2xl p-4 sm:p-5 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-blue-200 transition-colors">
                           <div className="flex items-center gap-2 mb-2">
                             <div className="bg-purple-50 p-1.5 rounded-lg text-purple-600">
                               <RotateCw className="w-4 h-4" />
                             </div>
-                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Recovery Needs</p>
+                            <p className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Recovery Needs</p>
                           </div>
                           <p className="text-sm font-bold text-zinc-800 leading-snug">48-72 hours of targeted rest for the affected muscle groups.</p>
                         </div>
@@ -2020,14 +2020,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* BMI Chart */}
-          <div className="bg-zinc-50 rounded-2xl p-3 border border-zinc-100/50">
+          <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-3 border border-zinc-100/50">
             <div className="flex justify-between items-center mb-1.5">
               <p className="text-[8px] font-bold text-zinc-400 uppercase">BMI Status (Target: {currentAgent.targetBmi})</p>
-              <span className="text-[10px] font-black text-zinc-900">
+              <span className="text-[10px] font-black text-zinc-900 dark:text-zinc-100">
                 {(effectiveWeight / Math.pow((userStats.height || 180) / 100, 2)).toFixed(1)}
               </span>
             </div>
-            <div className="relative h-1 bg-zinc-200 rounded-full overflow-hidden">
+            <div className="relative h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-emerald-400 to-rose-400 opacity-60"></div>
               <div
                 className="absolute top-0 bottom-0 w-1 bg-zinc-900"
@@ -2035,7 +2035,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               ></div>
               {/* Target BMI Indicator */}
               <div
-                className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_2px_rgba(0,0,0,0.5)]"
+                className="absolute top-0 bottom-0 w-0.5 bg-white dark:bg-zinc-900 shadow-[0_0_2px_rgba(0,0,0,0.5)]"
                 style={{ left: `${Math.min(95, Math.max(5, (currentAgent.targetBmi - 15) / 25 * 100))}%` }}
               ></div>
             </div>
@@ -2062,7 +2062,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <button
                 onClick={handleShare}
                 disabled={isGeneratingImage}
-                className="flex items-center justify-center gap-1.5 text-[10px] font-black bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3 py-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all shadow-sm disabled:opacity-50 active:scale-95"
+                className="flex items-center justify-center gap-1.5 text-[10px] font-black bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3 py-1.5 rounded-full hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-all shadow-sm disabled:opacity-50 active:scale-95"
               >
                 {isGeneratingImage ? <Loader2 className="w-3 h-3 animate-spin" /> : <Share2 className="w-3 h-3" />}
                 <span className="hidden md:inline uppercase tracking-wider">Share</span>
@@ -2083,10 +2083,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="flex-1 flex flex-col sm:flex-row items-start sm:items-center justify-between lg:justify-start lg:gap-10 gap-6">
             <div className="flex-shrink-0">
               <div className="flex items-end gap-1">
-                <span className="text-6xl md:text-7xl font-black text-zinc-900 dark:text-white tracking-tighter leading-none">{scoreInt}<span className="text-3xl md:text-4xl text-zinc-200 dark:text-zinc-700">.{scoreDec}%</span></span>
+                <span className="text-6xl md:text-7xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter leading-none">{scoreInt}<span className="text-3xl md:text-4xl text-zinc-200 dark:text-zinc-700 dark:text-zinc-300">.{scoreDec}%</span></span>
               </div>
               <div className="flex items-center gap-2 mt-3">
-                <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-black ${dailyHistory.length > 0 ? (isTrendPositive ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400') : 'bg-zinc-50 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500'}`}>
+                <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-black ${dailyHistory.length > 0 ? (isTrendPositive ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400') : 'bg-zinc-50 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500 dark:text-zinc-400'}`}>
                   {dailyHistory.length > 0 ? (isTrendPositive ? <TrendingUp className="w-4 h-4" strokeWidth={3} /> : <TrendingDown className="w-4 h-4" strokeWidth={3} />) : null}
                   {dailyHistory.length > 0 ? (isTrendPositive ? '+' : '-') : ''}{dailyHistory.length > 0 ? trendAbs : '0.0'}%
                 </div>
@@ -2094,7 +2094,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <div className="relative">
                   <button
                     onClick={() => setIsTimeRangeDropdownOpen(!isTimeRangeDropdownOpen)}
-                    className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 rounded-xl border border-zinc-100 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all shadow-sm active:scale-95"
+                    className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 rounded-xl border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-all shadow-sm active:scale-95"
                   >
                     <span className="text-[11px] font-black text-zinc-400">/</span>
                     {isLoadingRange
@@ -2113,7 +2113,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         className="fixed inset-0 z-40"
                         onClick={() => setIsTimeRangeDropdownOpen(false)}
                       />
-                      <div className="absolute left-0 mt-2 w-28 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                      <div className="absolute left-0 mt-2 w-28 bg-white dark:bg-zinc-900 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 dark:border-zinc-700 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                         {(['30S', '1M', '15M', '1H', '24H', '7D', '30D'] as const).map((range) => (
                           <button
                             key={range}
@@ -2124,7 +2124,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                             className={`w-full text-left px-4 py-2.5 text-[11px] font-black transition-colors
                               ${timeRange === range
                                 ? 'bg-zinc-900 text-white dark:bg-brand-600 dark:text-white'
-                                : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700'}
+                                : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700'}
                             `}
                           >
                             {range}
@@ -2138,7 +2138,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
 
             {/* Daily Metabolic Summary (Mobile Only - now stacks or side-by-side depending on width) */}
-            <div className="lg:hidden w-full sm:w-auto flex flex-col items-stretch sm:items-end bg-zinc-50/50 dark:bg-zinc-800/50 backdrop-blur-xl px-4 py-3 rounded-[1.5rem] border border-zinc-100 dark:border-zinc-700 shadow-sm">
+            <div className="lg:hidden w-full sm:w-auto flex flex-col items-stretch sm:items-end bg-zinc-50/50 dark:bg-zinc-800/50 backdrop-blur-xl px-4 py-3 rounded-[1.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
               <div className="flex items-center justify-between sm:justify-end gap-4">
                 {/* Sugar */}
                 <div className="flex flex-col items-end">
@@ -2147,38 +2147,38 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Sugar</span>
                   </div>
                   <div className="flex items-baseline gap-0.5 leading-none">
-                    <span className={`text-xl font-black tracking-tighter ${filteredConsumed > ledger.limit ? 'text-rose-500' : 'text-zinc-900 dark:text-white'}`}>{Math.round(filteredConsumed)}</span>
+                    <span className={`text-xl font-black tracking-tighter ${filteredConsumed > ledger.limit ? 'text-rose-500' : 'text-zinc-900 dark:text-zinc-100 dark:text-white'}`}>{Math.round(filteredConsumed)}</span>
                     <span className="text-[10px] font-bold text-zinc-400">g</span>
                   </div>
                 </div>
 
                 {/* Protein */}
-                <div className="flex flex-col items-end border-l border-zinc-200 dark:border-zinc-700 pl-4">
+                <div className="flex flex-col items-end border-l border-zinc-200 dark:border-zinc-700 dark:border-zinc-700 pl-4">
                   <div className="flex items-center gap-1 mb-0.5">
                     <Zap className="w-2.5 h-2.5 text-blue-500" />
                     <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Prot</span>
                   </div>
                   <div className="flex items-baseline gap-0.5 leading-none">
-                    <span className="text-xl font-black text-zinc-900 dark:text-white tracking-tighter">{Math.round(dailyProtein)}</span>
+                    <span className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter">{Math.round(dailyProtein)}</span>
                     <span className="text-[10px] font-bold text-zinc-400">g</span>
                   </div>
                 </div>
 
                 {/* Water */}
-                <div className="flex flex-col items-end border-l border-zinc-200 dark:border-zinc-700 pl-4">
+                <div className="flex flex-col items-end border-l border-zinc-200 dark:border-zinc-700 dark:border-zinc-700 pl-4">
                   <div className="flex items-center gap-1 mb-0.5">
                     <Droplet className="w-2.5 h-2.5 text-cyan-500" />
                     <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">H2O</span>
                   </div>
                   <div className="flex items-baseline gap-0.5 leading-none">
-                    <span className="text-xl font-black text-zinc-900 dark:text-white tracking-tighter">{hydrationPercent}</span>
+                    <span className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter">{hydrationPercent}</span>
                     <span className="text-[10px] font-bold text-zinc-400">%</span>
                   </div>
                 </div>
               </div>
 
               {/* Agent Goal Tracking */}
-              <div className="mt-3 w-full flex items-center justify-between gap-3 bg-white dark:bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-100 dark:border-zinc-700 text-[8px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">
+              <div className="mt-3 w-full flex items-center justify-between gap-3 bg-white dark:bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-100 dark:border-zinc-800 text-[8px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">
                 <div className="flex items-center gap-1.5">
                   <Target className="w-2.5 h-2.5" />
                   {currentAgent.name}
@@ -2195,32 +2195,32 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
           {/* Right: 4 Quick Stats */}
           <div className="flex overflow-x-auto scrollbar-hide sm:grid sm:grid-cols-4 lg:grid-cols-4 gap-3 flex-1 pb-2 sm:pb-0">
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
+            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
               <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
                 <Activity className="w-4 h-4 text-rose-500" />
               </div>
-              <span className="text-base font-black text-zinc-900 dark:text-white leading-none">{avgGI || '-'}</span>
+              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{avgGI || '-'}</span>
               <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Avg GI</span>
             </div>
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
+            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
               <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
                 <Zap className="w-4 h-4 text-blue-500" />
               </div>
-              <span className="text-base font-black text-zinc-900 dark:text-white leading-none">{insulinLoad}</span>
+              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{insulinLoad}</span>
               <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Insulin</span>
             </div>
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
+            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
               <div className="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
                 <Flame className="w-4 h-4 text-orange-500" />
               </div>
-              <span className="text-base font-black text-zinc-900 dark:text-white leading-none">{dailyHistory.length === 0 ? 'Idle' : (metabolicTrend >= 0 ? 'Active' : 'Slow')}</span>
+              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{dailyHistory.length === 0 ? 'Idle' : (metabolicTrend >= 0 ? 'Active' : 'Slow')}</span>
               <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Metab</span>
             </div>
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
+            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
               <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
                 <Droplet className="w-4 h-4 text-emerald-500" />
               </div>
-              <span className="text-base font-black text-zinc-900 dark:text-white leading-none">{hydrationPercent}%</span>
+              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{hydrationPercent}%</span>
               <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Water</span>
             </div>
           </div>
@@ -2235,15 +2235,15 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <Zap className="w-4 h-4 text-amber-500" />
               </div>
               <div>
-                <h3 className="text-[10px] font-black text-zinc-900 dark:text-white uppercase tracking-widest leading-none mb-1">Energy Score</h3>
+                <h3 className="text-[10px] font-black text-zinc-900 dark:text-zinc-100 dark:text-white uppercase tracking-widest leading-none mb-1">Energy Score</h3>
                 <p className="text-[8px] font-bold text-zinc-400 uppercase tracking-wider leading-none">Vitality & Readiness Index</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-[8px] font-black text-zinc-400 uppercase mb-0.5 tracking-[0.2em]">Current Level</p>
               <div className="flex items-baseline justify-end gap-1">
-                <span className="text-3xl font-black text-zinc-900 dark:text-white tracking-tighter leading-none">{energyScore}</span>
-                <span className="text-sm font-black text-zinc-300 dark:text-zinc-600">%</span>
+                <span className="text-3xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter leading-none">{energyScore}</span>
+                <span className="text-sm font-black text-zinc-300 dark:text-zinc-600 dark:text-zinc-400">%</span>
               </div>
             </div>
           </div>
@@ -2264,93 +2264,93 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <div className="flex items-center gap-1.5 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] shadow-[0_0_8px_#10B981]"></div> Recovery
                 </div>
-                <span className="text-xs font-black text-zinc-900 dark:text-white pl-3">{recoveryPercent}%</span>
+                <span className="text-xs font-black text-zinc-900 dark:text-zinc-100 dark:text-white pl-3">{recoveryPercent}%</span>
               </div>
               <div className="flex flex-col gap-0.5">
                 <div className="flex items-center gap-1.5 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] shadow-[0_0_8px_#3B82F6]"></div> Hydration
                 </div>
-                <span className="text-xs font-black text-zinc-900 dark:text-white pl-3">{hydrationPercentBar}%</span>
+                <span className="text-xs font-black text-zinc-900 dark:text-zinc-100 dark:text-white pl-3">{hydrationPercentBar}%</span>
               </div>
               <div className="flex flex-col gap-0.5">
                 <div className="flex items-center gap-1.5 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#EF4444] shadow-[0_0_8px_#EF4444]"></div> Stress
                 </div>
-                <span className="text-xs font-black text-zinc-900 dark:text-white pl-3">{stressPercent}%</span>
+                <span className="text-xs font-black text-zinc-900 dark:text-zinc-100 dark:text-white pl-3">{stressPercent}%</span>
               </div>
               <div className="flex flex-col gap-0.5">
                 <div className="flex items-center gap-1.5 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] shadow-[0_0_8px_#F59E0B]"></div> Glucose
                 </div>
-                <span className="text-xs font-black text-zinc-900 dark:text-white pl-3">{glucosePercent}%</span>
+                <span className="text-xs font-black text-zinc-900 dark:text-zinc-100 dark:text-white pl-3">{glucosePercent}%</span>
               </div>
             </div>
           </div>
 
           {/* Insight & Trend Footer */}
-          <div className="grid grid-cols-2 gap-3 bg-zinc-50/50 rounded-2xl p-3 border border-zinc-100">
+          <div className="grid grid-cols-2 gap-3 bg-zinc-50/50 rounded-2xl p-3 border border-zinc-100 dark:border-zinc-800">
             <div className="flex flex-col">
               <span className="text-[9px] font-bold text-zinc-400 uppercase mb-1">Performance Trend</span>
               <div className="flex items-center gap-2">
                 <div className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-black ${energyTrend.isPositive ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
                   {energyTrend.isPositive ? '↑' : '↓'} {energyTrend.val}%
                 </div>
-                <span className="text-[9px] font-bold text-zinc-500">vs last {timeRange}{rangeMetrics ? '' : ' (est.)'}</span>
+                <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400">vs last {timeRange}{rangeMetrics ? '' : ' (est.)'}</span>
               </div>
             </div>
             <div className="flex flex-col items-end text-right">
               <span className="text-[9px] font-bold text-zinc-400 uppercase mb-1">Last Sync Status</span>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3 h-3 text-zinc-400" />
-                <span className="text-[10px] font-black text-zinc-900">{lastScanTime || 'Ready to scan'}</span>
+                <span className="text-[10px] font-black text-zinc-900 dark:text-zinc-100">{lastScanTime || 'Ready to scan'}</span>
               </div>
             </div>
           </div>
 
           {/* Macros (Secondary Metrics) */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white rounded-xl p-2 border border-zinc-100">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
               <div className="flex justify-between items-center mb-1">
                 <span className="text-[8px] font-bold text-zinc-400 uppercase">Sugar</span>
-                <span className="text-[9px] font-black text-zinc-900">{Math.round(filteredConsumed)}g</span>
+                <span className="text-[9px] font-black text-zinc-900 dark:text-zinc-100">{Math.round(filteredConsumed)}g</span>
               </div>
-              <div className="h-1 bg-zinc-100 rounded-full overflow-hidden"><div className="h-full bg-rose-500" style={{ width: `${Math.min((filteredConsumed / ledger.limit) * 100, 100)}%` }}></div></div>
+              <div className="h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden"><div className="h-full bg-rose-500" style={{ width: `${Math.min((filteredConsumed / ledger.limit) * 100, 100)}%` }}></div></div>
             </div>
-            <div className="bg-white rounded-xl p-2 border border-zinc-100">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
               <div className="flex justify-between items-center mb-1">
                 <span className="text-[8px] font-bold text-zinc-400 uppercase">Protein</span>
-                <span className="text-[9px] font-black text-zinc-900">{Math.round(dailyProtein)}g</span>
+                <span className="text-[9px] font-black text-zinc-900 dark:text-zinc-100">{Math.round(dailyProtein)}g</span>
               </div>
-              <div className="h-1 bg-zinc-100 rounded-full overflow-hidden"><div className="h-full bg-blue-500" style={{ width: `${Math.min((dailyProtein / 150) * 100, 100)}%` }}></div></div>
+              <div className="h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden"><div className="h-full bg-blue-500" style={{ width: `${Math.min((dailyProtein / 150) * 100, 100)}%` }}></div></div>
             </div>
-            <div className="bg-white rounded-xl p-2 border border-zinc-100">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
               <div className="flex justify-between items-center mb-1">
                 <span className="text-[8px] font-bold text-zinc-400 uppercase">Carbs</span>
-                <span className="text-[9px] font-black text-zinc-900">{Math.round(dailyCarbs)}g</span>
+                <span className="text-[9px] font-black text-zinc-900 dark:text-zinc-100">{Math.round(dailyCarbs)}g</span>
               </div>
-              <div className="h-1 bg-zinc-100 rounded-full overflow-hidden"><div className="h-full bg-yellow-400" style={{ width: `${Math.min((dailyCarbs / 200) * 100, 100)}%` }}></div></div>
+              <div className="h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden"><div className="h-full bg-yellow-400" style={{ width: `${Math.min((dailyCarbs / 200) * 100, 100)}%` }}></div></div>
             </div>
           </div>
 
           {/* Burn Chart & Training Reminders (New Section) */}
           {trainingPlan && (
-            <div className="mt-2 pt-4 border-t border-zinc-100">
+            <div className="mt-2 pt-4 border-t border-zinc-100 dark:border-zinc-800">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-orange-50 flex items-center justify-center">
                     <Flame className="w-3.5 h-3.5 text-orange-500" />
                   </div>
-                  <h3 className="text-[10px] font-black text-zinc-900 uppercase tracking-tight">Burn Progress</h3>
+                  <h3 className="text-[10px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">Burn Progress</h3>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-black text-zinc-900">
+                  <span className="text-[10px] font-black text-zinc-900 dark:text-zinc-100">
                     {completedWorkouts.length} / {trainingPlan.schedule.filter(b => b.sugarImpact < 0).length}
                   </span>
                   <span className="text-[8px] font-bold text-zinc-400 uppercase">Workouts</span>
                 </div>
               </div>
 
-              <div className="relative h-12 bg-zinc-50 rounded-xl border border-zinc-100 overflow-hidden p-1">
+              <div className="relative h-12 bg-zinc-50 rounded-xl border border-zinc-100 dark:border-zinc-800 overflow-hidden p-1">
                 <div
                   className="h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-lg transition-all duration-1000 ease-out relative"
                   style={{ width: `${Math.round((completedWorkouts.length / (trainingPlan.schedule.filter(b => b.sugarImpact < 0).length || 1)) * 100)}%` }}
@@ -2369,11 +2369,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 {trainingPlan.schedule.map((block, idx) => {
                   if (block.sugarImpact < 0 && !completedWorkouts.includes(idx)) {
                     return (
-                      <div key={idx} className="flex items-center justify-between bg-zinc-50 rounded-xl p-2 border border-zinc-100">
+                      <div key={idx} className="flex items-center justify-between bg-zinc-50 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                           <div>
-                            <p className="text-[9px] font-black text-zinc-900 leading-none">{block.activity}</p>
+                            <p className="text-[9px] font-black text-zinc-900 dark:text-zinc-100 leading-none">{block.activity}</p>
                             <p className="text-[8px] font-bold text-zinc-400 uppercase mt-0.5">Next Workout Reminder</p>
                           </div>
                         </div>
@@ -2395,7 +2395,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       </div>
 
       {/* Daily Metabolic Insight (Replaces Slider) */}
-      <div className="bg-white rounded-2xl shadow-sm border border-zinc-100 mb-6 relative overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800 mb-6 relative overflow-hidden">
         {(() => {
           const ad = adsData[0]; // Show the most relevant one (usually the first)
           return (
@@ -2415,12 +2415,12 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <div className={`inline-flex items-center justify-center p-0.5 rounded bg-gradient-to-br ${ad.color} shadow-sm`}>
                       {React.cloneElement(ad.icon as React.ReactElement, { className: 'w-2.5 h-2.5 text-white' })}
                     </div>
-                    <h3 className="text-[11px] font-black text-zinc-900 uppercase tracking-tight">{ad.title}</h3>
+                    <h3 className="text-[11px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">{ad.title}</h3>
                   </div>
                   <p className="text-[10px] text-zinc-600 leading-tight font-medium line-clamp-2">
                     {ad.text}
                   </p>
-                  <button className="mt-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400 hover:text-zinc-900 transition-colors">
+                  <button className="mt-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 transition-colors">
                     View Report →
                   </button>
                 </div>
@@ -2441,7 +2441,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             icon: <Utensils className="w-6 h-6 text-white" strokeWidth={2.5} />,
             graphic: (
               <>
-                <div className="absolute top-0 right-0 w-7 h-7 bg-white/20 rounded-full -mr-2 -mt-2 blur-sm"></div>
+                <div className="absolute top-0 right-0 w-7 h-7 bg-white dark:bg-zinc-900/20 rounded-full -mr-2 -mt-2 blur-sm"></div>
                 <div className="absolute bottom-0 left-0 w-5 h-5 bg-black/10 rounded-full -ml-1 -mb-1"></div>
               </>
             )
@@ -2454,8 +2454,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             icon: <Zap className="w-6 h-6 text-white fill-white" strokeWidth={2.5} />,
             graphic: (
               <>
-                <div className="absolute inset-0 bg-white/10 rotate-45 transform scale-150 opacity-20"></div>
-                <div className="absolute bottom-1 right-1 w-4 h-4 bg-white/30 rounded-full blur-[1px]"></div>
+                <div className="absolute inset-0 bg-white dark:bg-zinc-900/10 rotate-45 transform scale-150 opacity-20"></div>
+                <div className="absolute bottom-1 right-1 w-4 h-4 bg-white dark:bg-zinc-900/30 rounded-full blur-[1px]"></div>
               </>
             )
           },
@@ -2468,9 +2468,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             graphic: (
               <>
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 border-2 border-white/20 rounded-full skew-x-12"></div>
-                <div className="absolute top-2 right-3 w-2 h-2 bg-white/40 rounded-full"></div>
-                <div className="absolute bottom-3 left-3 w-1.5 h-1.5 bg-white/30 rounded-full"></div>
-                <div className="absolute inset-x-0 top-1/2 h-[1px] bg-white/20 rotate-45"></div>
+                <div className="absolute top-2 right-3 w-2 h-2 bg-white dark:bg-zinc-900/40 rounded-full"></div>
+                <div className="absolute bottom-3 left-3 w-1.5 h-1.5 bg-white dark:bg-zinc-900/30 rounded-full"></div>
+                <div className="absolute inset-x-0 top-1/2 h-[1px] bg-white dark:bg-zinc-900/20 rotate-45"></div>
               </>
             )
           },
@@ -2485,7 +2485,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <div className="absolute inset-0 border-[2.5px] border-white/10 rounded-2xl scale-75"></div>
                 <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-white/40 rounded-tr-lg"></div>
                 <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-white/40 rounded-bl-lg"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/50 rounded-full shadow-[0_0_7px_rgba(255,255,255,0.8)]"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white dark:bg-zinc-900/50 rounded-full shadow-[0_0_7px_rgba(255,255,255,0.8)]"></div>
               </>
             )
           },
@@ -2498,8 +2498,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             graphic: (
               <>
                 <div className="absolute inset-0 border-2 border-white/10 rounded-2xl scale-75"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-7 bg-white/20"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-1 bg-white/20"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-7 bg-white dark:bg-zinc-900/20"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-1 bg-white dark:bg-zinc-900/20"></div>
               </>
             )
           },
@@ -2515,7 +2515,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 {item.icon}
               </div>
             </div>
-            <span className="text-xs font-bold text-zinc-600 group-hover:text-zinc-900 transition-colors uppercase tracking-wide">{item.label}</span>
+            <span className="text-xs font-bold text-zinc-600 group-hover:text-zinc-900 dark:text-zinc-100 transition-colors uppercase tracking-wide">{item.label}</span>
           </button>
         ))}
       </div>
@@ -2535,7 +2535,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <span className="text-[9px] font-black text-zinc-400 tracking-[0.1em] uppercase">CALORIES</span>
             </div>
             <div className="flex items-baseline gap-1 mb-3">
-              <span className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tighter leading-none">{(Math.round(consumedCals * 10) / 10).toLocaleString()}</span>
+              <span className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter leading-none">{(Math.round(consumedCals * 10) / 10).toLocaleString()}</span>
               <span className="text-xs font-black text-zinc-400 leading-none">/ {(targetCals / 1000).toFixed(1)}k</span>
             </div>
           </div>
@@ -2593,7 +2593,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <FlaskConical className="w-4 h-4 text-brand-600 dark:text-brand-400" />
             </div>
             <div>
-              <h3 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-widest">Specific Nutrients</h3>
+              <h3 className="text-xs font-black text-zinc-900 dark:text-zinc-100 dark:text-white uppercase tracking-widest">Specific Nutrients</h3>
               <p className="text-[9px] font-bold text-zinc-400 uppercase">Micronutrient Intelligence</p>
             </div>
           </div>
@@ -2613,7 +2613,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   {vit.icon || '💊'}
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-[11px] font-black text-zinc-900 dark:text-white">{vit.percent}%</span>
+                  <span className="text-[11px] font-black text-zinc-900 dark:text-zinc-100 dark:text-white">{vit.percent}%</span>
                   <div className="w-8 h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full mt-1 overflow-hidden">
                     <div
                       className={`h-full ${vit.color?.replace('bg-', 'bg-') || 'bg-brand-500'}`}
@@ -2622,7 +2622,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="font-black text-zinc-900 dark:text-white text-xs mb-1 tracking-tight">{vit.name}</div>
+              <div className="font-black text-zinc-900 dark:text-zinc-100 dark:text-white text-xs mb-1 tracking-tight">{vit.name}</div>
               <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{vit.amount}</div>
             </div>
           ))}
@@ -2633,21 +2633,21 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
       {/* All Nutrients Modal (Modern Redesign) */}
       {showAllNutrients && (
-        <div className="fixed inset-0 z-[110] flex flex-col bg-white dark:bg-zinc-950 animate-in fade-in slide-in-from-bottom-10 duration-500">
+        <div className="fixed inset-0 z-[110] flex flex-col bg-white dark:bg-zinc-900 dark:bg-zinc-950 animate-in fade-in slide-in-from-bottom-10 duration-500">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-20">
+          <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800 dark:border-zinc-900 bg-white dark:bg-zinc-900/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-20">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center">
                 <FlaskConical className="w-6 h-6 text-brand-600 dark:text-brand-400" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">Nutritional Intelligence</h3>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tight">Nutritional Intelligence</h3>
                 <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Full Micronutrient Breakdown</p>
               </div>
             </div>
             <button
               onClick={() => setShowAllNutrients(false)}
-              className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+              className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 dark:bg-zinc-900 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:hover:text-white transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -2658,10 +2658,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <div className="max-w-[2000px] mx-auto px-4 space-y-10 pb-20">
               {/* Summary Card */}
               <div className="p-8 bg-gradient-to-br from-brand-500 to-brand-700 rounded-[2.5rem] shadow-xl shadow-brand-500/20 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-zinc-900/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-white dark:bg-zinc-900/20 backdrop-blur-md flex items-center justify-center">
                       <Info className="w-5 h-5 text-white" />
                     </div>
                     <h5 className="font-black uppercase tracking-[0.2em] text-xs">Analysis Overview</h5>
@@ -2682,7 +2682,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 return (
                   <div key={cat} className="space-y-6">
                     <div className="flex items-center gap-4 px-2">
-                      <h4 className="text-xs font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em]">{cat}</h4>
+                      <h4 className="text-xs font-black text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.3em]">{cat}</h4>
                       <div className="h-px bg-zinc-200 dark:bg-zinc-800 flex-1"></div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2694,7 +2694,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex justify-between items-start mb-1">
-                                <span className="font-black text-zinc-900 dark:text-white truncate text-sm">{vit.name}</span>
+                                <span className="font-black text-zinc-900 dark:text-zinc-100 dark:text-white truncate text-sm">{vit.name}</span>
                                 <span className="text-xs font-black text-brand-600 dark:text-brand-400">{vit.percent}%</span>
                               </div>
                               <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">{vit.amount}</span>
@@ -2723,10 +2723,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       <div className="mb-8 relative">
         <div className="flex items-center justify-between mb-4 px-2">
           <div>
-            <h2 className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em] mb-0.5">Glycemic Timeline</h2>
+            <h2 className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.3em] mb-0.5">Glycemic Timeline</h2>
             <p className="text-[8px] font-bold text-zinc-300 dark:text-zinc-600 uppercase tracking-widest">Real-time Glucose Impact</p>
           </div>
-          <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full px-3 py-1.5 shadow-sm">
+          <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 dark:border-zinc-800 rounded-full px-3 py-1.5 shadow-sm">
             <Calendar className="w-3 h-3 text-zinc-400" />
             <span className="text-[8px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
               {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -2756,7 +2756,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   >
                     {/* Value Label */}
                     <div className={`absolute -top-1 transition-all duration-500 ${isSelected ? 'opacity-100 -translate-y-1' : 'opacity-0 translate-y-1 group-hover/bar:opacity-100 group-hover/bar:-translate-y-1'}`}>
-                      <span className="text-zinc-900 dark:text-white font-black text-xs tracking-tighter" style={{ color: isSelected ? foodColor : undefined }}>
+                      <span className="text-zinc-900 dark:text-zinc-100 dark:text-white font-black text-xs tracking-tighter" style={{ color: isSelected ? foodColor : undefined }}>
                         {Math.round(sugarValue)}<span className="text-[8px] text-zinc-400 ml-0.5">g</span>
                       </span>
                     </div>
@@ -2787,7 +2787,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     </div>
 
                     {/* Time Label */}
-                    <div className={`text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-sm' : 'text-zinc-400 group-hover/bar:text-zinc-600 dark:group-hover/bar:text-zinc-300'}`}>
+                    <div className={`text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-400 group-hover/bar:text-zinc-600 dark:group-hover/bar:text-zinc-300'}`}>
                       {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </button>
@@ -2797,7 +2797,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-full gap-4 relative z-10">
               <div className="w-16 h-16 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
-                <Activity className="w-8 h-8 text-zinc-200 dark:text-zinc-700" />
+                <Activity className="w-8 h-8 text-zinc-200 dark:text-zinc-700 dark:text-zinc-300" />
               </div>
               <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">No Activity Logged Today</p>
             </div>
@@ -2813,12 +2813,12 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       {selectedHistoryItem && (
         <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setSelectedHistoryItem(null)}>
           <div
-            className="bg-white dark:bg-zinc-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-6 shadow-2xl border border-zinc-200 dark:border-zinc-800 relative animate-in zoom-in-95 duration-300"
+            className="bg-white dark:bg-zinc-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-6 shadow-2xl border border-zinc-200 dark:border-zinc-700 dark:border-zinc-800 relative animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setSelectedHistoryItem(null)}
-              className="absolute top-4 right-4 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors z-10"
+              className="absolute top-4 right-4 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:hover:text-white transition-colors z-10"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -2848,7 +2848,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
 
             {/* --- TITLE --- */}
-            <h2 className="text-xl font-black text-zinc-900 dark:text-white leading-tight mb-2">{selectedHistoryItem.name}</h2>
+            <h2 className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-tight mb-2">{selectedHistoryItem.name}</h2>
 
             {/* --- ACTION BADGE --- */}
             <div className="mb-6">
@@ -2864,21 +2864,21 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
             {/* --- TOP STATS CARDS --- */}
             <div className="grid grid-cols-3 gap-3 mb-6">
-              <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 p-3 rounded-2xl flex flex-col items-center justify-center border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm relative overflow-hidden group">
+              <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 p-3 rounded-2xl flex flex-col items-center justify-center border border-zinc-200 dark:border-zinc-700/50 dark:border-zinc-800/50 shadow-sm relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <svg className="w-8 h-8 text-zinc-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17 19c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1h-4v-4c0-.55-.45-1-1-1H6c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h11zM5 19V7h6v5h5v6H5z" /></svg>
+                  <svg className="w-8 h-8 text-zinc-500 dark:text-zinc-400" fill="currentColor" viewBox="0 0 24 24"><path d="M17 19c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1h-4v-4c0-.55-.45-1-1-1H6c-.55 0-1 .45-1 1v11c0 .55.45 1 1 1h11zM5 19V7h6v5h5v6H5z" /></svg>
                 </div>
                 <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider mb-1 flex items-center gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                   Sugar
                 </span>
-                <div className="text-xl font-black text-zinc-900 dark:text-white z-10">
-                  {selectedHistoryItem.sugarg}<span className="text-xs text-zinc-500 font-medium ml-0.5">g</span>
+                <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white z-10">
+                  {selectedHistoryItem.sugarg}<span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium ml-0.5">g</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 p-3 rounded-2xl flex flex-col items-center justify-center border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm relative overflow-hidden group">
+              <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 p-3 rounded-2xl flex flex-col items-center justify-center border border-zinc-200 dark:border-zinc-700/50 dark:border-zinc-800/50 shadow-sm relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <svg className="w-8 h-8 text-zinc-500" fill="currentColor" viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" /></svg>
+                  <svg className="w-8 h-8 text-zinc-500 dark:text-zinc-400" fill="currentColor" viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" /></svg>
                 </div>
                 <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider mb-1 flex items-center gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
@@ -2889,15 +2889,15 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   {selectedHistoryItem.glycemicIndex || '-'}
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 p-3 rounded-2xl flex flex-col items-center justify-center border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm relative overflow-hidden group">
+              <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 p-3 rounded-2xl flex flex-col items-center justify-center border border-zinc-200 dark:border-zinc-700/50 dark:border-zinc-800/50 shadow-sm relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <svg className="w-8 h-8 text-zinc-500" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" /></svg>
+                  <svg className="w-8 h-8 text-zinc-500 dark:text-zinc-400" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" /></svg>
                 </div>
                 <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider mb-1 flex items-center gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" /></svg>
                   Cals
                 </span>
-                <div className="text-xl font-black text-zinc-900 dark:text-white z-10">
+                <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white z-10">
                   {selectedHistoryItem.calories || 0}
                 </div>
               </div>
@@ -2925,7 +2925,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       )}
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-700/50 shadow-sm">
+                      <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-900 dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-800/50 shadow-sm">
                         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-500/20 text-blue-500">
                           <Dumbbell className="w-3.5 h-3.5" />
                         </div>
@@ -2934,7 +2934,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           <span className="text-sm font-black text-zinc-700 dark:text-zinc-200 leading-none">{selectedHistoryItem.macros.protein}g</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-700/50 shadow-sm">
+                      <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-900 dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-800/50 shadow-sm">
                         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-50 dark:bg-orange-500/20 text-orange-500">
                           <Wheat className="w-3.5 h-3.5" />
                         </div>
@@ -2943,7 +2943,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                           <span className="text-sm font-black text-zinc-700 dark:text-zinc-200 leading-none">{selectedHistoryItem.macros.carbs}g</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-700/50 shadow-sm">
+                      <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-900 dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-800/50 shadow-sm">
                         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-rose-50 dark:bg-rose-500/20 text-rose-500">
                           <Droplet className="w-3.5 h-3.5" />
                         </div>
@@ -2953,7 +2953,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         </div>
                       </div>
                       {selectedHistoryItem.macros.fiber !== undefined && selectedHistoryItem.macros.fiber > 0 && (
-                        <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-700/50 shadow-sm">
+                        <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-900 dark:bg-zinc-800/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-800/50 shadow-sm">
                           <div className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-50 dark:bg-emerald-500/20 text-emerald-500">
                             <Leaf className="w-3.5 h-3.5" />
                           </div>
@@ -2981,9 +2981,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {selectedHistoryItem.vitamins.map((v, i) => (
-                        <div key={i} className="px-2 py-1.5 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm flex items-center gap-1.5">
+                        <div key={i} className="px-2 py-1.5 bg-white dark:bg-zinc-900 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 dark:border-zinc-800 rounded-lg shadow-sm flex items-center gap-1.5">
                           <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">{v.name}</span>
-                          <span className="text-[9px] font-black text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-900 px-1 rounded">{v.percent}%</span>
+                          <span className="text-[9px] font-black text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 dark:bg-zinc-900 px-1 rounded">{v.percent}%</span>
                         </div>
                       ))}
                     </div>
@@ -3011,12 +3011,12 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       {isInsightsModalOpen && (
         <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setIsInsightsModalOpen(false)}>
           <div
-            className="bg-white rounded-3xl p-6 shadow-2xl w-full max-w-md relative animate-in zoom-in-95 duration-300"
+            className="bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-2xl w-full max-w-md relative animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setIsInsightsModalOpen(false)}
-              className="absolute top-4 right-4 p-2 bg-zinc-100 rounded-full text-zinc-500 hover:text-zinc-900 transition-colors"
+              className="absolute top-4 right-4 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -3026,7 +3026,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <Brain className="w-5 h-5 text-teal-600" />
               </div>
               <div>
-                <h3 className="text-lg font-black text-zinc-900 leading-tight">AI Health Insights</h3>
+                <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 leading-tight">AI Health Insights</h3>
                 <span className="text-xs font-bold text-teal-600 uppercase tracking-wider">Dr. Moriesly Analysis</span>
               </div>
             </div>
@@ -3047,8 +3047,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </p>
               </div>
 
-              <div className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100">
-                <h4 className="text-xs font-black text-zinc-900 uppercase tracking-wider mb-2">Detailed Feedback</h4>
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800">
+                <h4 className="text-xs font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-wider mb-2">Detailed Feedback</h4>
                 <ul className="text-sm font-medium text-zinc-700 space-y-3">
                   <li className="flex items-start gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
@@ -3076,12 +3076,12 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       {isShareModalOpen && shareImage && (
         <div className="fixed inset-0 z-[200] bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setIsShareModalOpen(false)}>
           <div
-            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-5 md:p-6 shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto scrollbar-hide relative animate-in zoom-in-95 duration-300 flex flex-col items-center"
+            className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 dark:border-zinc-800 rounded-[2rem] p-5 md:p-6 shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto scrollbar-hide relative animate-in zoom-in-95 duration-300 flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setIsShareModalOpen(false)}
-              className="absolute top-3 right-3 md:top-4 md:right-4 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors z-10"
+              className="absolute top-3 right-3 md:top-4 md:right-4 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:hover:text-white transition-colors z-10"
             >
               <X className="w-5 h-5" />
             </button>
@@ -3089,10 +3089,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center mb-2 md:mb-3 shrink-0 mt-2">
               <Star className="w-5 h-5 md:w-6 md:h-6 text-emerald-500 dark:text-emerald-400 fill-emerald-500 dark:fill-emerald-400" />
             </div>
-            <h3 className="text-lg md:text-xl font-black text-zinc-900 dark:text-white leading-tight mb-1">Achievement Ready</h3>
+            <h3 className="text-lg md:text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-tight mb-1">Achievement Ready</h3>
             <p className="text-[10px] md:text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-4 md:mb-6 text-center">Share your metabolic progress with the world.</p>
 
-            <div className="w-full rounded-2xl overflow-hidden shadow-sm dark:shadow-[0_0_40px_rgba(16,185,129,0.15)] mb-4 md:mb-6 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-zinc-800 shrink-0">
+            <div className="w-full rounded-2xl overflow-hidden shadow-sm dark:shadow-[0_0_40px_rgba(16,185,129,0.15)] mb-4 md:mb-6 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-zinc-700 dark:border-zinc-800 shrink-0">
               <img src={shareImage} alt="Health Score Preview" className="w-full h-auto object-contain" />
             </div>
 
@@ -3106,7 +3106,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </button>
               <button
                 onClick={handleDownload}
-                className="w-full flex items-center justify-center gap-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-xl py-3 md:py-3.5 font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                className="w-full flex items-center justify-center gap-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 dark:text-white rounded-xl py-3 md:py-3.5 font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
               >
                 <Download className="w-4 h-4 md:w-5 md:h-5" />
                 Download Image
@@ -3120,7 +3120,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       <div className="absolute top-[-9999px] left-[-9999px]">
         <div
           ref={shareCardRef}
-          className="w-[450px] bg-white dark:bg-zinc-950 rounded-[3rem] p-10 text-zinc-900 dark:text-white relative overflow-hidden"
+          className="w-[450px] bg-white dark:bg-zinc-900 dark:bg-zinc-950 rounded-[3rem] p-10 text-zinc-900 dark:text-zinc-100 dark:text-white relative overflow-hidden"
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
           {/* Background Accents (Premium Glow) */}
@@ -3131,7 +3131,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="flex justify-between items-center mb-12 relative z-10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-zinc-900 dark:bg-white flex items-center justify-center shadow-lg">
-                <Brain className="w-5 h-5 text-white dark:text-zinc-900" />
+                <Brain className="w-5 h-5 text-white dark:text-zinc-900 dark:text-zinc-100" />
               </div>
               <div>
                 <span className="font-black tracking-[0.2em] uppercase text-xs block">Moriesly</span>
@@ -3148,14 +3148,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="mb-12 relative z-10">
             <div className="flex items-center gap-2 mb-4">
               <div className="h-px bg-zinc-100 dark:bg-zinc-800 flex-1"></div>
-              <h2 className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em]">Daily Performance</h2>
+              <h2 className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.3em]">Daily Performance</h2>
               <div className="h-px bg-zinc-200 dark:bg-zinc-800 flex-1"></div>
             </div>
 
             <div className="flex flex-col items-center text-center">
               <div className="relative inline-block">
                 <span className="text-9xl font-black tracking-tighter leading-none block mb-2">
-                  {scoreInt}<span className="text-5xl text-zinc-300 dark:text-zinc-700">.{scoreDec}</span>
+                  {scoreInt}<span className="text-5xl text-zinc-300 dark:text-zinc-700 dark:text-zinc-300">.{scoreDec}</span>
                 </span>
                 <div className={`absolute -right-4 top-4 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-black shadow-lg ${isTrendPositive ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
                   {isTrendPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -3167,7 +3167,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Achievement Summary */}
-          <div className="bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-[2rem] p-6 mb-10 relative z-10 shadow-sm">
+          <div className="bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-zinc-800 dark:border-white/10 rounded-[2rem] p-6 mb-10 relative z-10 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                 <Star className="w-4 h-4 text-white fill-white" />
@@ -3183,28 +3183,28 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
           {/* Grid Stats (Modern Bento) */}
           <div className="grid grid-cols-2 gap-4 mb-12 relative z-10">
-            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-3xl p-5 shadow-sm">
+            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-zinc-800 dark:border-white/10 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Flame className="w-4 h-4 text-orange-500" />
                 <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Energy</span>
               </div>
               <div className="text-2xl font-black">{Math.round(dailyCalories)} <span className="text-xs text-zinc-300">kcal</span></div>
             </div>
-            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-3xl p-5 shadow-sm">
+            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-zinc-800 dark:border-white/10 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Zap className="w-4 h-4 text-blue-500" />
                 <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Protein</span>
               </div>
               <div className="text-2xl font-black">{Math.round(dailyProtein)}<span className="text-xs text-zinc-300">g</span></div>
             </div>
-            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-3xl p-5 shadow-sm">
+            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-zinc-800 dark:border-white/10 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Droplet className="w-4 h-4 text-emerald-500" />
                 <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Hydration</span>
               </div>
               <div className="text-2xl font-black">{hydrationPercent}<span className="text-xs text-zinc-300">%</span></div>
             </div>
-            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-3xl p-5 shadow-sm">
+            <div className="bg-white dark:bg-white/5 border border-zinc-100 dark:border-zinc-800 dark:border-white/10 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <Activity className="w-4 h-4 text-rose-500" />
                 <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Sugar</span>
@@ -3214,7 +3214,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between pt-8 border-t border-zinc-100 dark:border-white/10 relative z-10">
+          <div className="flex items-center justify-between pt-8 border-t border-zinc-100 dark:border-zinc-800 dark:border-white/10 relative z-10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 border-2 border-white dark:border-zinc-900 shadow-md">
                 <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userStats.name}`} alt="Avatar" className="w-full h-full" />
@@ -3225,7 +3225,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
             </div>
             <div className="text-right">
-              <span className="text-[10px] font-black text-zinc-900 dark:text-white uppercase tracking-[0.2em]">moriesly.com</span>
+              <span className="text-[10px] font-black text-zinc-900 dark:text-zinc-100 dark:text-white uppercase tracking-[0.2em]">moriesly.com</span>
             </div>
           </div>
         </div>
@@ -3235,3 +3235,4 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 };
 
 export default DashboardScreen;
+

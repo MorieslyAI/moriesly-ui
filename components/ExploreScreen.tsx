@@ -57,7 +57,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3">
       <AlertCircle className="w-8 h-8 text-red-400" />
-      <p className="text-sm text-zinc-500 text-center max-w-55">{message}</p>
+      <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center max-w-55">{message}</p>
       <button
         onClick={onRetry}
         className="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider"
@@ -187,7 +187,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
         <div className="flex items-center gap-3">
           <img src={post.authorAvatar} alt={post.authorName} className="w-10 h-10 rounded-full object-cover" />
           <div>
-            <div className="font-bold text-zinc-900 dark:text-white text-sm flex items-center gap-1.5">
+            <div className="font-bold text-zinc-900 dark:text-zinc-100 dark:text-white text-sm flex items-center gap-1.5">
               {post.authorName}
               {post.type === 'event' && <span className="bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Event</span>}
               {post.type === 'group' && <span className="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Group</span>}
@@ -209,8 +209,8 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-zinc-900 dark:text-white">{post.eventDate}</div>
-              <div className="text-xs text-zinc-500">{post.attendees ?? 0} attending</div>
+              <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100 dark:text-white">{post.eventDate}</div>
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">{post.attendees ?? 0} attending</div>
             </div>
           </div>
           <button
@@ -230,8 +230,8 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-zinc-900 dark:text-white">Group Chat</div>
-              <div className="text-xs text-zinc-500">{post.members ?? 0} members</div>
+              <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100 dark:text-white">Group Chat</div>
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">{post.members ?? 0} members</div>
             </div>
           </div>
           <button
@@ -270,12 +270,12 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
       <div className="flex items-center gap-6 border-t border-zinc-100 dark:border-zinc-800 pt-3">
         <button
           onClick={() => handleLike(post.id)}
-          className={`flex items-center gap-2 transition-colors group ${likedPosts.has(post.id) ? 'text-rose-500' : 'text-zinc-500 hover:text-rose-500'}`}
+          className={`flex items-center gap-2 transition-colors group ${likedPosts.has(post.id) ? 'text-rose-500' : 'text-zinc-500 dark:text-zinc-400 hover:text-rose-500'}`}
         >
           <Heart className={`w-4 h-4 group-active:scale-125 transition-transform ${likedPosts.has(post.id) ? 'fill-rose-500' : ''}`} />
           <span className="text-xs font-bold">{post.likes}</span>
         </button>
-        <button className="flex items-center gap-2 text-zinc-500 hover:text-blue-500 transition-colors">
+        <button className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-blue-500 transition-colors">
           <MessageCircle className="w-4 h-4" />
           <span className="text-xs font-bold">{post.comments}</span>
         </button>
@@ -289,7 +289,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
       {/* Header */}
       <div className="px-4 pt-12 pb-4 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-10">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Explore</h1>
+          <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tight">Explore</h1>
           <div className="flex gap-2">
             <button className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
               <Search className="w-5 h-5" />
@@ -303,7 +303,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all capitalize ${activeTab === tab ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`}
+              className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all capitalize ${activeTab === tab ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 dark:text-white shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'}`}
             >
               {tab === 'news' ? 'News' : tab === 'social' ? 'Social' : 'Shop'}
             </button>
@@ -333,7 +333,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
                     <span>•</span>
                     <span>{new Date(article.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</span>
                   </div>
-                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2 leading-tight">{article.title}</h3>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 dark:text-white mb-2 leading-tight">{article.title}</h3>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4 line-clamp-2">{article.summary}</p>
                   <a
                     href={article.url ?? '#'}
@@ -369,8 +369,8 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
                   onClick={() => setSocialTab(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
                     socialTab === tab.id
-                      ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
-                      : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800'
+                      ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 dark:text-white shadow-sm'
+                      : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800'
                   }`}
                 >
                   <tab.icon className={`w-4 h-4 ${socialTab === tab.id ? 'text-brand-500' : ''}`} />
@@ -430,10 +430,10 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
                         className={`flex items-center justify-between p-4 rounded-2xl border ${entry.isUser ? 'bg-brand-50 border-brand-100 dark:bg-brand-900/20 dark:border-brand-800/50' : 'bg-zinc-50 border-zinc-100 dark:bg-zinc-800/50 dark:border-zinc-800'}`}
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm ${entry.rank === 1 ? 'bg-amber-100 text-amber-600' : entry.rank === 2 ? 'bg-zinc-200 text-zinc-600' : entry.rank === 3 ? 'bg-orange-100 text-orange-600' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500'}`}>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm ${entry.rank === 1 ? 'bg-amber-100 text-amber-600' : entry.rank === 2 ? 'bg-zinc-200 text-zinc-600' : entry.rank === 3 ? 'bg-orange-100 text-orange-600' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500 dark:text-zinc-400'}`}>
                             #{entry.rank}
                           </div>
-                          <div className="font-bold text-zinc-900 dark:text-white">{entry.isUser ? 'You' : entry.name}</div>
+                          <div className="font-bold text-zinc-900 dark:text-zinc-100 dark:text-white">{entry.isUser ? 'You' : entry.name}</div>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="text-lg font-black text-brand-600 dark:text-brand-400">{entry.score}</div>
@@ -462,17 +462,17 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
                         className="w-16 h-16 rounded-full border-2 border-brand-100"
                       />
                       <div>
-                        <h2 className="text-lg font-black text-zinc-900 dark:text-white">{profileData.name}</h2>
+                        <h2 className="text-lg font-black text-zinc-900 dark:text-zinc-100 dark:text-white">{profileData.name}</h2>
                         <p className="text-xs text-zinc-500 dark:text-zinc-400">{profileData.role}</p>
                       </div>
                     </div>
                     <div className="flex gap-6 text-center">
                       <div>
-                        <div className="text-xl font-black text-zinc-900 dark:text-white">{profileData.postsCount}</div>
+                        <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white">{profileData.postsCount}</div>
                         <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Posts</div>
                       </div>
                       <div>
-                        <div className="text-xl font-black text-zinc-900 dark:text-white">
+                        <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white">
                           {profileData.followersCount >= 1000
                             ? `${(profileData.followersCount / 1000).toFixed(1)}k`
                             : profileData.followersCount}
@@ -480,7 +480,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
                         <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Followers</div>
                       </div>
                       <div>
-                        <div className="text-xl font-black text-zinc-900 dark:text-white">
+                        <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white">
                           {profileData.likesReceived >= 1000
                             ? `${(profileData.likesReceived / 1000).toFixed(1)}k`
                             : profileData.likesReceived}
@@ -493,8 +493,8 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
                 {myPosts.length === 0 ? (
                   <div className="text-center py-12 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
                     <MessageSquare className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
-                    <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">No posts yet</h3>
-                    <p className="text-xs text-zinc-500">Share your health journey with the community!</p>
+                    <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 dark:text-white mb-1">No posts yet</h3>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">Share your health journey with the community!</p>
                   </div>
                 ) : (
                   <div className="space-y-4">{myPosts.map(renderPost)}</div>
@@ -546,37 +546,37 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
 
                   return (
                     <div key={product.id} className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-sm border border-zinc-100 dark:border-zinc-800 group">
-                      <div className="h-32 overflow-hidden relative bg-zinc-100">
+                      <div className="h-32 overflow-hidden relative bg-zinc-100 dark:bg-zinc-800">
                         <img
                           src={product.imageUrl}
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-zinc-900">
+                        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-zinc-900 dark:text-zinc-100">
                           {product.brand}
                         </div>
                       </div>
                       <div className="p-4">
                         <div className="flex flex-wrap gap-1 mb-2">
                           {product.tags.map((tag) => (
-                            <span key={tag} className="text-[9px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500 px-1.5 py-0.5 rounded">
+                            <span key={tag} className="text-[9px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 px-1.5 py-0.5 rounded">
                               {tag}
                             </span>
                           ))}
                         </div>
-                        <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1 leading-tight">{product.name}</h3>
+                        <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 dark:text-white mb-1 leading-tight">{product.name}</h3>
                         <div className="flex items-start gap-1.5 mb-3">
                           <div className="w-3 h-3 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center mt-0.5 shrink-0">
                             <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
                           </div>
-                          <p className="text-[10px] text-zinc-500 italic leading-tight">{product.reason}</p>
+                          <p className="text-[10px] text-zinc-500 dark:text-zinc-400 italic leading-tight">{product.reason}</p>
                         </div>
                         <div className="flex items-center justify-between mt-auto">
-                          <span className="text-sm font-black text-zinc-900 dark:text-white">{displayPrice}</span>
+                          <span className="text-sm font-black text-zinc-900 dark:text-zinc-100 dark:text-white">{displayPrice}</span>
                           <button
                             onClick={() => !isPurchased && handleBuy(product.id)}
                             disabled={isPurchased}
-                            className={`p-2 rounded-lg transition-colors flex items-center justify-center ${isPurchased ? 'bg-emerald-500 text-white' : 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-brand-600'}`}
+                            className={`p-2 rounded-lg transition-colors flex items-center justify-center ${isPurchased ? 'bg-emerald-500 text-white' : 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 dark:text-zinc-100 hover:bg-brand-600'}`}
                           >
                             {isPurchased ? <span className="text-[10px] font-bold uppercase px-1">Owned</span> : <ShoppingBag className="w-4 h-4" />}
                           </button>

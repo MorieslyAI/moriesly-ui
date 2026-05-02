@@ -197,23 +197,23 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
               <div className="space-y-4 relative z-10 animate-in fade-in">
                   <div className="flex justify-between items-center">
                       <h3 className="text-white font-bold uppercase">Mission Config</h3>
-                      <button onClick={() => setIsEditing(false)} className="text-zinc-500 text-xs">Cancel</button>
+                      <button onClick={() => setIsEditing(false)} className="text-zinc-500 dark:text-zinc-400 text-xs">Cancel</button>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                       <div>
-                          <label className="text-[10px] text-zinc-500 uppercase">Event Name</label>
+                          <label className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">Event Name</label>
                           <input type="text" value={editForm.eventName} onChange={e => setEditForm({...editForm, eventName: e.target.value})} className="w-full bg-black border border-zinc-700 rounded-lg p-2 text-white text-sm" />
                       </div>
                       <div>
-                          <label className="text-[10px] text-zinc-500 uppercase">Target Date</label>
+                          <label className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">Target Date</label>
                           <input type="date" value={editForm.targetDate} onChange={e => setEditForm({...editForm, targetDate: e.target.value})} className="w-full bg-black border border-zinc-700 rounded-lg p-2 text-white text-sm" />
                       </div>
                       <div>
-                          <label className="text-[10px] text-zinc-500 uppercase">Target Weight (kg)</label>
+                          <label className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">Target Weight (kg)</label>
                           <input type="number" value={editForm.targetWeight} onChange={e => setEditForm({...editForm, targetWeight: parseFloat(e.target.value)})} className="w-full bg-black border border-zinc-700 rounded-lg p-2 text-white text-sm" />
                       </div>
                       <div>
-                          <label className="text-[10px] text-zinc-500 uppercase">Current (kg)</label>
+                          <label className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">Current (kg)</label>
                           <input type="number" value={editForm.currentWeight} onChange={e => setEditForm({...editForm, currentWeight: parseFloat(e.target.value)})} className="w-full bg-black border border-zinc-700 rounded-lg p-2 text-white text-sm" />
                       </div>
                   </div>
@@ -223,11 +223,11 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
                       <div className="text-[10px] font-bold text-amber-500 uppercase mb-2">Break / Maintenance Phase</div>
                       <div className="grid grid-cols-2 gap-3">
                           <div>
-                              <label className="text-[9px] text-zinc-500 uppercase">Start Date</label>
+                              <label className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase">Start Date</label>
                               <input type="date" value={editForm.breakStartDate || ''} onChange={e => setEditForm({...editForm, breakStartDate: e.target.value})} className="w-full bg-black border border-zinc-700 rounded-lg p-2 text-white text-xs" />
                           </div>
                           <div>
-                              <label className="text-[9px] text-zinc-500 uppercase">Duration (Days)</label>
+                              <label className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase">Duration (Days)</label>
                               <input type="number" value={editForm.breakDurationDays || 0} onChange={e => setEditForm({...editForm, breakDurationDays: parseInt(e.target.value)})} className="w-full bg-black border border-zinc-700 rounded-lg p-2 text-white text-xs" />
                           </div>
                       </div>
@@ -258,7 +258,7 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
 
                   {/* Goal Trajectory Chart */}
                   <div className="bg-black/30 rounded-xl p-4 border border-zinc-800/50 mb-4">
-                      <div className="flex justify-between text-[9px] text-zinc-500 font-mono mb-2 uppercase">
+                      <div className="flex justify-between text-[9px] text-zinc-500 dark:text-zinc-400 font-mono mb-2 uppercase">
                           <span>Start: {goal.startWeight}kg</span>
                           {goal.breakStartDate && <span className="text-amber-500">Break Session Active</span>}
                           <span>Target: {goal.targetWeight}kg</span>
@@ -268,12 +268,12 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
 
                   <div className="flex justify-between items-end">
                       <div>
-                          <div className="text-4xl font-black text-white">{goal.currentWeight}<span className="text-lg text-zinc-500">kg</span></div>
-                          <div className="text-[10px] text-zinc-500 uppercase">Current Load</div>
+                          <div className="text-4xl font-black text-white">{goal.currentWeight}<span className="text-lg text-zinc-500 dark:text-zinc-400">kg</span></div>
+                          <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">Current Load</div>
                       </div>
                       <div className="text-right">
                           <div className="text-xl font-bold text-teal-500">{(goal.currentWeight - goal.targetWeight).toFixed(1)}kg</div>
-                          <div className="text-[10px] text-zinc-500 uppercase">To Lose</div>
+                          <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">To Lose</div>
                       </div>
                   </div>
               </div>
@@ -283,7 +283,7 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
       {/* --- WEIGHT TRACKER HISTORY --- */}
       <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm mb-6">
           <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-bold uppercase text-zinc-500">Weight Log</h3>
+              <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400">Weight Log</h3>
               <div className="flex gap-2">
                   <input 
                     type="number" 
@@ -299,7 +299,7 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
                             setNewWeightInput('');
                         }
                     }}
-                    className="bg-zinc-900 dark:bg-white text-white dark:text-black px-3 py-1 rounded-lg text-xs font-bold"
+                    className="bg-zinc-900 dark:bg-white dark:bg-zinc-900 text-white dark:text-black px-3 py-1 rounded-lg text-xs font-bold"
                   >
                       + Log
                   </button>
@@ -319,7 +319,7 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
       <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm">
           <div className="flex justify-between items-start mb-6">
               <div>
-                  <h3 className="text-sm font-bold uppercase text-zinc-500">Sugar Correlation</h3>
+                  <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400">Sugar Correlation</h3>
                   <div className="text-[10px] text-zinc-400 mt-1">Impact Analysis</div>
               </div>
               
@@ -328,7 +328,7 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
                       <button 
                         key={t}
                         onClick={() => setSugarFilter(t)}
-                        className={`px-3 py-1 rounded-md text-[9px] uppercase font-bold transition-all ${sugarFilter === t ? 'bg-white dark:bg-zinc-600 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-400'}`}
+                        className={`px-3 py-1 rounded-md text-[9px] uppercase font-bold transition-all ${sugarFilter === t ? 'bg-white dark:bg-zinc-900 dark:bg-zinc-600 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-400'}`}
                       >
                           {t}
                       </button>
@@ -354,13 +354,13 @@ const WeightTrackerScreen: React.FC<WeightTrackerScreenProps> = ({
               })}
           </div>
 
-          <div className="flex gap-4 border-t border-zinc-100 dark:border-zinc-800 pt-4">
+          <div className="flex gap-4 border-t border-zinc-100 dark:border-zinc-800 dark:border-zinc-800 pt-4">
               <div>
-                  <div className="text-[10px] text-zinc-500 uppercase">Total Intake</div>
+                  <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">Total Intake</div>
                   <div className="text-xl font-black text-zinc-900 dark:text-white">{sugarData.total}g</div>
               </div>
               <div>
-                  <div className="text-[10px] text-zinc-500 uppercase">Daily Avg</div>
+                  <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">Daily Avg</div>
                   <div className={`text-xl font-black ${sugarData.average > 30 ? 'text-rose-500' : 'text-teal-500'}`}>
                       {sugarData.average}g
                   </div>

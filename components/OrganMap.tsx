@@ -263,13 +263,13 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-zinc-200 relative overflow-hidden flex flex-col md:flex-row h-full w-full min-h-[600px] md:min-h-0 shadow-2xl">
+    <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 relative overflow-hidden flex flex-col md:flex-row h-full w-full min-h-[600px] md:min-h-0 shadow-2xl">
         
         {/* Background Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none"></div>
 
         {/* --- LEFT: X-RAY SCANNER --- */}
-        <div className="relative w-full md:w-1/2 h-[450px] md:h-full bg-zinc-50 flex items-center justify-center border-b md:border-b-0 md:border-r border-zinc-200 p-6 overflow-hidden shrink-0">
+        <div className="relative w-full md:w-1/2 h-[450px] md:h-full bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-800 p-6 overflow-hidden shrink-0">
             
             {/* Scan Line Animation */}
             <motion.div 
@@ -333,12 +333,12 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
         </div>
 
         {/* --- RIGHT: DIAGNOSTIC REPORT --- */}
-        <div className="flex-1 flex flex-col h-full bg-white min-h-0">
-              <div className="p-4 border-b border-zinc-100 shrink-0 bg-zinc-50/50">
+        <div className="flex-1 flex flex-col h-full bg-white dark:bg-zinc-900 min-h-0">
+              <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 shrink-0 bg-zinc-50/50 dark:bg-zinc-800/30">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full animate-pulse ${healthScore < 70 ? 'bg-rose-500' : 'bg-teal-500'}`}></div>
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.15em] text-zinc-800">Diagnostic Intel</h4>
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.15em] text-zinc-800 dark:text-zinc-200">Diagnostic Intel</h4>
                     </div>
                     <div className="text-[8px] text-zinc-400 font-mono uppercase font-bold">
                         ID: {new Date().getTime().toString(16).toUpperCase()}
@@ -363,8 +363,8 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                             onClick={() => setSelectedOrgan(organ.id)}
                             className={`relative overflow-hidden rounded-2xl transition-all duration-300 border cursor-pointer group shrink-0
                                 ${isSelected 
-                                    ? 'bg-zinc-50 border-teal-500/30 shadow-lg ring-1 ring-teal-500/10' 
-                                    : 'bg-white border-zinc-100 hover:border-zinc-200 hover:shadow-md'
+                                    ? 'bg-zinc-50 dark:bg-zinc-800 border-teal-500/30 shadow-lg ring-1 ring-teal-500/10' 
+                                    : 'bg-white dark:bg-zinc-900/50 border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700 hover:shadow-md'
                                 }
                             `}
                          >
@@ -391,7 +391,7 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                                      )}
                                  </div>
                                  
-                                 <div className={`text-[10px] font-bold leading-tight ${isCritical ? 'text-rose-700' : 'text-zinc-800'}`}>
+                                 <div className={`text-[10px] font-bold leading-tight ${isCritical ? 'text-rose-700 dark:text-rose-400' : 'text-zinc-800 dark:text-zinc-200'}`}>
                                      {organ.message}
                                  </div>
 
@@ -399,7 +399,7 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                                      <motion.div 
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: 'auto', opacity: 1 }}
-                                        className="mt-3 text-[10px] text-zinc-500 leading-relaxed border-t border-zinc-100 pt-3"
+                                        className="mt-3 text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800 pt-3"
                                      >
                                          {organ.detail}
                                          {organ.primaryStressor && (
@@ -418,7 +418,7 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                  <div className="h-6"></div>
              </div>
              
-             <div className="p-6 border-t border-zinc-100 bg-zinc-50/50 shrink-0">
+             <div className="p-6 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 shrink-0">
                  <div className="flex items-center justify-between gap-6">
                     <div className="flex-1">
                         <div className="flex justify-between items-center mb-2">
@@ -427,7 +427,7 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                                 {healthScore}%
                             </div>
                         </div>
-                        <div className="h-2 w-full bg-zinc-200 rounded-full overflow-hidden shadow-inner">
+                        <div className="h-2 w-full bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden shadow-inner">
                             <motion.div 
                                 initial={{ width: 0 }}
                                 animate={{ width: `${healthScore}%` }}

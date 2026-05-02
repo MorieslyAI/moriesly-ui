@@ -29,7 +29,7 @@ const TriggerModal: React.FC<TriggerModalProps> = ({ onSelect, onCancel }) => {
                  Psych-Ops Protocol
              </div>
              <h3 className="text-2xl font-black text-white uppercase tracking-tight">State Your Motive</h3>
-             <p className="text-zinc-500 text-sm mt-1">Why are you consuming this target?</p>
+             <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">Why are you consuming this target?</p>
          </div>
 
          <div className="mb-6 relative z-10">
@@ -56,14 +56,14 @@ const TriggerModal: React.FC<TriggerModalProps> = ({ onSelect, onCancel }) => {
                  >
                      <div className="text-2xl mb-1 group-hover:scale-110 transition-transform origin-left">{t.icon}</div>
                      <div className="font-bold text-white text-sm">{t.label}</div>
-                     <div className="text-[10px] text-zinc-500 leading-tight mt-0.5">{t.desc}</div>
+                     <div className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight mt-0.5">{t.desc}</div>
                  </button>
              ))}
          </div>
 
          <button 
             onClick={onCancel}
-            className="w-full mt-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-white/5 transition-colors"
+            className="w-full mt-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-white hover:bg-white dark:bg-zinc-900/5 transition-colors"
          >
              Cancel Consumption
          </button>
