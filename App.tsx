@@ -54,7 +54,9 @@ function App() {
     const [showLegal, setShowLegal] = useState(false);
     const [isSetupComplete, setIsSetupComplete] = useState(false);
     const [isCheckingSession, setIsCheckingSession] = useState(true);
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        return localStorage.getItem('isDarkMode') === 'true';
+    });
     const [currentView, setCurrentView] = useState<'dashboard' | 'camera' | 'diet' | 'consultant' | 'tracker' | 'history' | 'blog' | 'training' | 'medical' | 'settings' | 'devices' | 'profile' | 'notifications' | 'chat' | 'calendar' | 'status' | 'track' | 'explore'>('dashboard');
 
     const [addOnTargetId, setAddOnTargetId] = useState<string | null>(null); // NEW: Track which item is receiving an add-on
@@ -333,6 +335,11 @@ function App() {
         } else {
             document.documentElement.classList.remove('dark');
         }
+        try {
+            localStorage.setItem('isDarkMode', String(isDarkMode));
+        } catch (e) {
+            console.error('Failed to save isDarkMode:', e);
+        }
     }, [isDarkMode]);
 
     useEffect(() => {
@@ -391,6 +398,24 @@ function App() {
         if (result.isCalibrationComplete) {
             setIsSetupComplete(true);
         }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await api.logout();
+        } catch (e) {
+            console.error('[Logout] API call failed, continuing anyway:', e);
+        }
+        // Clear all persisted local state
+        localStorage.removeItem('userStats');
+        localStorage.removeItem('ledger');
+        localStorage.removeItem('history');
+        localStorage.removeItem('weightHistory');
+        localStorage.removeItem('currentGoal');
+        // Reset React state so the user sees the LoginScreen
+        setIsLoggedIn(false);
+        setIsSetupComplete(false);
+        setCurrentView('dashboard');
     };
 
     const handleSetupComplete = (
@@ -1321,6 +1346,7 @@ function App() {
                                                                 setCurrentView('profile');
                                                             }}
                                                             onBack={() => setCurrentView('profile')}
+                                                            onLogout={handleLogout}
                                                         />
                                                     )
                                                         : currentView === 'devices' ? (<DeviceSyncScreen history={history} ledger={ledger} dietPlan={dietPlan} trainingPlan={trainingPlan} onToggleFullScreen={setIsFullScreenVideo} onBackToHome={() => { setIsFullScreenVideo(false); setCurrentView('dashboard'); }} />)

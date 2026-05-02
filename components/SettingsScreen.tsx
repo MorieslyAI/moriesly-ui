@@ -1,7 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
 import { UserProfile, GoalConfig } from '../types';
-import { User, Shield, Zap, Target, Smartphone, Moon, Sun, Mail, Lock, Activity, ChevronRight, Save } from 'lucide-react';
+import { User, Shield, Zap, Target, Smartphone, Moon, Sun, Mail, Lock, Activity, ChevronRight, Save, LogOut, Loader } from 'lucide-react';
+import * as api from '../services/api';
 
 interface SettingsScreenProps {
   userProfile: UserProfile;
@@ -11,6 +12,7 @@ interface SettingsScreenProps {
   onToggleDarkMode: () => void;
   onUpdate: (newProfile: UserProfile, newLimit: number, newGoal: GoalConfig) => void;
   onBack: () => void;
+  onLogout: () => void;
 }
 
 const LIFESTYLE_ARCHETYPES = [
@@ -27,8 +29,9 @@ const GOAL_MODES = [
   { id: 'custom', name: 'Custom Op', ratio: 0.10, color: 'indigo', icon: '🕵️', desc: 'Targeted' }
 ];
 
-const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, currentLimit, isDarkMode, onToggleDarkMode, onUpdate, onBack }) => {
+const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, currentLimit, isDarkMode, onToggleDarkMode, onUpdate, onBack, onLogout }) => {
   const [activeTab, setActiveTab] = useState<'account' | 'identity' | 'engine' | 'mission'>('account');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   // --- STATE: ACCOUNT ---
   const [email, setEmail] = useState(userProfile.email || 'agent@moriesly.ai');
@@ -68,16 +71,23 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
       return Math.max(10, Math.min(85, calcGrams));
   }, [age, height, weight, gender, archetypeId, goalMode, isManualLimit, customSugarLimit, currentLimit]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+      if (saveStatus === 'saving') return;
+      setSaveStatus('saving');
+
+      const parsedAge    = parseInt(age)    || userProfile.age;
+      const parsedHeight = parseInt(height) || userProfile.height;
+      const parsedWeight = parseInt(weight) || userProfile.weight;
+
       const newProfile: UserProfile = {
           ...userProfile,
           name,
           email,
           password,
           isWearableConnected,
-          age: parseInt(age) || userProfile.age,
-          height: parseInt(height) || userProfile.height,
-          weight: parseInt(weight) || userProfile.weight,
+          age:    parsedAge,
+          height: parsedHeight,
+          weight: parsedWeight,
           gender
       };
 
@@ -86,10 +96,39 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
           eventName,
           targetWeight: parseFloat(targetWeight) || goal.targetWeight,
           targetDate,
-          currentWeight: parseInt(weight) || goal.currentWeight
+          currentWeight: parsedWeight
       };
 
+      // Update local state immediately for snappy UX
       onUpdate(newProfile, calculatedLimit, newGoal);
+
+      // Sync to backend
+      try {
+          const res = await api.updateUserSettings({
+              name,
+              gender,
+              age:    parsedAge,
+              height: parsedHeight,
+              weight: parsedWeight,
+              archetypeId: archetypeId as 'desk' | 'field' | 'heavy' | 'custom',
+              goalMode:    goalMode    as 'cut' | 'maintain' | 'bulk' | 'custom',
+              customSugarLimit: isManualLimit ? parseInt(customSugarLimit) || undefined : undefined,
+              eventName,
+              targetWeight: parseFloat(targetWeight) || goal.targetWeight,
+              targetDate,
+              isWearableConnected,
+          });
+          // If BE recalculated the sugar limit, apply it
+          if (res.sugarLimit !== undefined) {
+              onUpdate(newProfile, res.sugarLimit, newGoal);
+          }
+          setSaveStatus('saved');
+          setTimeout(() => setSaveStatus('idle'), 2500);
+      } catch (err) {
+          console.error('[Settings] Failed to sync to backend:', err);
+          setSaveStatus('error');
+          setTimeout(() => setSaveStatus('idle'), 3000);
+      }
   };
 
   return (
@@ -106,8 +145,22 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
                 <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse shadow-[0_0_8px_#14b8a6]"></div>
                 <span className="text-xs font-black text-zinc-800 dark:text-zinc-200 uppercase tracking-widest">Settings</span>
             </div>
-            <button onClick={handleSave} className="p-2 rounded-full bg-teal-500 text-white shadow-lg shadow-teal-500/20 active:scale-90 transition-transform">
-                <Save className="w-5 h-5" />
+            <button
+                onClick={handleSave}
+                disabled={saveStatus === 'saving'}
+                className={`p-2 rounded-full text-white shadow-lg active:scale-90 transition-all ${
+                    saveStatus === 'saved'  ? 'bg-emerald-500 shadow-emerald-500/20' :
+                    saveStatus === 'error'  ? 'bg-rose-500 shadow-rose-500/20' :
+                    'bg-teal-500 shadow-teal-500/20'
+                }`}
+            >
+                {saveStatus === 'saving'
+                    ? <Loader className="w-5 h-5 animate-spin" />
+                    : saveStatus === 'saved'
+                    ? <span className="text-xs font-black px-1">✓</span>
+                    : saveStatus === 'error'
+                    ? <span className="text-xs font-black px-1">!</span>
+                    : <Save className="w-5 h-5" />}
             </button>
         </div>
 
@@ -402,9 +455,23 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ userProfile, goal, curr
             </div>
 
             {/* LOGOUT / DANGER ZONE */}
-            <div className="pt-6">
-                <button className="w-full p-4 bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 rounded-2xl border border-rose-100 dark:border-rose-900/30 text-xs font-black uppercase tracking-widest hover:bg-rose-100 transition-colors">
-                    Terminate Session (Logout)
+            <div className="pt-6 space-y-3">
+                {saveStatus === 'saved' && (
+                    <div className="w-full p-3 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 text-xs font-black uppercase tracking-widest text-center animate-in fade-in">
+                        ✓ Settings Saved to Server
+                    </div>
+                )}
+                {saveStatus === 'error' && (
+                    <div className="w-full p-3 bg-amber-50 dark:bg-amber-900/10 text-amber-600 dark:text-amber-400 rounded-2xl border border-amber-100 dark:border-amber-900/30 text-xs font-black uppercase tracking-widest text-center animate-in fade-in">
+                        ⚠ Saved Locally — Sync Failed
+                    </div>
+                )}
+                <button
+                    onClick={onLogout}
+                    className="w-full p-4 flex items-center justify-center gap-2 bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 rounded-2xl border border-rose-100 dark:border-rose-900/30 text-xs font-black uppercase tracking-widest hover:bg-rose-100 dark:hover:bg-rose-900/20 transition-colors active:scale-95"
+                >
+                    <LogOut className="w-4 h-4" />
+                    Terminate Session
                 </button>
             </div>
         </div>

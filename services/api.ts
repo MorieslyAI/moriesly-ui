@@ -181,6 +181,41 @@ export async function saveCalibration(
   });
 }
 
+// ─── User Settings Endpoint ────────────────────────────────────────────────────
+
+export interface UpdateSettingsPayload {
+  // Identity
+  name?: string;
+  gender?: "male" | "female";
+  age?: number;
+  height?: number;
+  weight?: number;
+  // Engine
+  archetypeId?: "desk" | "field" | "heavy" | "custom";
+  goalMode?: "cut" | "maintain" | "bulk" | "custom";
+  customSugarLimit?: number;
+  // Mission
+  eventName?: string;
+  targetWeight?: number;
+  targetDate?: string;
+  // Account
+  isWearableConnected?: boolean;
+}
+
+export interface UpdateSettingsResponse {
+  message: string;
+  sugarLimit?: number;
+}
+
+export async function updateUserSettings(
+  payload: UpdateSettingsPayload,
+): Promise<UpdateSettingsResponse> {
+  return request<UpdateSettingsResponse>("/user/settings", {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
 // ─── Dashboard Endpoints ──────────────────────────────────────────────────────
 
 export interface DashboardInsights {
