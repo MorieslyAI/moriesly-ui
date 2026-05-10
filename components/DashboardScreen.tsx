@@ -274,7 +274,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     if (level <= 5) {
       return {
         card: "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 dark:border-zinc-700",
-        iconBg: "bg-zinc-50 border-zinc-100 dark:border-zinc-800",
+        iconBg: "bg-zinc-50 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-800",
         iconColor: "text-zinc-400",
         progressBar: "bg-zinc-900",
         rankText: "text-zinc-900 dark:text-zinc-100",
@@ -1549,7 +1549,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
 
             {/* Nutrient Breakdown */}
-            <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 mb-8">
+            <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <FlaskConical className="w-4 h-4 text-brand-600" />
                 <h4 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Specific Nutrient Breakdown</h4>
@@ -1663,7 +1663,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
 
             {/* AI Insights Recap */}
-            <div className="mt-8 p-5 bg-teal-50 rounded-3xl border border-teal-100">
+            <div className="mt-8 p-5 bg-teal-50 dark:bg-teal-900/20 rounded-3xl border border-teal-100 dark:border-teal-900/30">
               <h4 className="text-xs font-black text-teal-900 uppercase tracking-wider mb-2">AI Nutritional Recap</h4>
               <p className="text-sm text-teal-800 leading-relaxed">
                 {consumedItems.length === 0
@@ -1812,7 +1812,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[8px] sm:text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Daily Calories</p>
                 {dailyCalories > 2100 && (
-                  <span className="text-[8px] font-bold text-rose-500 uppercase bg-rose-50 px-1.5 py-0.5 rounded flex items-center gap-1">
+                  <span className="text-[8px] font-bold text-rose-500 uppercase bg-rose-50 dark:bg-rose-900/20 px-1.5 py-0.5 rounded flex items-center gap-1">
                     <AlertTriangle className="w-2 h-2" /> <span className="hidden sm:inline">Over Limit</span>
                   </span>
                 )}
@@ -1924,7 +1924,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   <div className="flex justify-between items-start p-5 sm:p-6 pb-3 shrink-0 border-b border-zinc-100 dark:border-zinc-800">
                     <div>
                       <div className="flex items-center gap-2 mb-1.5">
-                        <div className="bg-blue-50 text-blue-600 p-2 rounded-xl shadow-sm">
+                        <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 p-2 rounded-xl shadow-sm">
                           {currentAgent.icon}
                         </div>
                         <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">{currentAgent.workoutName}</h2>
@@ -1974,7 +1974,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
                     {/* Details Section */}
                     <div className="space-y-4 shrink-0 pb-8 sm:pb-4">
-                      <div className="bg-blue-50 rounded-2xl p-5 border border-blue-100/50 shadow-sm relative overflow-hidden">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-5 border border-blue-100/50 dark:border-blue-900/30 shadow-sm relative overflow-hidden">
                         <div className="flex items-center gap-2 mb-3 relative z-10">
                           <Brain className="w-5 h-5 text-blue-600" />
                           <h4 className="font-black text-blue-900 text-base tracking-tight">Protocol Objective: {currentAgent.tags[0]}</h4>
@@ -1987,7 +1987,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div className="bg-white dark:bg-zinc-900 rounded-2xl p-4 sm:p-5 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-blue-200 transition-colors">
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="bg-emerald-50 p-1.5 rounded-lg text-emerald-600">
+                            <div className="bg-emerald-50 dark:bg-emerald-900/20 p-1.5 rounded-lg text-emerald-600">
                               <Activity className="w-4 h-4" />
                             </div>
                             <p className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Expected Impact</p>
@@ -1996,7 +1996,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         </div>
                         <div className="bg-white dark:bg-zinc-900 rounded-2xl p-4 sm:p-5 border border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-blue-200 transition-colors">
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="bg-purple-50 p-1.5 rounded-lg text-purple-600">
+                            <div className="bg-purple-50 dark:bg-purple-900/20 p-1.5 rounded-lg text-purple-600">
                               <RotateCw className="w-4 h-4" />
                             </div>
                             <p className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Recovery Needs</p>
@@ -2282,13 +2282,13 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <div className="flex items-center gap-1.5 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] shadow-[0_0_8px_#F59E0B]"></div> Glucose
                 </div>
-                <span className="text-xs font-black text-zinc-900 dark:text-zinc-100 dark:text-white pl-3">{glucosePercent}%</span>
+                <span className="text-xs font-black text-zinc-900 dark:text-zinc-100 pl-3">{glucosePercent}%</span>
               </div>
             </div>
           </div>
 
           {/* Insight & Trend Footer */}
-          <div className="grid grid-cols-2 gap-3 bg-zinc-50/50 rounded-2xl p-3 border border-zinc-100 dark:border-zinc-800">
+          <div className="grid grid-cols-2 gap-3 bg-zinc-50/50 dark:bg-zinc-800/30 rounded-2xl p-3 border border-zinc-100 dark:border-zinc-800">
             <div className="flex flex-col">
               <span className="text-[9px] font-bold text-zinc-400 uppercase mb-1">Performance Trend</span>
               <div className="flex items-center gap-2">
@@ -2337,7 +2337,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <div className="mt-2 pt-4 border-t border-zinc-100 dark:border-zinc-800">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-orange-50 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
                     <Flame className="w-3.5 h-3.5 text-orange-500" />
                   </div>
                   <h3 className="text-[10px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">Burn Progress</h3>
@@ -2350,7 +2350,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               </div>
 
-              <div className="relative h-12 bg-zinc-50 rounded-xl border border-zinc-100 dark:border-zinc-800 overflow-hidden p-1">
+              <div className="relative h-12 bg-zinc-50 dark:bg-zinc-800 rounded-xl border border-zinc-100 dark:border-zinc-800 overflow-hidden p-1">
                 <div
                   className="h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-lg transition-all duration-1000 ease-out relative"
                   style={{ width: `${Math.round((completedWorkouts.length / (trainingPlan.schedule.filter(b => b.sugarImpact < 0).length || 1)) * 100)}%` }}
@@ -2369,7 +2369,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 {trainingPlan.schedule.map((block, idx) => {
                   if (block.sugarImpact < 0 && !completedWorkouts.includes(idx)) {
                     return (
-                      <div key={idx} className="flex items-center justify-between bg-zinc-50 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
+                      <div key={idx} className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                           <div>
@@ -2379,7 +2379,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         </div>
                         <button
                           onClick={() => onNavigate('training')}
-                          className="text-[8px] font-black text-orange-600 bg-orange-50 px-2 py-1 rounded-lg hover:bg-orange-100 transition-colors"
+                          className="text-[8px] font-black text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
                         >
                           START
                         </button>
@@ -2535,7 +2535,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <span className="text-[9px] font-black text-zinc-400 tracking-[0.1em] uppercase">CALORIES</span>
             </div>
             <div className="flex items-baseline gap-1 mb-3">
-              <span className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter leading-none">{(Math.round(consumedCals * 10) / 10).toLocaleString()}</span>
+              <span className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tighter leading-none">{(Math.round(consumedCals * 10) / 10).toLocaleString()}</span>
               <span className="text-xs font-black text-zinc-400 leading-none">/ {(targetCals / 1000).toFixed(1)}k</span>
             </div>
           </div>
@@ -2593,7 +2593,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <FlaskConical className="w-4 h-4 text-brand-600 dark:text-brand-400" />
             </div>
             <div>
-              <h3 className="text-xs font-black text-zinc-900 dark:text-zinc-100 dark:text-white uppercase tracking-widest">Specific Nutrients</h3>
+              <h3 className="text-xs font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest">Specific Nutrients</h3>
               <p className="text-[9px] font-bold text-zinc-400 uppercase">Micronutrient Intelligence</p>
             </div>
           </div>
@@ -2613,7 +2613,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   {vit.icon || '💊'}
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-[11px] font-black text-zinc-900 dark:text-zinc-100 dark:text-white">{vit.percent}%</span>
+                  <span className="text-[11px] font-black text-zinc-900 dark:text-zinc-100">{vit.percent}%</span>
                   <div className="w-8 h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full mt-1 overflow-hidden">
                     <div
                       className={`h-full ${vit.color?.replace('bg-', 'bg-') || 'bg-brand-500'}`}
@@ -2622,7 +2622,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="font-black text-zinc-900 dark:text-zinc-100 dark:text-white text-xs mb-1 tracking-tight">{vit.name}</div>
+              <div className="font-black text-zinc-900 dark:text-zinc-100 text-xs mb-1 tracking-tight">{vit.name}</div>
               <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">{vit.amount}</div>
             </div>
           ))}
@@ -2633,28 +2633,28 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
       {/* All Nutrients Modal (Modern Redesign) */}
       {showAllNutrients && (
-        <div className="fixed inset-0 z-[110] flex flex-col bg-white dark:bg-zinc-900 dark:bg-zinc-950 animate-in fade-in slide-in-from-bottom-10 duration-500">
+        <div className="fixed inset-0 z-[110] flex flex-col bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-10 duration-500">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800 dark:border-zinc-900 bg-white dark:bg-zinc-900/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-20">
+          <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 backdrop-blur-xl sticky top-0 z-20">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center">
                 <FlaskConical className="w-6 h-6 text-brand-600 dark:text-brand-400" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tight">Nutritional Intelligence</h3>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">Nutritional Intelligence</h3>
                 <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Full Micronutrient Breakdown</p>
               </div>
             </div>
             <button
               onClick={() => setShowAllNutrients(false)}
-              className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 dark:bg-zinc-900 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:hover:text-white transition-colors"
+              className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6 bg-zinc-50 dark:bg-zinc-950/50">
+          <div className="flex-1 overflow-y-auto p-6 bg-zinc-50 dark:bg-zinc-950">
             <div className="max-w-[2000px] mx-auto px-4 space-y-10 pb-20">
               {/* Summary Card */}
               <div className="p-8 bg-gradient-to-br from-brand-500 to-brand-700 rounded-[2.5rem] shadow-xl shadow-brand-500/20 text-white relative overflow-hidden">
@@ -2682,7 +2682,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 return (
                   <div key={cat} className="space-y-6">
                     <div className="flex items-center gap-4 px-2">
-                      <h4 className="text-xs font-black text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.3em]">{cat}</h4>
+                      <h4 className="text-xs font-black text-zinc-400 uppercase tracking-[0.3em]">{cat}</h4>
                       <div className="h-px bg-zinc-200 dark:bg-zinc-800 flex-1"></div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2694,7 +2694,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex justify-between items-start mb-1">
-                                <span className="font-black text-zinc-900 dark:text-zinc-100 dark:text-white truncate text-sm">{vit.name}</span>
+                                <span className="font-black text-zinc-900 dark:text-zinc-100 truncate text-sm">{vit.name}</span>
                                 <span className="text-xs font-black text-brand-600 dark:text-brand-400">{vit.percent}%</span>
                               </div>
                               <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">{vit.amount}</span>
@@ -2723,10 +2723,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       <div className="mb-8 relative">
         <div className="flex items-center justify-between mb-4 px-2">
           <div>
-            <h2 className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.3em] mb-0.5">Glycemic Timeline</h2>
-            <p className="text-[8px] font-bold text-zinc-300 dark:text-zinc-600 uppercase tracking-widest">Real-time Glucose Impact</p>
+            <h2 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em] mb-0.5">Glycemic Timeline</h2>
+            <p className="text-[8px] font-bold text-zinc-300 uppercase tracking-widest">Real-time Glucose Impact</p>
           </div>
-          <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 dark:border-zinc-800 rounded-full px-3 py-1.5 shadow-sm">
+          <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full px-3 py-1.5 shadow-sm">
             <Calendar className="w-3 h-3 text-zinc-400" />
             <span className="text-[8px] font-black text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
               {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -2756,7 +2756,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   >
                     {/* Value Label */}
                     <div className={`absolute -top-1 transition-all duration-500 ${isSelected ? 'opacity-100 -translate-y-1' : 'opacity-0 translate-y-1 group-hover/bar:opacity-100 group-hover/bar:-translate-y-1'}`}>
-                      <span className="text-zinc-900 dark:text-zinc-100 dark:text-white font-black text-xs tracking-tighter" style={{ color: isSelected ? foodColor : undefined }}>
+                      <span className="text-zinc-900 dark:text-zinc-100 font-black text-xs tracking-tighter" style={{ color: isSelected ? foodColor : undefined }}>
                         {Math.round(sugarValue)}<span className="text-[8px] text-zinc-400 ml-0.5">g</span>
                       </span>
                     </div>
@@ -2787,7 +2787,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     </div>
 
                     {/* Time Label */}
-                    <div className={`text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-400 group-hover/bar:text-zinc-600 dark:group-hover/bar:text-zinc-300'}`}>
+                    <div className={`text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full transition-all duration-300 ${isSelected ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-sm' : 'text-zinc-400 group-hover/bar:text-zinc-600'}`}>
                       {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </button>
@@ -2797,7 +2797,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-full gap-4 relative z-10">
               <div className="w-16 h-16 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
-                <Activity className="w-8 h-8 text-zinc-200 dark:text-zinc-700 dark:text-zinc-300" />
+                <Activity className="w-8 h-8 text-zinc-200 dark:text-zinc-700" />
               </div>
               <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">No Activity Logged Today</p>
             </div>
@@ -2806,19 +2806,15 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       </div>
 
       {/* Selected Item Detail Modal */}
-
-
-
-      {/* Selected Item Detail Modal */}
       {selectedHistoryItem && (
         <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setSelectedHistoryItem(null)}>
           <div
-            className="bg-white dark:bg-zinc-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-6 shadow-2xl border border-zinc-200 dark:border-zinc-700 dark:border-zinc-800 relative animate-in zoom-in-95 duration-300"
+            className="bg-white dark:bg-zinc-900 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-6 shadow-2xl border border-zinc-200 dark:border-zinc-700 relative animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setSelectedHistoryItem(null)}
-              className="absolute top-4 right-4 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 dark:hover:text-white transition-colors z-10"
+              className="absolute top-4 right-4 p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors z-10"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -2840,8 +2836,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 {new Date(selectedHistoryItem.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
               <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border ${selectedHistoryItem.itemType === 'drink'
-                ? 'bg-blue-50 text-blue-600 border-blue-100'
-                : 'bg-orange-50 text-orange-600 border-orange-100'
+                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/30'
+                : 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/30'
                 }`}>
                 {selectedHistoryItem.itemType || 'FOOD'}
               </span>

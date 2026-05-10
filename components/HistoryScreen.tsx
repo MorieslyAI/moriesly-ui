@@ -367,8 +367,8 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
                                 </div>
                                 <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border ${
                                     selectedItem.itemType === 'drink' 
-                                    ? 'bg-blue-50 text-blue-600 border-blue-100' 
-                                    : 'bg-orange-50 text-orange-600 border-orange-100'
+                                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' 
+                                    : 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-900/30'
                                 }`}>
                                     {selectedItem.itemType || 'FOOD'}
                                 </span>

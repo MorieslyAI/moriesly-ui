@@ -415,7 +415,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
             {socialTab === 'leaderboard' && (
               <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                     <Trophy className="w-5 h-5 text-amber-500" />
                   </div>
                   <h3 className="text-sm font-bold text-zinc-800 dark:text-white uppercase tracking-wide">Health Leaderboard</h3>

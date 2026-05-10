@@ -161,7 +161,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                             EXP {userProfile.currentXp}
                           </div>
                           {userProfile.medicalConditions?.map((c, i) => (
-                              <span key={i} className="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-xs font-bold border border-rose-100 uppercase">{c}</span>
+                              <span key={i} className="px-3 py-1 bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 rounded-full text-xs font-bold border border-rose-100 dark:border-rose-900/30 uppercase">{c}</span>
                           ))}
                       </div>
 
@@ -212,11 +212,11 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                     onClick={() => setActiveTab('body')}
                     className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all group relative overflow-hidden cursor-pointer md:col-span-2"
                   >
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 rounded-bl-[5rem] -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 dark:bg-rose-900/10 rounded-bl-[5rem] -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
                       <div className="flex flex-col md:flex-row gap-6 relative z-10">
                           <div className="flex-1">
                               <div className="flex items-center gap-3 mb-4">
-                                  <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-xl">🫀</div>
+                                  <div className="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center text-xl">🫀</div>
                                   <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wide">Biological Integrity</h3>
                               </div>
                               <div className="space-y-4">
@@ -270,9 +270,9 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
 
                   {/* Nutrition Card */}
                   <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-teal-50 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-teal-50 dark:bg-teal-900/10 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
                       <div className="flex items-center gap-3 mb-4 relative z-10">
-                          <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-xl">🥗</div>
+                          <div className="w-10 h-10 rounded-full bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center text-xl">🥗</div>
                           <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wide">Nutrition Protocol</h3>
                       </div>
                       {dietPlan ? (
@@ -287,9 +287,9 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
 
                   {/* Training Card */}
                   <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 dark:bg-orange-900/10 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
                       <div className="flex items-center gap-3 mb-4 relative z-10">
-                          <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-xl">⚡</div>
+                          <div className="w-10 h-10 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-xl">⚡</div>
                           <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wide">Training Regimen</h3>
                       </div>
                       {trainingPlan ? (
@@ -304,16 +304,16 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
 
                   {/* Biological Card */}
                   <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 dark:bg-purple-900/10 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
                       <div className="flex items-center gap-3 mb-4 relative z-10">
-                          <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-xl">🧬</div>
+                          <div className="w-10 h-10 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-xl">🧬</div>
                           <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wide">Bio-Metrics</h3>
                       </div>
                       {skinResult ? (
                           <div className="relative z-10">
                               <div className="flex items-center gap-3 mb-2">
                                   <span className="text-lg font-bold text-purple-600">Age {skinResult.biologicalAge}</span>
-                                  <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold border ${skinResult.glycationLevel === 'Critical' ? 'bg-rose-50 border-rose-100 text-rose-600' : 'bg-teal-50 border-teal-100 text-teal-600'}`}>
+                                      <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold border ${skinResult.glycationLevel === 'Critical' ? 'bg-rose-50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-900/30 text-rose-600' : 'bg-teal-50 dark:bg-teal-900/20 border-teal-100 dark:border-teal-900/30 text-teal-600'}` }>
                                       {skinResult.glycationLevel}
                                   </span>
                               </div>
@@ -326,9 +326,9 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
 
                   {/* Consultation Card */}
                   <div className="bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 dark:bg-blue-900/10 rounded-bl-[4rem] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
                       <div className="flex items-center gap-3 mb-4 relative z-10">
-                          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-xl">💬</div>
+                          <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-xl">💬</div>
                           <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wide">Latest Intel</h3>
                       </div>
                       {consultationHistory.length > 0 ? (
@@ -541,7 +541,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                       <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
                           <div className="flex items-center justify-between mb-6">
                               <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 dark:text-zinc-400">Micronutrients</h4>
-                              <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">{ledger.vitamins.length} Detected</span>
+                              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">{ledger.vitamins.length} Detected</span>
                           </div>
                           <div className="flex flex-wrap gap-3">
                               {ledger.vitamins.map((v, i) => (

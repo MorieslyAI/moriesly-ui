@@ -191,7 +191,7 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
                       <div className="text-3xl font-black text-zinc-900 dark:text-zinc-100 tracking-tighter leading-none mb-1">
                         +{projection.yearProjectionKg.toFixed(1)}<span className="text-sm text-zinc-400 font-bold ml-0.5">kg</span>
                       </div>
-                      <div className="text-[10px] font-bold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full inline-block truncate max-w-full">
+                      <div className="text-[10px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-full inline-block truncate max-w-full">
                         {projection.comparison}
                       </div>
                   </div>
