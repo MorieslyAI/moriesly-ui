@@ -352,6 +352,13 @@ function App() {
         }
     }, [scanMode]);
 
+    // Reset skin result when navigating away from medical/bio scan page
+    useEffect(() => {
+        if (currentView !== 'medical') {
+            setSkinResult(null);
+        }
+    }, [currentView]);
+
     const addXp = (amount: number) => {
         setUserStats(prev => {
             let newXp = prev.currentXp + amount;
@@ -1316,7 +1323,7 @@ function App() {
                         : currentView === 'explore' ? (<ExploreScreen userStats={userStats} ledger={ledger} history={history} />)
                             : currentView === 'diet' ? (<DietPlanScreen userProfile={userStats} onAddXp={addXp} dietPlan={dietPlan} setDietPlan={setDietPlan} />)
                                 : currentView === 'training' ? (<TacticalTrainingScreen userProfile={userStats} ledger={ledger} onAddXp={addXp} plan={trainingPlan} setPlan={setTrainingPlan} completedWorkouts={completedWorkouts} setCompletedWorkouts={setCompletedWorkouts} completedMeals={completedMeals} setCompletedMeals={setCompletedMeals} />)
-                                    : currentView === 'medical' ? (<GlycationScanner data={skinResult} onScan={handleSkinScan} isLoading={isScanning} onClose={() => setCurrentView('dashboard')} />)
+                                    : currentView === 'medical' ? (<GlycationScanner data={skinResult} onScan={handleSkinScan} isLoading={isScanning} onClose={() => { setSkinResult(null); setCurrentView('dashboard'); }} />)
                                         : currentView === 'consultant' || currentView === 'chat' ? (<ConsultantScreen userProfile={userStats} connectionState={connectionState} onConnect={handleConnect} onDisconnect={handleDisconnect} videoFeedNode={sharedVideoFeed} agentVolume={agentVolume} consultationHistory={consultationHistory} onSaveSession={(s) => setConsultationHistory(prev => [s, ...prev])} missionLogs={missionLogs} onFlipCamera={() => videoFeedRef.current?.flipCamera()} onToggleFlash={() => videoFeedRef.current?.toggleFlash()} transcript={transcript} onAddXp={addXp} onToggleFullScreen={setIsFullScreenVideo} />)
                                             : currentView === 'tracker' ? (<WeightTrackerScreen weightHistory={weightHistory} goal={currentGoal} sugarHistory={history} onUpdateGoal={setCurrentGoal} onAddWeight={(w) => { /* update weight */ }} />)
                                                 : currentView === 'history' || currentView === 'calendar' ? (
