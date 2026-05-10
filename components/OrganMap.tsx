@@ -32,7 +32,9 @@ interface OrganStatus {
 
 const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories: propCalories, fat: propFat, protein: propProtein, fiber: propFiber, type, impactData, compact = false }) => {
   const [selectedOrgan, setSelectedOrgan] = useState<string | null>(null);
+  const [activeCard, setActiveCard] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
+  const sliderTouchStartX = useRef<number>(0);
 
   const sugar = ledger ? ledger.consumed : (propSugar || 0);
   const calories = ledger ? (ledger.calories || 0) : (propCalories || 0);
@@ -346,77 +348,126 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                 </div>
               </div>
 
-              <div ref={listRef} className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
-                 <AnimatePresence mode="popLayout">
-                 {organData.map((organ) => {
-                     const isCritical = organ.stressLevel === 2;
-                     const isWarning = organ.stressLevel === 1;
-                     const isSelected = selectedOrgan === organ.id;
+              {/* Dots Indicator */}
+              <div className="flex justify-center gap-1.5 py-2 shrink-0">
+                  {organData.map((_, i) => (
+                      <button
+                          key={i}
+                          onClick={() => setActiveCard(i)}
+                          className={`rounded-full transition-all duration-300 ${
+                              activeCard === i
+                                  ? 'w-5 h-1.5 bg-teal-500'
+                                  : 'w-1.5 h-1.5 bg-zinc-300 dark:bg-zinc-700'
+                          }`}
+                      />
+                  ))}
+              </div>
 
-                     return (
-                         <motion.div 
-                            layout
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            id={`list-item-${organ.id}`}
-                            key={organ.id} 
-                            onClick={() => setSelectedOrgan(organ.id)}
-                            className={`relative overflow-hidden rounded-2xl transition-all duration-300 border cursor-pointer group shrink-0
-                                ${isSelected 
-                                    ? 'bg-zinc-50 dark:bg-zinc-800 border-teal-500/30 shadow-lg ring-1 ring-teal-500/10' 
-                                    : 'bg-white dark:bg-zinc-900/50 border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700 hover:shadow-md'
-                                }
-                            `}
-                         >
-                             <div className={`absolute left-0 top-0 bottom-0 w-1.5 transition-colors ${
-                                 isCritical ? 'bg-rose-500' : isWarning ? 'bg-amber-500' : 'bg-emerald-500'
-                             }`}></div>
+              {/* Horizontal Slider */}
+              <div
+                  className="flex-1 overflow-hidden relative"
+                  onTouchStart={e => { sliderTouchStartX.current = e.touches[0].clientX; }}
+                  onTouchEnd={e => {
+                      const diff = sliderTouchStartX.current - e.changedTouches[0].clientX;
+                      if (Math.abs(diff) > 40) {
+                          if (diff > 0) setActiveCard(c => Math.min(c + 1, organData.length - 1));
+                          else setActiveCard(c => Math.max(c - 1, 0));
+                      }
+                  }}
+              >
+                  <div
+                      className="flex h-full transition-transform duration-300 ease-in-out"
+                      style={{ transform: `translateX(-${activeCard * 100}%)` }}
+                  >
+                      {organData.map((organ) => {
+                          const isCritical = organ.stressLevel === 2;
+                          const isWarning = organ.stressLevel === 1;
+                          return (
+                              <div
+                                  key={organ.id}
+                                  className="min-w-full h-full p-4 flex flex-col gap-3"
+                              >
+                                  {/* Card */}
+                                  <div className={`relative overflow-hidden rounded-2xl border flex-1 flex flex-col ${
+                                      isCritical
+                                          ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/50'
+                                          : isWarning
+                                          ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/50'
+                                          : 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/50'
+                                  }`}>
+                                      {/* Left accent bar */}
+                                      <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${
+                                          isCritical ? 'bg-rose-500' : isWarning ? 'bg-amber-500' : 'bg-emerald-500'
+                                      }`} />
 
-                             <div className="p-3.5">
-                                 <div className="flex justify-between items-center mb-2">
-                                     <div className="flex items-center gap-2">
-                                         <span className="text-xl filter grayscale group-hover:grayscale-0 transition-all">{organ.icon}</span>
-                                         <span className={`text-[10px] font-black uppercase tracking-widest ${getStatusColor(organ.stressLevel).split(' ')[0]}`}>
-                                             {organ.name}
-                                         </span>
-                                     </div>
-                                     {isCritical && (
-                                        <motion.span 
-                                            animate={{ opacity: [0.5, 1, 0.5] }}
-                                            transition={{ duration: 1.5, repeat: Infinity }}
-                                            className="text-[7px] font-black bg-rose-600 text-white px-2 py-0.5 rounded-full uppercase tracking-widest"
-                                        >
-                                            Critical
-                                        </motion.span>
-                                     )}
-                                 </div>
-                                 
-                                 <div className={`text-[10px] font-bold leading-tight ${isCritical ? 'text-rose-700 dark:text-rose-400' : 'text-zinc-800 dark:text-zinc-200'}`}>
-                                     {organ.message}
-                                 </div>
+                                      <div className="p-5 pl-7 flex flex-col gap-4 flex-1">
+                                          {/* Header */}
+                                          <div className="flex justify-between items-center">
+                                              <div className="flex items-center gap-3">
+                                                  <span className="text-3xl">{organ.icon}</span>
+                                                  <span className={`text-[11px] font-black uppercase tracking-widest ${
+                                                      getStatusColor(organ.stressLevel).split(' ')[0]
+                                                  }`}>
+                                                      {organ.name}
+                                                  </span>
+                                              </div>
+                                              {isCritical && (
+                                                  <motion.span
+                                                      animate={{ opacity: [0.5, 1, 0.5] }}
+                                                      transition={{ duration: 1.5, repeat: Infinity }}
+                                                      className="text-[7px] font-black bg-rose-600 text-white px-2 py-0.5 rounded-full uppercase tracking-widest"
+                                                  >
+                                                      Critical
+                                                  </motion.span>
+                                              )}
+                                              {isWarning && !isCritical && (
+                                                  <span className="text-[7px] font-black bg-amber-500 text-white px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                                      Warning
+                                                  </span>
+                                              )}
+                                          </div>
 
-                                 {(isSelected || isCritical) && (
-                                     <motion.div 
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        className="mt-3 text-[10px] text-zinc-500 dark:text-zinc-400 leading-relaxed border-t border-zinc-100 dark:border-zinc-800 pt-3"
-                                     >
-                                         {organ.detail}
-                                         {organ.primaryStressor && (
-                                             <div className="mt-1.5 flex items-center gap-1">
-                                                 <span className="text-[8px] font-black text-zinc-400 uppercase">Primary Stressor:</span>
-                                                 <span className="text-[8px] font-black text-rose-500 uppercase">{organ.primaryStressor}</span>
-                                             </div>
-                                         )}
-                                     </motion.div>
-                                 )}
-                             </div>
-                         </motion.div>
-                     );
-                 })}
-                 </AnimatePresence>
-                 <div className="h-6"></div>
-             </div>
+                                          {/* Status message */}
+                                          <div className={`text-sm font-black leading-tight ${
+                                              isCritical ? 'text-rose-600 dark:text-rose-400' : isWarning ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-700 dark:text-emerald-400'
+                                          }`}>
+                                              {organ.message}
+                                          </div>
+
+                                          {/* Detail */}
+                                          <div className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed border-t border-zinc-200/60 dark:border-zinc-700/40 pt-3">
+                                              {organ.detail}
+                                          </div>
+
+                                          {/* Primary Stressor */}
+                                          {organ.primaryStressor && (
+                                              <div className="flex items-center gap-1.5 mt-auto">
+                                                  <span className="text-[8px] font-black text-zinc-400 uppercase">Primary Stressor:</span>
+                                                  <span className="text-[8px] font-black text-rose-500 uppercase bg-rose-50 dark:bg-rose-900/30 px-1.5 py-0.5 rounded">{organ.primaryStressor}</span>
+                                              </div>
+                                          )}
+                                      </div>
+                                  </div>
+
+                                  {/* Prev / Next nav */}
+                                  <div className="flex gap-2">
+                                      <button
+                                          onClick={() => setActiveCard(c => Math.max(c - 1, 0))}
+                                          disabled={activeCard === 0}
+                                          className="flex-1 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-bold text-xs uppercase disabled:opacity-30 transition-opacity"
+                                      >← Prev</button>
+                                      <span className="flex items-center text-[10px] font-black text-zinc-400">{activeCard + 1}/{organData.length}</span>
+                                      <button
+                                          onClick={() => setActiveCard(c => Math.min(c + 1, organData.length - 1))}
+                                          disabled={activeCard === organData.length - 1}
+                                          className="flex-1 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-bold text-xs uppercase disabled:opacity-30 transition-opacity"
+                                      >Next →</button>
+                                  </div>
+              </div>
+                          );
+                      })}
+                  </div>
+              </div>
              
              <div className="p-6 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 shrink-0">
                  <div className="flex items-center justify-between gap-6">
