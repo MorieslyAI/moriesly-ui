@@ -1226,7 +1226,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
               {/* Expand fallback — hanya saat pakai data lokal */}
               {!backendBlindspot && isIntelExpanded && (
-                <div className="mt-3 pt-3 border-t border-zinc-50 animate-in slide-in-from-top-1">
+                <div className="mt-3 pt-3 border-t border-zinc-50 dark:border-zinc-800 animate-in slide-in-from-top-1">
                   <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
                     {intelDisplay.desc}
                   </p>
@@ -1248,10 +1248,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </h1>
         </div>
         <div className="relative">
-          <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
+          <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden border-2 border-white dark:border-zinc-900 shadow-sm">
             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userStats.name}`} alt="Avatar" className="w-full h-full" />
           </div>
-          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-brand-500 rounded-full border-2 border-white"></div>
+          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-brand-500 rounded-full border-2 border-white dark:border-zinc-900"></div>
         </div>
       </div>
 
@@ -1285,9 +1285,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               </div>
               {filteredSaved > 0 && (
-                <div className="shrink-0 flex flex-col items-end bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100">
-                  <span className="text-[8px] font-bold text-emerald-600 uppercase tracking-tighter">Sugar Saved</span>
-                  <span className="text-xs font-black text-emerald-600">-{filteredSaved}g</span>
+                <div className="shrink-0 flex flex-col items-end bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
+                  <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tighter">Sugar Saved</span>
+                  <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">-{filteredSaved}g</span>
                 </div>
               )}
             </div>
@@ -1320,7 +1320,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 )}
               </button>
             ) : (
-              <div className="w-full md:w-auto bg-emerald-50 text-emerald-600 text-[10px] font-medium px-4 py-2 rounded-full flex items-center justify-center gap-2 border border-emerald-100 animate-in fade-in zoom-in duration-300">
+              <div className="w-full md:w-auto bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-medium px-4 py-2 rounded-full flex items-center justify-center gap-2 border border-emerald-100 dark:border-emerald-900/30 animate-in fade-in zoom-in duration-300">
                 <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Checked In
               </div>
             )}
@@ -1340,10 +1340,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <div
                   key={day.dateStr}
                   className={`min-w-[38px] flex flex-col items-center justify-center py-1.5 rounded-lg border transition-all ${isToday
-                    ? 'border-zinc-900 bg-zinc-900 text-white shadow-md scale-105 z-10'
+                    ? 'border-zinc-900 bg-zinc-900 dark:border-zinc-600 dark:bg-zinc-700 text-white shadow-md scale-105 z-10'
                     : day.isCheckedIn
-                      ? 'bg-emerald-50 border-emerald-100 text-emerald-600'
-                      : 'bg-zinc-50 border-zinc-100 dark:border-zinc-800 text-zinc-400'
+                      ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500'
                     }`}
                 >
                   <span className={`text-[6px] font-black uppercase mb-0.5 ${isToday ? 'text-zinc-400' : day.isCheckedIn ? 'text-emerald-500/70' : 'text-zinc-300'}`}>
@@ -1408,7 +1408,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <div className="p-6 flex-1">
                       <div className="flex items-start justify-between mb-6">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${isSelected ? 'bg-brand-50 border-brand-200 text-brand-600' : 'bg-zinc-50 border-zinc-200 dark:border-zinc-700 text-zinc-400'}`}>
+                          <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${isSelected ? 'bg-brand-50 border-brand-200 text-brand-600' : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-400'}`}>
                             {agent.icon}
                           </div>
                           <div>
@@ -1427,7 +1427,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
                       <div className="flex flex-wrap gap-2 mb-8">
                         {agent.tags.map(tag => (
-                          <span key={tag} className="px-2.5 py-1 rounded-md bg-zinc-50 border border-zinc-200 dark:border-zinc-700 text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                          <span key={tag} className="px-2.5 py-1 rounded-md bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                             {tag}
                           </span>
                         ))}
@@ -1444,7 +1444,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       </div>
                     </div>
 
-                    <div className="p-4 bg-zinc-50 border-t border-zinc-100 dark:border-zinc-800">
+                    <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 border-t border-zinc-100 dark:border-zinc-800">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-1.5">
                           <Target className="w-3 h-3 text-zinc-400" />
@@ -3032,8 +3032,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
 
             <div className="space-y-4">
-              <div className={`${dailyHistory.length === 0 ? 'bg-zinc-50 border-zinc-100' : isTrendPositive ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'} rounded-2xl p-4 border`}>
-                <h4 className={`text-xs font-black uppercase tracking-wider mb-2 flex items-center gap-2 ${dailyHistory.length === 0 ? 'text-zinc-600' : isTrendPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
+              <div className={`${dailyHistory.length === 0 ? 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-700' : isTrendPositive ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-900/30' : 'bg-rose-50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-900/30'} rounded-2xl p-4 border`}>
+                <h4 className={`text-xs font-black uppercase tracking-wider mb-2 flex items-center gap-2 ${dailyHistory.length === 0 ? 'text-zinc-600 dark:text-zinc-400' : isTrendPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                   {dailyHistory.length === 0 ? <Activity className="w-4 h-4" /> : isTrendPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                   {dailyHistory.length === 0 ? 'Awaiting Data' : `Health Score ${isTrendPositive ? 'Increase' : 'Drop'} (${isTrendPositive ? '+' : '-'}${trendAbs}%)`}
                 </h4>

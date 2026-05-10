@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const INTEL_FACTS = [
     {
@@ -88,7 +88,7 @@ const BlindspotMonitor: React.FC = () => {
                     <span className={`text-[9px] font-bold uppercase px-1.5 rounded ${
                         fact.risk === 'Critical' ? 'bg-rose-500 text-white' : 
                         fact.risk === 'High' ? 'bg-orange-500 text-white' : 
-                        'bg-zinc-300 text-zinc-800'
+                        'bg-zinc-300 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200'
                     }`}>
                         {fact.risk}
                     </span>

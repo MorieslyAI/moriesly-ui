@@ -138,7 +138,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
               <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
                   <div className="relative group">
                       <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-gradient-to-br from-[#33ADAE] to-[#1F6E6C] shadow-lg shadow-teal-900/10">
-                        <div className="w-full h-full rounded-full bg-zinc-50 overflow-hidden">
+                        <div className="w-full h-full rounded-full bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
                             <AgentAvatar volume={15} isActive={true} />
                         </div>
                       </div>
@@ -261,7 +261,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                                   </p>
                               </div>
                           </div>
-                          <div className="w-full md:w-48 h-64 md:h-48 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center justify-center overflow-hidden relative">
+                          <div className="w-full md:w-48 h-64 md:h-48 bg-zinc-50 dark:bg-zinc-800 rounded-2xl border border-zinc-100 dark:border-zinc-700 flex items-center justify-center overflow-hidden relative">
                               <OrganMap ledger={ledger} type="food" compact={true} />
                               <div className="absolute inset-0 bg-transparent"></div> {/* Overlay to prevent interaction in preview */}
                           </div>
@@ -382,7 +382,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                       </div>
 
                       <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 shrink-0 relative z-10">
-                          <div className={`p-5 rounded-2xl border transition-all flex items-center gap-4 ${ledger.consumed > 40 ? 'bg-rose-50 border-rose-100 shadow-rose-100/50 shadow-lg' : 'bg-zinc-50 border-zinc-100'}`}>
+                          <div className={`p-5 rounded-2xl border transition-all flex items-center gap-4 ${ledger.consumed > 40 ? 'bg-rose-50 border-rose-100 shadow-rose-100/50 shadow-lg' : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-700'}`}>
                               <div className={`p-3 rounded-xl ${ledger.consumed > 40 ? 'bg-rose-100 text-rose-600' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'}`}>
                                 <Activity className="w-5 h-5" />
                               </div>
@@ -391,7 +391,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                                 <div className={`text-sm font-black ${ledger.consumed > 40 ? 'text-rose-600' : 'text-zinc-900 dark:text-zinc-100'}`}>{ledger.consumed > 40 ? 'HIGH' : 'LOW'}</div>
                               </div>
                           </div>
-                          <div className={`p-5 rounded-2xl border transition-all flex items-center gap-4 ${ledger.consumed > 25 ? 'bg-amber-50 border-amber-100 shadow-amber-100/50 shadow-lg' : 'bg-zinc-50 border-zinc-100'}`}>
+                          <div className={`p-5 rounded-2xl border transition-all flex items-center gap-4 ${ledger.consumed > 25 ? 'bg-amber-50 border-amber-100 shadow-amber-100/50 shadow-lg' : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-700'}`}>
                               <div className={`p-3 rounded-xl ${ledger.consumed > 25 ? 'bg-amber-100 text-amber-600' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'}`}>
                                 <Zap className="w-5 h-5" />
                               </div>
@@ -400,7 +400,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                                 <div className={`text-sm font-black ${ledger.consumed > 25 ? 'text-amber-600' : 'text-zinc-900 dark:text-zinc-100'}`}>{ledger.consumed > 25 ? 'VOLATILE' : 'STABLE'}</div>
                               </div>
                           </div>
-                          <div className={`p-5 rounded-2xl border transition-all flex items-center gap-4 ${userProfile.streak > 3 ? 'bg-emerald-50 border-emerald-100 shadow-emerald-100/50 shadow-lg' : 'bg-zinc-50 border-zinc-100'}`}>
+                          <div className={`p-5 rounded-2xl border transition-all flex items-center gap-4 ${userProfile.streak > 3 ? 'bg-emerald-50 border-emerald-100 shadow-emerald-100/50 shadow-lg' : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-700'}`}>
                               <div className={`p-3 rounded-xl ${userProfile.streak > 3 ? 'bg-emerald-100 text-emerald-600' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'}`}>
                                 <TrendingUp className="w-5 h-5" />
                               </div>
