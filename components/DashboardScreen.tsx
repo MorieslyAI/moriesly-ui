@@ -1012,7 +1012,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const Icon = intelDisplay.icon;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-900 dark:bg-[#fafafa] text-zinc-900 dark:text-zinc-100 pb-32 pt-8 md:pt-12 font-sans px-4">
+    <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 pb-32 pt-8 md:pt-12 font-sans px-4">
 
       {/* --- HIGHLIGHT SLIDER (Restored & Optimized) --- */}
       <div className="flex gap-4 overflow-x-auto snap-x scrollbar-hide mb-8 -mx-4 px-4 pb-4">
@@ -1034,17 +1034,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 <div className="absolute bottom-4 left-4 right-4">
                   <h3 className="text-white font-bold text-lg mb-2 leading-tight">{directive?.title || 'Optimize Performance'}</h3>
                   <div className="flex gap-2">
-                    <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+                    <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                       <Activity className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
                       <span className="text-[9px] text-zinc-300 uppercase">{directive?.actions?.[0]?.label || 'Hydrate'}</span>
                       <span className="text-[10px] font-black text-white">{directive?.actions?.[0]?.value || '+500ml'}</span>
                     </div>
-                    <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+                    <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                       <Brain className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
                       <span className="text-[9px] text-zinc-300 uppercase">{directive?.actions?.[1]?.label || 'Focus'}</span>
                       <span className="text-[10px] font-black text-white">{directive?.actions?.[1]?.value || 'Deep Work'}</span>
                     </div>
-                    <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+                    <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                       <Clock className="w-3.5 h-3.5 text-emerald-400 mb-0.5" />
                       <span className="text-[9px] text-zinc-300 uppercase">{directive?.actions?.[2]?.label || 'Sleep'}</span>
                       <span className="text-[10px] font-black text-white">{directive?.actions?.[2]?.value || 'By 23:00'}</span>
@@ -1072,17 +1072,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="absolute bottom-4 left-4 right-4">
             <h3 className="text-white font-bold text-lg mb-2 leading-tight">Microplastics in Water</h3>
             <div className="flex gap-2">
-              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <AlertTriangle className="w-3.5 h-3.5 text-rose-400 mb-0.5" />
                 <span className="text-[9px] text-blue-200 uppercase">Risk</span>
                 <span className="text-[10px] font-bold text-white">High</span>
               </div>
-              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <FlaskConical className="w-3.5 h-3.5 text-blue-400 mb-0.5" />
                 <span className="text-[9px] text-blue-200 uppercase">Focus</span>
                 <span className="text-[10px] font-bold text-white">Toxins</span>
               </div>
-              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Clock className="w-3.5 h-3.5 text-zinc-300 mb-0.5" />
                 <span className="text-[9px] text-blue-200 uppercase">Time</span>
                 <span className="text-[10px] font-bold text-white">2h ago</span>
@@ -1105,17 +1105,17 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <div className="absolute bottom-4 left-4 right-4">
             <h3 className="text-white font-bold text-lg mb-2 leading-tight">Metabolic Sync Training</h3>
             <div className="flex gap-2">
-              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Dumbbell className="w-3.5 h-3.5 text-purple-400 mb-0.5" />
                 <span className="text-[9px] text-purple-200 uppercase">Type</span>
                 <span className="text-[10px] font-bold text-white">HIIT</span>
               </div>
-              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Flame className="w-3.5 h-3.5 text-orange-400 mb-0.5" />
                 <span className="text-[9px] text-purple-200 uppercase">Burn</span>
                 <span className="text-[10px] font-bold text-white">Max</span>
               </div>
-              <div className="flex-1 bg-white dark:bg-zinc-900/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
+              <div className="flex-1 bg-white/10 backdrop-blur-md rounded-xl p-1.5 border border-white/10 flex flex-col items-center justify-center text-center">
                 <Zap className="w-3.5 h-3.5 text-yellow-400 mb-0.5" />
                 <span className="text-[9px] text-purple-200 uppercase">Energy</span>
                 <span className="text-[10px] font-bold text-white">High</span>
