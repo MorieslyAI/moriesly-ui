@@ -12,13 +12,13 @@ const MetabolicInvoice: React.FC<MetabolicInvoiceProps> = ({ focusTax, agingGrad
 
   return (
     <div className="mt-4 animate-in slide-in-from-top-4 duration-700">
-      <div className="relative bg-white dark:bg-zinc-900 text-zinc-900 font-mono p-5 rounded-sm shadow-xl border-t-8 border-zinc-200 mx-2 transform rotate-1">
+      <div className="relative bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-mono p-5 rounded-sm shadow-xl border-t-8 border-zinc-200 dark:border-zinc-700 mx-2 transform rotate-1">
         
         {/* Receipt Cut Pattern Top */}
         <div className="absolute -top-2 left-0 right-0 h-2 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBkPSJNMCAxMEw1IDBMMTAgMTBIMFoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] bg-repeat-x"></div>
 
         {/* Header */}
-        <div className="text-center border-b-2 border-dashed border-zinc-300 pb-3 mb-3">
+        <div className="text-center border-b-2 border-dashed border-zinc-300 dark:border-zinc-700 pb-3 mb-3">
             <div className="text-xl font-black uppercase tracking-widest">TRUE COST</div>
             <div className="text-[10px] text-zinc-500">METABOLIC TRANSACTION RECEIPT</div>
             <div className="text-[10px] text-zinc-400">{new Date().toLocaleString()}</div>
@@ -53,7 +53,7 @@ const MetabolicInvoice: React.FC<MetabolicInvoiceProps> = ({ focusTax, agingGrad
                 <div className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase
                     ${agingGrade === 'Severe' ? 'bg-rose-100 text-rose-700' : 
                       agingGrade === 'High' ? 'bg-orange-100 text-orange-700' : 
-                      'bg-zinc-100 text-zinc-600'}`}>
+                      'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
                    {agingGrade}
                 </div>
             </div>
@@ -75,7 +75,7 @@ const MetabolicInvoice: React.FC<MetabolicInvoiceProps> = ({ focusTax, agingGrad
         </div>
 
         {/* Footer */}
-        <div className="mt-4 pt-3 border-t-2 border-dashed border-zinc-300 text-center">
+        <div className="mt-4 pt-3 border-t-2 border-dashed border-zinc-300 dark:border-zinc-700 text-center">
             <div className="text-[10px] uppercase font-bold text-zinc-400 mb-1">Total Body Impact</div>
             {isSevere ? (
                 <div className="text-rose-600 font-black text-lg tracking-tight animate-pulse">

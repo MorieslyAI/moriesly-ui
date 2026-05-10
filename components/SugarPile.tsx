@@ -38,7 +38,7 @@ const SugarCube: React.FC<SugarCubeProps> = ({ delay, isVisible, rotation, offse
             
             {/* 3D Sides (Pseudo-3D) */}
             <div className="absolute top-0 right-0 w-3 h-full bg-zinc-300 transform skew-y-[45deg] origin-top-right -translate-x-full z-10 rounded-r-[2px]"></div>
-            <div className="absolute top-0 left-0 w-full h-3 bg-white transform skew-x-[45deg] origin-top-left -translate-y-full z-10 rounded-t-[2px]"></div>
+            <div className="absolute top-0 left-0 w-full h-3 bg-white/60 dark:bg-white/10 transform skew-x-[45deg] origin-top-left -translate-y-full z-10 rounded-t-[2px]"></div>
         </div>
     </div>
   );
@@ -79,7 +79,7 @@ const SugarPile: React.FC<SugarPileProps> = ({ grams }) => {
     <div className={`w-full relative rounded-3xl overflow-hidden transition-all duration-500 min-h-[320px] flex flex-col
       ${isShocking 
         ? 'bg-rose-50 border-2 border-rose-200 shadow-[inset_0_0_40px_rgba(225,29,72,0.1)]' 
-        : 'bg-white border border-zinc-200'}`}>
+        : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700'}`}>
       
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/5 dark:to-black/30 pointer-events-none"></div>

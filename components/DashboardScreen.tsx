@@ -1709,7 +1709,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         <div className="space-y-4">
           {/* Header Row - Compact Horizontal Scroll */}
           <div className="flex overflow-x-auto gap-2 pb-2 -mx-2 px-2 [&::-webkit-scrollbar]:hidden snap-x">
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 snap-start">
               <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
                 <User className="w-4 h-4" />
               </div>
@@ -1719,7 +1719,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 snap-start">
               <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
                 <Activity className="w-4 h-4" />
               </div>
@@ -1729,7 +1729,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 snap-start">
               <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
                 <Calendar className="w-4 h-4" />
               </div>
@@ -1739,7 +1739,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 snap-start">
               <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
                 <Ruler className="w-4 h-4" />
               </div>
@@ -1749,7 +1749,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
             </div>
 
-            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 border border-zinc-100 dark:border-zinc-800 snap-start">
+            <div className="flex-shrink-0 flex items-center gap-2.5 p-2 pr-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 snap-start">
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                 <Scale className="w-4 h-4" />
               </div>
@@ -1837,7 +1837,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
               {/* Intake Nutrition Score & Macros */}
               <div className="mt-3 flex gap-2">
-                <div className="w-[35%] flex flex-col justify-center items-center bg-zinc-50 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800">
+                <div className="w-[35%] flex flex-col justify-center items-center bg-zinc-50 dark:bg-zinc-800 rounded-xl p-2 border border-zinc-100 dark:border-zinc-700">
                   <div className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full flex items-center justify-center mb-1 ${energyScore >= 80 ? 'bg-emerald-100 text-emerald-600' : energyScore >= 50 ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600'}`}>
                     <Activity className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
@@ -1847,7 +1847,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </span>
                 </div>
 
-                <div className="w-[65%] flex flex-col justify-center gap-1.5 bg-zinc-50 rounded-xl p-2 sm:p-2.5 border border-zinc-100 dark:border-zinc-800">
+                <div className="w-[65%] flex flex-col justify-center gap-1.5 bg-zinc-50 dark:bg-zinc-800 rounded-xl p-2 sm:p-2.5 border border-zinc-100 dark:border-zinc-700">
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[7px] sm:text-[8px] font-bold text-zinc-400 uppercase">Trans Fat</span>
@@ -1939,9 +1939,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     </button>
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-6 p-5 sm:p-6 overflow-y-auto scrollbar-hide bg-zinc-50/30">
+                  <div className="flex-1 flex flex-col gap-6 p-5 sm:p-6 overflow-y-auto scrollbar-hide bg-zinc-50/30 dark:bg-zinc-900/30">
                     {/* Human Body SVG & Highlight */}
-                    <div className="bg-blue-50/30 rounded-3xl p-6 sm:p-8 border border-zinc-100 dark:border-zinc-800 shadow-sm flex flex-col relative overflow-hidden min-h-[320px] sm:min-h-[380px] shrink-0">
+                    <div className="bg-blue-50/30 dark:bg-blue-900/10 rounded-3xl p-6 sm:p-8 border border-zinc-100 dark:border-zinc-800 shadow-sm flex flex-col relative overflow-hidden min-h-[320px] sm:min-h-[380px] shrink-0">
 
                       {/* Top Label */}
                       <div className="flex justify-end w-full z-20 mb-2">
