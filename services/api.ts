@@ -222,7 +222,8 @@ export interface DashboardInsights {
   highlights: any[];
   projections: { trend: string; text: string };
   weakness: string;
-  blindspot: string;
+  // Backend bisa mengirim string biasa atau object { title, text, type }
+  blindspot: string | { title: string; text: string; type: string };
   metabolicInsight: string;
 }
 

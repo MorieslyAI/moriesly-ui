@@ -195,8 +195,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       }
     }
     fetchDashboard();
-  // Re-fetch whenever refreshKey changes (e.g. after a new scan item is saved to backend)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Re-fetch whenever refreshKey changes (e.g. after a new scan item is saved to backend)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshKey]);
 
   const selectedDate = new Date();
@@ -476,11 +476,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     let seconds = 0; let days = 0;
     switch (timeRange) {
       case '30S': seconds = 30; break;
-      case '1M':  seconds = 60; break;
+      case '1M': seconds = 60; break;
       case '15M': seconds = 15 * 60; break;
-      case '1H':  seconds = 3600; break;
+      case '1H': seconds = 3600; break;
       case '24H': days = 1; break;
-      case '7D':  days = 7; break;
+      case '7D': days = 7; break;
       case '30D': days = 30; break;
     }
     if (seconds > 0) startTime.setSeconds(now.getSeconds() - seconds);
@@ -495,15 +495,15 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       hist.forEach(item => {
         let impact = 20;
         const sugar = item.sugarg || 0;
-        const gi    = item.glycemicIndex || 0;
+        const gi = item.glycemicIndex || 0;
         if (sugar > 10) impact -= (sugar - 10) * 0.5;
-        if (gi > 55)    impact -= (gi - 55)    * 0.2;
+        if (gi > 55) impact -= (gi - 55) * 0.2;
         if (item.macros?.protein) impact += item.macros.protein * 0.3;
         score += impact;
       });
       return Math.max(0, Math.min(100, score));
     };
-    const cur  = calcScore(history.filter(i => { const d = new Date(i.timestamp); return d >= startTime && d <= now; }));
+    const cur = calcScore(history.filter(i => { const d = new Date(i.timestamp); return d >= startTime && d <= now; }));
     const prev = calcScore(history.filter(i => { const d = new Date(i.timestamp); return d >= prevStart && d < startTime; }));
     return prev === 0 ? cur : cur - prev;
   }, [rangeMetrics, history, selectedDate, timeRange, dailyHistory, metabolicScore]);
@@ -551,11 +551,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     let seconds = 0; let days = 0;
     switch (timeRange) {
       case '30S': seconds = 30; break;
-      case '1M':  seconds = 60; break;
+      case '1M': seconds = 60; break;
       case '15M': seconds = 15 * 60; break;
-      case '1H':  seconds = 3600; break;
+      case '1H': seconds = 3600; break;
       case '24H': days = 1; break;
-      case '7D':  days = 7; break;
+      case '7D': days = 7; break;
       case '30D': days = 30; break;
     }
     if (seconds > 0) startTime.setSeconds(now.getSeconds() - seconds);
@@ -571,9 +571,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       const drinks = c.filter(i => i.itemType === 'drink').length;
       return Math.round((Math.min(100, (cals / 2100) * 100) * 0.7) + (Math.min(100, drinks * 25) * 0.3));
     };
-    const curE  = calcEnergy(history.filter(i => { const d = new Date(i.timestamp); return d >= startTime && d <= now; }));
+    const curE = calcEnergy(history.filter(i => { const d = new Date(i.timestamp); return d >= startTime && d <= now; }));
     const prevE = calcEnergy(history.filter(i => { const d = new Date(i.timestamp); return d >= prevStart && d < startTime; }));
-    const diff  = prevE === 0 ? curE : curE - prevE;
+    const diff = prevE === 0 ? curE : curE - prevE;
     return { val: Math.abs(diff).toFixed(1), isPositive: diff >= 0 };
   }, [rangeMetrics, history, selectedDate, timeRange, dailyHistory]);
 
@@ -989,27 +989,37 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   // Blindspot: backend data is the primary source, currentIntel is the fallback
   const BLINDSPOT_STYLE: Record<string, { color: string; icon: any }> = {
-    sugar:     { color: 'rose',    icon: Zap },
-    protein:   { color: 'orange',  icon: Activity },
-    hydration: { color: 'blue',    icon: Droplet },
-    calories:  { color: 'amber',   icon: Flame },
-    positive:  { color: 'emerald', icon: TrendingUp },
-    none:      { color: 'zinc',    icon: Brain },
+    sugar: { color: 'rose', icon: Zap },
+    protein: { color: 'orange', icon: Activity },
+    hydration: { color: 'blue', icon: Droplet },
+    calories: { color: 'amber', icon: Flame },
+    positive: { color: 'emerald', icon: TrendingUp },
+    none: { color: 'zinc', icon: Brain },
   };
 
-  const backendBlindspot = dashboardData?.insights?.blindspot;
+  // Backend bisa mengirim blindspot sebagai string biasa ATAU object { title, text, type }
+  const rawBlindspot = dashboardData?.insights?.blindspot;
+  const backendBlindspot: { title: string; text: string; type: string } | null =
+    rawBlindspot
+      ? typeof rawBlindspot === 'string'
+        ? {
+            title: currentIntel?.title ?? 'Blindspot Detected',
+            text: rawBlindspot,
+            type: 'none',
+          }
+        : (rawBlindspot as any)
+      : null;
+
   const intelDisplay = backendBlindspot
     ? {
-        title: backendBlindspot.title,
-        desc: backendBlindspot.text,
-        color: BLINDSPOT_STYLE[backendBlindspot.type]?.color ?? 'zinc',
-        icon: BLINDSPOT_STYLE[backendBlindspot.type]?.icon ?? Brain,
-      }
+      title: backendBlindspot.title,
+      desc: backendBlindspot.text,
+      color: BLINDSPOT_STYLE[backendBlindspot.type]?.color ?? 'amber',
+      icon: BLINDSPOT_STYLE[backendBlindspot.type]?.icon ?? Brain,
+    }
     : currentIntel;
 
-  if (!intelDisplay) return null;
-
-  const Icon = intelDisplay.icon;
+  const Icon = intelDisplay?.icon;
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 pb-32 pt-8 md:pt-12 font-sans px-4">
@@ -1178,6 +1188,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       )}
 
       {/* --- COMPACT BLINDSPOT INTEL CARD (SLEEK REDESIGN) --- */}
+      {intelDisplay && Icon && (
       <div
         onClick={() => setIsIntelExpanded(!isIntelExpanded)}
         className="w-full bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-zinc-100 dark:border-zinc-800 relative overflow-hidden mb-8 transition-all duration-300 cursor-pointer hover:shadow-md active:scale-[0.99]"
@@ -1196,15 +1207,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     {intelDisplay.color === 'emerald' ? 'Metabolik Optimal' : 'Blindspot Detected'}
                   </div>
                   <h3 className="text-zinc-900 dark:text-zinc-100 text-base font-bold leading-tight">{intelDisplay.title}</h3>
-                  {/* Deskripsi selalu tampil (tidak perlu expand) jika dari backend */}
-                  {backendBlindspot && (
-                    <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed mt-2">
-                      {intelDisplay.desc}
-                    </p>
-                  )}
+
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   {/* Refresh Button — hanya tampil saat pakai data lokal */}
                   {!backendBlindspot && (
                     <button
@@ -1212,21 +1218,22 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         e.stopPropagation();
                         generateIntel();
                       }}
-                      className="p-1.5 rounded-full hover:bg-zinc-100 dark:bg-zinc-800 text-zinc-400 hover:text-zinc-600 transition-colors"
+                      className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 transition-colors"
                     >
                       <RotateCw className="w-4 h-4" />
                     </button>
                   )}
-
-                  {!backendBlindspot && (
-                    isIntelExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />
-                  )}
+                  {/* Chevron selalu tampil untuk semua sumber */}
+                  {isIntelExpanded
+                    ? <ChevronUp className="w-4 h-4 text-zinc-400" />
+                    : <ChevronDown className="w-4 h-4 text-zinc-400" />
+                  }
                 </div>
               </div>
 
-              {/* Expand fallback — hanya saat pakai data lokal */}
-              {!backendBlindspot && isIntelExpanded && (
-                <div className="mt-3 pt-3 border-t border-zinc-50 dark:border-zinc-800 animate-in slide-in-from-top-1">
+              {/* Expand — untuk semua sumber data (backend maupun lokal) */}
+              {isIntelExpanded && (
+                <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 animate-in slide-in-from-top-1 duration-200">
                   <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
                     {intelDisplay.desc}
                   </p>
@@ -1236,6 +1243,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
         </div>
       </div>
+      )}
 
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
