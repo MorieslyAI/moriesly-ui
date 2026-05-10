@@ -29,7 +29,7 @@ const SugarCube: React.FC<SugarCubeProps> = ({ delay, isVisible, rotation, offse
             <div className="absolute -bottom-2 left-1 right-1 h-2 bg-black/20 blur-sm rounded-full opacity-50"></div>
             
             {/* Main Block (Front) */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white via-zinc-50 to-zinc-200 rounded-[4px] border border-white/50 shadow-inner z-20">
+            <div className="absolute inset-0 bg-gradient-to-br from-white via-zinc-50 to-zinc-200 dark:from-zinc-300 dark:via-zinc-200 dark:to-zinc-400 rounded-[4px] border border-white/50 shadow-inner z-20">
                 {/* Granular Texture */}
                 <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-multiply"></div>
                 {/* Highlight */}
@@ -78,7 +78,7 @@ const SugarPile: React.FC<SugarPileProps> = ({ grams }) => {
   return (
     <div className={`w-full relative rounded-3xl overflow-hidden transition-all duration-500 min-h-[320px] flex flex-col
       ${isShocking 
-        ? 'bg-rose-50 border-2 border-rose-200 shadow-[inset_0_0_40px_rgba(225,29,72,0.1)]' 
+        ? 'bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-200 dark:border-rose-800/60 shadow-[inset_0_0_40px_rgba(225,29,72,0.1)]' 
         : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700'}`}>
       
       {/* Background Ambience */}

@@ -163,7 +163,7 @@ const WillpowerGauntlet: React.FC<WillpowerGauntletProps> = ({ onSuccess, onFail
             </div>
             
             {/* Progress Bar under the button */}
-            <div className="h-1 w-full bg-zinc-50 dark:bg-zinc-800/50 rounded-full overflow-hidden">
+            <div className="h-1 w-full bg-zinc-50 dark:bg-zinc-800 rounded-full overflow-hidden">
                 <motion.div 
                     className="h-full bg-rose-500/50"
                     animate={{ width: `${progress}%` }}

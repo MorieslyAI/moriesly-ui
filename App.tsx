@@ -1408,8 +1408,8 @@ function App() {
                                                                             <>
                                                                                 {/* BIO REPORT / SCAN RESULT OVERLAY */}
                                                                                 {(pendingItem || labelResult || barcodeResult || identifiedItem) ? (
-                                                                                    <div className="px-4 pt-4 pb-24 min-h-screen bg-[#fafafa]">
-                                                                                        <div className={`bg-white dark:bg-zinc-900 rounded-3xl p-6 border dark:border-zinc-800/50 shadow-sm min-h-25 flex flex-col justify-center relative overflow-hidden transition-all duration-500 ${pendingItem && pendingItem.sugar > 25 ? 'border-rose-500/50 shadow-[0_0_20px_rgba(225,29,72,0.2)]' : 'border-zinc-200'}`}>
+                                                                                    <div className="px-4 pt-4 pb-24 min-h-screen bg-zinc-50 dark:bg-zinc-950">
+                                                                                        <div className={`bg-white dark:bg-zinc-900 rounded-3xl p-6 border shadow-sm min-h-25 flex flex-col justify-center relative overflow-hidden transition-all duration-500 ${pendingItem && pendingItem.sugar > 25 ? 'border-rose-500/50 shadow-[0_0_20px_rgba(225,29,72,0.2)]' : 'border-zinc-200 dark:border-zinc-800'}`}>
                                                                                             {pendingItem && pendingItem.sugar > 25 && (<div className="absolute inset-0 border-4 border-rose-500/30 rounded-3xl pointer-events-none animate-pulse"></div>)}
                                                                                             {labelResult ? (<DeceptionDetector data={labelResult} onClose={() => setLabelResult(null)} />)
                                                                                                 : barcodeResult ? (<FullDisclosure data={barcodeResult} onClose={() => setBarcodeResult(null)} />)
@@ -1504,9 +1504,10 @@ function App() {
                                                                                                             <div className="flex flex-col gap-2">
                                                                                                                 <div className="flex items-center gap-3">
                                                                                                                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">DETECTED</span>
-                                                                                                                    <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${pendingItem.type === 'drink'
-                                                                                                                        ? 'bg-blue-50 text-blue-600 border-blue-100'
-                                                                                                                        : 'bg-orange-50 text-orange-600 border-orange-100'
+                                                                                                                    <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${
+                                                                                                                        pendingItem.type === 'drink'
+                                                                                                                            ? 'bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-800/50'
+                                                                                                                            : 'bg-orange-50 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-800/50'
                                                                                                                         }`}>
                                                                                                                         {pendingItem.type}
                                                                                                                     </span>

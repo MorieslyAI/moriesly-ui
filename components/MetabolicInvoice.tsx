@@ -51,8 +51,8 @@ const MetabolicInvoice: React.FC<MetabolicInvoiceProps> = ({ focusTax, agingGrad
                     </div>
                 </div>
                 <div className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase
-                    ${agingGrade === 'Severe' ? 'bg-rose-100 text-rose-700' : 
-                      agingGrade === 'High' ? 'bg-orange-100 text-orange-700' : 
+                    ${agingGrade === 'Severe' ? 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400' : 
+                      agingGrade === 'High' ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-400' : 
                       'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
                    {agingGrade}
                 </div>
@@ -82,7 +82,7 @@ const MetabolicInvoice: React.FC<MetabolicInvoiceProps> = ({ focusTax, agingGrad
                     REJECT RECOMMENDED
                 </div>
             ) : (
-                <div className="text-zinc-800 font-bold text-sm">
+                <div className="text-zinc-800 dark:text-zinc-200 font-bold text-sm">
                     PROCEED WITH CAUTION
                 </div>
             )}
