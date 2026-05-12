@@ -187,19 +187,19 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
 
           {/* TABS - Clean Pill Design */}
           <div className="flex justify-center sticky top-[57px] z-40 py-3 bg-zinc-50/95 dark:bg-zinc-950/95 backdrop-blur-md -mx-4 px-4 overflow-x-auto scrollbar-hide">
-            <div className="inline-flex bg-white dark:bg-zinc-900 p-1 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm min-w-max">
+            <div className="inline-flex items-center bg-white dark:bg-zinc-900 p-1 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm min-w-max">
                 {(['overview', 'body', 'analysis', 'data'] as const).map(tab => (
-                    <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={`px-6 md:px-10 py-2.5 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-[0.15em] transition-all whitespace-nowrap ${
-                            activeTab === tab 
-                            ? 'bg-zinc-900 text-white shadow-xl transform scale-105' 
-                            : 'text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
-                        }`}
-                    >
-                        {tab}
-                    </button>
+                <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-5 md:px-8 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-[0.15em] transition-all whitespace-nowrap ${
+                    activeTab === tab
+                        ? 'bg-zinc-900 text-white shadow-md'
+                        : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                    }`}
+                >
+                    {tab}
+                </button>
                 ))}
             </div>
           </div>
@@ -358,19 +358,38 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                               </div>
                               <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Real-time biological response to your current systemic load.</p>
                           </div>
-                          <div className="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-3xl border border-zinc-100 dark:border-zinc-700 self-start shadow-sm">
-                              <div className="text-right">
-                                  <div className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Systemic Load</div>
-                                  <div className="text-xl font-black text-zinc-900 dark:text-zinc-100">{ledger.calories || 0} <span className="text-xs text-zinc-400">kcal</span></div>
-                              </div>
-                              <div className="w-px h-10 bg-zinc-200 dark:bg-zinc-700"></div>
-                              <div className="text-right">
-                                  <div className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1">Integrity</div>
-                                  <div className={`text-sm font-black uppercase tracking-wider ${healthScore < 60 ? 'text-rose-600' : healthScore < 85 ? 'text-amber-600' : 'text-emerald-600'}`}>
-                                      {healthScore < 60 ? 'CRITICAL' : healthScore < 85 ? 'WARNING' : 'OPTIMAL'}
-                                  </div>
-                              </div>
-                          </div>
+                          <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center bg-zinc-50 dark:bg-zinc-800/50 px-4 py-3 rounded-3xl border border-zinc-100 dark:border-zinc-700 shadow-sm">
+                            <div className="flex flex-col items-center justify-center text-center">
+                                <div className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1">
+                                Systemic Load
+                                </div>
+
+                                <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 leading-none">
+                                {ledger.calories || 0}{' '}
+                                <span className="text-xs text-zinc-400">kcal</span>
+                                </div>
+                            </div>
+
+                            <div className="mx-4 h-10 w-px bg-zinc-200 dark:bg-zinc-700" />
+
+                            <div className="flex flex-col items-center justify-center text-center">
+                                <div className="text-[10px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-1">
+                                Integrity
+                                </div>
+
+                                <div
+                                className={`text-sm font-black uppercase tracking-wider leading-none ${
+                                    healthScore < 60
+                                    ? 'text-rose-600'
+                                    : healthScore < 85
+                                    ? 'text-amber-600'
+                                    : 'text-emerald-600'
+                                }`}
+                                >
+                                {healthScore < 60 ? 'CRITICAL' : healthScore < 85 ? 'WARNING' : 'OPTIMAL'}
+                                </div>
+                            </div>
+                            </div>
                       </div>
 
                       <div className="flex-1 min-h-[600px] relative z-10">

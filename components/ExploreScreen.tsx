@@ -84,12 +84,26 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
     useFetch(() => api.getNews({ limit: 20 }), []);
 
   // ── Social Feed ──────────────────────────────────────────────────────────
-  const feedType = socialTab === 'feed' ? 'all' : socialTab === 'events' ? 'event' : socialTab === 'groups' ? 'group' : undefined;
+  const feedType =
+  socialTab === 'events'
+    ? 'event'
+    : socialTab === 'groups'
+      ? 'group'
+      : 'all';
 
-  const { data: postsData, loading: postsLoading, error: postsError, refetch: refetchPosts } =
-    useFetch(
-      () => (feedType ? api.getPosts({ type: feedType as any, limit: 20 }) : Promise.resolve({ posts: [], hasMore: false })),
-      [feedType],
+    const shouldFetchPosts =
+      socialTab === 'feed' ||
+      socialTab === 'events' ||
+      socialTab === 'groups' ||
+      socialTab === 'profile';
+
+    const { data: postsData, loading: postsLoading, error: postsError, refetch: refetchPosts } =
+      useFetch(
+        () =>
+          shouldFetchPosts
+            ? api.getPosts({ type: feedType as any, limit: 50 })
+            : Promise.resolve({ posts: [], hasMore: false }),
+        [feedType, shouldFetchPosts],
     );
 
   // ── Leaderboard ──────────────────────────────────────────────────────────
@@ -110,7 +124,12 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
   const purchasedIds = new Set(purchasesData?.purchasedIds ?? []);
 
   // ── Post Counts (for profile tab) ────────────────────────────────────────
-  const myPosts = (postsData?.posts ?? []).filter((p) => p.authorId === userStats.name);
+  const myPosts = (postsData?.posts ?? []).filter(
+    (p) =>
+      p.authorName === userStats.name ||
+      p.authorName === profileData?.name ||
+      p.authorId === userStats.name
+  );
 
   // ─── Handlers ─────────────────────────────────────────────────────────────
 
@@ -454,50 +473,81 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
                 {profileLoading && <LoadingState />}
                 {profileError && <ErrorState message={profileError} onRetry={refetchProfile} />}
                 {!profileLoading && !profileError && profileData && (
-                  <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm mb-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={profileData.avatarUrl}
-                        alt={profileData.name}
-                        className="w-16 h-16 rounded-full border-2 border-brand-100"
-                      />
-                      <div>
-                        <h2 className="text-lg font-black text-zinc-900 dark:text-zinc-100 dark:text-white">{profileData.name}</h2>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400">{profileData.role}</p>
+                  <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm mb-6">
+                  {/* Profile Info */}
+                  <div className="flex flex-col items-center text-center mb-6">
+                    <img
+                      src={profileData.avatarUrl}
+                      alt={profileData.name}
+                      className="w-20 h-20 rounded-full border-2 border-brand-100 mb-3"
+                    />
+                
+                    <h2 className="text-lg font-black text-zinc-900 dark:text-zinc-100">
+                      {profileData.name}
+                    </h2>
+                
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      {profileData.role}
+                    </p>
+                  </div>
+                
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-xl font-black text-zinc-900 dark:text-zinc-100">
+                        {profileData.postsCount}
+                      </div>
+                      <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">
+                        Posts
                       </div>
                     </div>
-                    <div className="flex gap-6 text-center">
-                      <div>
-                        <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white">{profileData.postsCount}</div>
-                        <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Posts</div>
+                
+                    <div>
+                      <div className="text-xl font-black text-zinc-900 dark:text-zinc-100">
+                        {profileData.followersCount >= 1000
+                          ? `${(profileData.followersCount / 1000).toFixed(1)}k`
+                          : profileData.followersCount}
                       </div>
-                      <div>
-                        <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white">
-                          {profileData.followersCount >= 1000
-                            ? `${(profileData.followersCount / 1000).toFixed(1)}k`
-                            : profileData.followersCount}
-                        </div>
-                        <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Followers</div>
+                      <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">
+                        Followers
                       </div>
-                      <div>
-                        <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white">
-                          {profileData.likesReceived >= 1000
-                            ? `${(profileData.likesReceived / 1000).toFixed(1)}k`
-                            : profileData.likesReceived}
-                        </div>
-                        <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Likes</div>
+                    </div>
+                
+                    <div>
+                      <div className="text-xl font-black text-zinc-900 dark:text-zinc-100">
+                        {profileData.likesReceived >= 1000
+                          ? `${(profileData.likesReceived / 1000).toFixed(1)}k`
+                          : profileData.likesReceived}
+                      </div>
+                      <div className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">
+                        Likes
                       </div>
                     </div>
                   </div>
+                </div>
                 )}
-                {myPosts.length === 0 ? (
-                  <div className="text-center py-12 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                    <MessageSquare className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
-                    <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 dark:text-white mb-1">No posts yet</h3>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">Share your health journey with the community!</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">{myPosts.map(renderPost)}</div>
+                {postsLoading && <LoadingState />}
+
+                {postsError && (
+                  <ErrorState message={postsError} onRetry={refetchPosts} />
+                )}
+
+                {!postsLoading && !postsError && (
+                  myPosts.length === 0 ? (
+                    <div className="text-center py-12 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                      <MessageSquare className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
+                      <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 dark:text-white mb-1">
+                        No posts yet
+                      </h3>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                        Share your health journey with the community!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {myPosts.map(renderPost)}
+                    </div>
+                  )
                 )}
               </div>
             )}
