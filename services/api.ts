@@ -1091,6 +1091,82 @@ export async function postSkinScan(
   });
 }
 
+// ─── Group Chat ──────────────────────────────────────────────────────────
+
+export interface GroupChat {
+  id: string;
+  name: string;
+  description?: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  lastMessageText?: string;
+  lastMessageAt?: string | null;
+  memberIds: string[];
+  isPrivate: boolean;
+  currentMember?: {
+    status: "invited" | "joined" | "left";
+    role: "owner" | "admin" | "member";
+    invitedAt?: string | null;
+    joinedAt?: string | null;
+    lastReadAt?: string | null;
+  } | null;
+}
+
+export interface GroupChatMessage {
+  id: string;
+  groupId: string;
+  senderId: string;
+  senderName: string;
+  senderAvatar?: string;
+  text: string;
+  createdAt: string;
+  editedAt?: string | null;
+  deletedAt?: string | null;
+}
+
+export async function createGroupChat(payload: {
+  name: string;
+  description?: string;
+  inviteeIds: string[];
+}): Promise<GroupChat> {
+  return request("/group-chats", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getGroupChats(): Promise<{ groups: GroupChat[] }> {
+  return request("/group-chats", { method: "GET" });
+}
+
+export async function acceptGroupInvite(
+  groupId: string,
+): Promise<{ success: boolean }> {
+  return request(`/group-chats/${groupId}/accept`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
+export async function getGroupMessages(
+  groupId: string,
+): Promise<{ messages: GroupChatMessage[] }> {
+  return request(`/group-chats/${groupId}/messages`, {
+    method: "GET",
+  });
+}
+
+export async function sendGroupMessage(
+  groupId: string,
+  text: string,
+): Promise<GroupChatMessage> {
+  return request(`/group-chats/${groupId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ text }),
+  });
+}
+
 // ─── Session Restore ──────────────────────────────────────────────────────────
 // Dipanggil saat app pertama kali mount untuk restore session dari cookie.
 
