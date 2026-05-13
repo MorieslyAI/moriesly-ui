@@ -35,6 +35,7 @@ interface ExploreScreenProps {
   userStats: UserProfile;
   ledger: LedgerState;
   history: HistoryItem[];
+  onSetBackHandler?: (handler: (() => boolean) | null) => void;
 }
 
 // ─── Hook: Data Fetcher ───────────────────────────────────────────────────────
@@ -121,10 +122,23 @@ function ErrorState({
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats }) => {
+const ExploreScreen: React.FC<ExploreScreenProps> = ({ userStats, onSetBackHandler }) => {
   const [activeTab, setActiveTab] = useState<'news' | 'social' | 'shop'>(
     'news',
   );
+
+  useEffect(() => {
+    if (!onSetBackHandler) return;
+    if (activeTab !== 'news') {
+      onSetBackHandler(() => {
+        setActiveTab('news');
+        return true;
+      });
+    } else {
+      onSetBackHandler(null);
+    }
+    return () => { onSetBackHandler(null); };
+  }, [activeTab, onSetBackHandler]);
 
   const [socialTab, setSocialTab] = useState<'feed' | 'events' | 'groups' | 'privateChats' | 'profile' | 'leaderboard'>('feed');
 

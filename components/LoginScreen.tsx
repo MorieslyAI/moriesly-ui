@@ -64,6 +64,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     try {
       // 1. Popup Google Sign-In via Firebase SDK
       const cred = await signInWithGoogle();
+
+      // DEBUG — hapus setelah masalah terselesaikan
+      console.log('[GoogleSignIn] idToken prefix:', cred.idToken?.substring(0, 30));
+      console.log('[GoogleSignIn] idToken length:', cred.idToken?.length);
+      console.log('[GoogleSignIn] email:', cred.email);
       
       // 2. Beri tahu Backend untuk sinkronisasi (bikin user di DB dsb)
       const authRes = await api.googleSignIn(cred.idToken, cred.refreshToken);

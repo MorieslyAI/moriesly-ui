@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { App as CapacitorApp } from '@capacitor/app';
 import * as api from './services/api';
 import type { LoginResult } from './components/LoginScreen';
 import type { SetupCalibrationData } from './components/SetupScreen';
@@ -57,7 +58,79 @@ function App() {
     const [isDarkMode, setIsDarkMode] = useState(() => {
         return localStorage.getItem('isDarkMode') === 'true';
     });
-    const [currentView, setCurrentView] = useState<'dashboard' | 'camera' | 'diet' | 'consultant' | 'tracker' | 'history' | 'blog' | 'training' | 'medical' | 'settings' | 'devices' | 'profile' | 'notifications' | 'chat' | 'calendar' | 'status' | 'track' | 'explore'>('dashboard');
+    type ViewType = 'dashboard' | 'camera' | 'diet' | 'consultant' | 'tracker' | 'history' | 'blog' | 'training' | 'medical' | 'settings' | 'devices' | 'profile' | 'notifications' | 'chat' | 'calendar' | 'status' | 'track' | 'explore';
+    const [currentView, setCurrentView] = useState<ViewType>('dashboard');
+
+    // ─── Android Back Button Navigation ───────────────────────────────────────
+    const viewHistoryRef = useRef<ViewType[]>([]);
+    const tabBackHandlerRef = useRef<(() => boolean) | null>(null);
+    const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+    const isNativePlatform = (): boolean => {
+        try {
+            const cap = (window as any).Capacitor;
+            return cap?.isNativePlatform?.() === true;
+        } catch { return false; }
+    };
+
+    /** Navigasi maju — push view sekarang ke history */
+    const navigateTo = useCallback((view: ViewType) => {
+        tabBackHandlerRef.current = null;
+        viewHistoryRef.current = [...viewHistoryRef.current, currentView];
+        setCurrentView(view);
+    }, [currentView]);
+
+    /** Navigasi root dari NavBar — bersihkan seluruh history */
+    const navigateRoot = useCallback((view: ViewType) => {
+        tabBackHandlerRef.current = null;
+        viewHistoryRef.current = [];
+        setCurrentView(view);
+    }, []);
+
+    /** Kembali ke view sebelumnya atau dashboard */
+    const goBack = useCallback(() => {
+        tabBackHandlerRef.current = null;
+        if (viewHistoryRef.current.length > 0) {
+            const previous = viewHistoryRef.current[viewHistoryRef.current.length - 1];
+            viewHistoryRef.current = viewHistoryRef.current.slice(0, -1);
+            setCurrentView(previous);
+        } else {
+            setCurrentView('dashboard');
+        }
+    }, []);
+
+    /** Daftarkan handler back dari screen dengan inner tab */
+    const setBackHandler = useCallback((handler: (() => boolean) | null) => {
+        tabBackHandlerRef.current = handler;
+    }, []);
+
+    /** Handler hardware back button Android */
+    const handleHardwareBack = useCallback(() => {
+        // 1. Beri kesempatan screen aktif menangani (misal inner tab)
+        if (tabBackHandlerRef.current) {
+            const handled = tabBackHandlerRef.current();
+            if (handled) return;
+        }
+        // 2. Pop dari view history
+        if (viewHistoryRef.current.length > 0) {
+            const previous = viewHistoryRef.current[viewHistoryRef.current.length - 1];
+            viewHistoryRef.current = viewHistoryRef.current.slice(0, -1);
+            tabBackHandlerRef.current = null;
+            setCurrentView(previous);
+            return;
+        }
+        // 3. Sudah di root — tampilkan konfirmasi keluar
+        setShowExitConfirm(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isNativePlatform()) return;
+        let cleanup: (() => void) | undefined;
+        CapacitorApp.addListener('backButton', handleHardwareBack).then(listener => {
+            cleanup = () => listener.remove();
+        });
+        return () => { cleanup?.(); };
+    }, [handleHardwareBack]);
 
     const [addOnTargetId, setAddOnTargetId] = useState<string | null>(null); // NEW: Track which item is receiving an add-on
     const [isFullScreenVideo, setIsFullScreenVideo] = useState(false);
@@ -422,7 +495,7 @@ function App() {
         // Reset React state so the user sees the LoginScreen
         setIsLoggedIn(false);
         setIsSetupComplete(false);
-        setCurrentView('dashboard');
+        navigateRoot('dashboard');
     };
 
     const handleSetupComplete = (
@@ -685,7 +758,7 @@ function App() {
                                 };
                                 handleUpdateHistoryItem(updatedItem);
                                 setAddOnTargetId(null);
-                                setCurrentView('dashboard');
+                                goBack();
                                 updateStreamingLog('spy', `Add-on scan processed!`);
                             }
                             return;
@@ -710,15 +783,15 @@ function App() {
                                 imageBase64: base64Image,
                                 metadata: data
                             });
-                            setCurrentView('dashboard'); // Switch to dashboard to show result
+                            goBack();
                         } else if (scanMode === 'label') {
                             setLabelResult(data);
                             addHistoryItem({ id: uuidv4(), name: 'Label Scan', sugarg: Math.round((data.hidden_sugar_grams || 0) * 10) / 10, action: 'scanned', itemType: 'label', timestamp: new Date(), aiVerdict: data.verdict, imageBase64: base64Image, metadata: data });
-                            setCurrentView('dashboard'); // Switch to dashboard to show result
+                            goBack();
                         } else if (scanMode === 'qr') {
                             setBarcodeResult(data);
                             addHistoryItem({ id: uuidv4(), name: data.product_name || 'Barcode Scan', sugarg: Math.round((data.sugar_grams || 0) * 10) / 10, action: 'scanned', itemType: 'qr', timestamp: new Date(), aiVerdict: `Risk: ${data.risk_level}`, imageBase64: base64Image, metadata: data });
-                            setCurrentView('dashboard'); // Switch to dashboard to show result
+                            goBack();
                         } else {
                             setIdentifiedItem({
                                 name: data.name || "Unknown Item",
@@ -726,7 +799,7 @@ function App() {
                                 imageBase64: base64Image
                             });
                             setIsConfirmingScan(true);
-                            setCurrentView('dashboard'); // Switch to dashboard to show result
+                            goBack();
                         }
                     } catch (err) {
                         console.error("Failed to parse scan result:", err);
@@ -1281,7 +1354,7 @@ function App() {
                     <div className="max-w-500 mx-auto w-full px-4 py-4">
                         <div className="flex items-center justify-between">
                             {/* CLICKABLE LOGO/AVATAR FOR PROFILE NAVIGATION */}
-                            <button onClick={() => setCurrentView('profile')} className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left">
+                            <button onClick={() => navigateTo('profile')} className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left">
                                 <div className="w-8 h-8 bg-transparent rounded-lg flex items-center justify-center overflow-hidden border border-white/10 shadow-sm">
                                     <img src="https://i.ibb.co.com/hJYKch5n/Logo-Moriesly-remove-bg.png" alt="Moriesly AI" className="w-full h-full object-contain" />
                                 </div>
@@ -1294,7 +1367,7 @@ function App() {
                             <div className="flex gap-3">
                                 {/* NEW: Notification Button */}
                                 <button
-                                    onClick={() => setCurrentView('notifications')}
+                                    onClick={() => navigateTo('notifications')}
                                     className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-white transition-colors relative"
                                 >
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
@@ -1305,7 +1378,7 @@ function App() {
 
                                 {/* Large Chat Button */}
                                 <button
-                                    onClick={() => setCurrentView('consultant')}
+                                    onClick={() => navigateTo('consultant')}
                                     className="w-10 h-10 rounded-full bg-brand-500 border border-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 hover:bg-brand-600 transition-all active:scale-95"
                                 >
                                     <MessageSquare className="w-5 h-5" fill="currentColor" />
@@ -1319,11 +1392,11 @@ function App() {
             <main className={`max-w-500 mx-auto w-full px-4 py-4 md:py-8 flex flex-col gap-8 ${currentView === 'profile' || currentView === 'notifications' ? 'p-0 max-w-full' : ''}`}>
 
                 {currentView === 'status' ? (<StatusScreen />)
-                    : currentView === 'track' ? (<TrackScreen />)
-                        : currentView === 'explore' ? (<ExploreScreen userStats={userStats} ledger={ledger} history={history} />)
+                    : currentView === 'track' ? (<TrackScreen onSetBackHandler={setBackHandler} />)
+                        : currentView === 'explore' ? (<ExploreScreen userStats={userStats} ledger={ledger} history={history} onSetBackHandler={setBackHandler} />)
                             : currentView === 'diet' ? (<DietPlanScreen userProfile={userStats} onAddXp={addXp} dietPlan={dietPlan} setDietPlan={setDietPlan} />)
                                 : currentView === 'training' ? (<TacticalTrainingScreen userProfile={userStats} ledger={ledger} onAddXp={addXp} plan={trainingPlan} setPlan={setTrainingPlan} completedWorkouts={completedWorkouts} setCompletedWorkouts={setCompletedWorkouts} completedMeals={completedMeals} setCompletedMeals={setCompletedMeals} />)
-                                    : currentView === 'medical' ? (<GlycationScanner data={skinResult} onScan={handleSkinScan} isLoading={isScanning} onClose={() => { setSkinResult(null); setCurrentView('dashboard'); }} />)
+                                    : currentView === 'medical' ? (<GlycationScanner data={skinResult} onScan={handleSkinScan} isLoading={isScanning} onClose={() => { setSkinResult(null); goBack(); }} />)
                                         : currentView === 'consultant' || currentView === 'chat' ? (<ConsultantScreen userProfile={userStats} connectionState={connectionState} onConnect={handleConnect} onDisconnect={handleDisconnect} videoFeedNode={sharedVideoFeed} agentVolume={agentVolume} consultationHistory={consultationHistory} onSaveSession={(s) => setConsultationHistory(prev => [s, ...prev])} missionLogs={missionLogs} onFlipCamera={() => videoFeedRef.current?.flipCamera()} onToggleFlash={() => videoFeedRef.current?.toggleFlash()} transcript={transcript} onAddXp={addXp} onToggleFullScreen={setIsFullScreenVideo} />)
                                             : currentView === 'tracker' ? (<WeightTrackerScreen weightHistory={weightHistory} goal={currentGoal} sugarHistory={history} onUpdateGoal={setCurrentGoal} onAddWeight={(w) => { /* update weight */ }} />)
                                                 : currentView === 'history' || currentView === 'calendar' ? (
@@ -1334,7 +1407,7 @@ function App() {
                                                         onScanAddOn={(item) => {
                                                             setAddOnTargetId(item.id);
                                                             setScanMode('food');
-                                                            setCurrentView('camera');
+                                                            navigateTo('camera');
                                                         }}
                                                         onTextAddOn={handleTextAddOn}
                                                     />
@@ -1350,13 +1423,13 @@ function App() {
                                                                 setUserStats(p);
                                                                 setLedger(prev => ({ ...prev, limit: l }));
                                                                 setCurrentGoal(g);
-                                                                setCurrentView('profile');
+                                                                goBack();
                                                             }}
-                                                            onBack={() => setCurrentView('profile')}
+                                                            onBack={goBack}
                                                             onLogout={handleLogout}
                                                         />
                                                     )
-                                                        : currentView === 'devices' ? (<DeviceSyncScreen history={history} ledger={ledger} dietPlan={dietPlan} trainingPlan={trainingPlan} onToggleFullScreen={setIsFullScreenVideo} onBackToHome={() => { setIsFullScreenVideo(false); setCurrentView('dashboard'); }} />)
+                                                        : currentView === 'devices' ? (<DeviceSyncScreen history={history} ledger={ledger} dietPlan={dietPlan} trainingPlan={trainingPlan} onToggleFullScreen={setIsFullScreenVideo} onBackToHome={() => { setIsFullScreenVideo(false); goBack(); }} />)
                                                             : currentView === 'profile' ? (
                                                                 <UnifiedProfileDashboard
                                                                     userProfile={userStats}
@@ -1366,11 +1439,11 @@ function App() {
                                                                     skinResult={skinResult}
                                                                     consultationHistory={consultationHistory}
                                                                     ledger={ledger}
-                                                                    onBack={() => setCurrentView('dashboard')}
-                                                                    onSettings={() => setCurrentView('settings')}
+                                                                    onBack={goBack}
+                                                                    onSettings={() => navigateTo('settings')}
                                                                 />
                                                             )
-                                                                : currentView === 'notifications' ? (<NotificationCenter userProfile={userStats} ledger={ledger} onClose={() => setCurrentView('dashboard')} />)
+                                                                : currentView === 'notifications' ? (<NotificationCenter userProfile={userStats} ledger={ledger} onClose={goBack} />)
                                                                     : currentView === 'camera' ? (
                                                                         <div className="fixed inset-0 z-100 bg-black">
                                                                             {sharedVideoFeed}
@@ -1378,7 +1451,7 @@ function App() {
                                                                             {/* CLOSE BUTTON */}
                                                                             <button
                                                                                 onClick={() => {
-                                                                                    setCurrentView('dashboard');
+                                                                                    goBack();
                                                                                     setAddOnTargetId(null);
                                                                                 }}
                                                                                 className="absolute top-6 left-6 z-50 w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white/90 hover:text-white hover:bg-black/60 transition-all border border-white/10"
@@ -1733,7 +1806,7 @@ function App() {
                                                                                         userStats={userStats}
                                                                                         ledger={ledger}
                                                                                         onCheckIn={handleCheckIn}
-                                                                                        onNavigate={setCurrentView}
+                                                                                        onNavigate={navigateTo}
                                                                                         history={history}
                                                                                         trainingPlan={trainingPlan}
                                                                                         completedWorkouts={completedWorkouts}
@@ -1745,7 +1818,40 @@ function App() {
                                                                         )}
             </main>
 
-            {!isFullScreenVideo && currentView !== 'notifications' && currentView !== 'camera' && (<NavBar currentView={currentView} onChangeView={setCurrentView} />)}
+            {!isFullScreenVideo && currentView !== 'notifications' && currentView !== 'camera' && (<NavBar currentView={currentView} onChangeView={navigateRoot} />)}
+
+            {/* ─── Exit Confirmation Dialog ─────────────────────────────────── */}
+            {showExitConfirm && (
+                <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/60 backdrop-blur-sm px-6">
+                    <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-zinc-200 dark:border-zinc-800 animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex flex-col items-center gap-4 text-center">
+                            <div className="w-14 h-14 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center">
+                                <svg className="w-7 h-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-black text-zinc-900 dark:text-white">Exit App?</h3>
+                                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Are you sure you want to exit Moriesly AI?</p>
+                            </div>
+                            <div className="flex gap-3 w-full mt-1">
+                                <button
+                                    onClick={() => setShowExitConfirm(false)}
+                                    className="flex-1 py-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                                >
+                                    Stay
+                                </button>
+                                <button
+                                    onClick={() => CapacitorApp.exitApp()}
+                                    className="flex-1 py-3 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-sm transition-colors"
+                                >
+                                    Exit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

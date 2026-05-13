@@ -15,8 +15,25 @@ const Skeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-const TrackScreen: React.FC = () => {
+interface TrackScreenProps {
+  onSetBackHandler?: (handler: (() => boolean) | null) => void;
+}
+
+const TrackScreen: React.FC<TrackScreenProps> = ({ onSetBackHandler }) => {
   const [activeTab, setActiveTab] = useState<'body' | 'nutrition' | 'notes'>('body');
+
+  useEffect(() => {
+    if (!onSetBackHandler) return;
+    if (activeTab !== 'body') {
+      onSetBackHandler(() => {
+        setActiveTab('body');
+        return true;
+      });
+    } else {
+      onSetBackHandler(null);
+    }
+    return () => { onSetBackHandler(null); };
+  }, [activeTab, onSetBackHandler]);
 
   // ── Track Data (body + nutrition) ─────────────────────────────────────────
   const [trackData, setTrackData] = useState<TrackDataResponse | null>(null);
