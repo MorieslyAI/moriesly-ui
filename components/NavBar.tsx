@@ -10,13 +10,14 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
   return (
     <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-800 dark:border-zinc-900 px-4 pb-2 pt-2 z-[90] h-16 rounded-t-[1.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-      
+
       {/* Grid Layout for Balance */}
       <div className="grid grid-cols-2 h-full relative">
-        
+
         {/* Left Side (2 Items) */}
         <div className="flex justify-evenly items-end pr-10 pl-2">
-            <button 
+            <button
+                data-guide="home-nav"
                 onClick={() => onChangeView('dashboard')}
                 className={`flex flex-col items-center gap-0.5 w-14 mb-1 transition-colors ${currentView === 'dashboard' ? 'text-brand-500' : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'}`}
             >
@@ -24,7 +25,8 @@ const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
                 <span className="text-[10px] font-medium">Home</span>
             </button>
 
-            <button 
+            <button
+                data-guide="explore-nav"
                 onClick={() => onChangeView('explore')}
                 className={`flex flex-col items-center gap-0.5 w-14 mb-1 transition-colors ${currentView === 'explore' ? 'text-brand-500' : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'}`}
             >
@@ -35,7 +37,8 @@ const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
 
         {/* Right Side (2 Items) */}
         <div className="flex justify-evenly items-end pl-10 pr-2">
-            <button 
+            <button
+                data-guide="history-nav"
                 onClick={() => onChangeView('calendar')}
                 className={`flex flex-col items-center gap-0.5 w-14 mb-1 transition-colors ${currentView === 'calendar' ? 'text-brand-500' : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'}`}
             >
@@ -43,7 +46,8 @@ const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
                 <span className="text-[10px] font-medium">History</span>
             </button>
 
-            <button 
+            <button
+                data-guide="profile-nav"
                 onClick={() => onChangeView('profile')}
                 className={`flex flex-col items-center gap-0.5 w-14 mb-1 transition-colors ${currentView === 'profile' ? 'text-brand-500' : 'text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300'}`}
             >
@@ -54,7 +58,8 @@ const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
 
         {/* Center Camera Button (Absolute) */}
         <div className="absolute left-1/2 -translate-x-1/2 -top-6">
-            <button 
+            <button
+                data-guide="scan-button"
                 onClick={() => onChangeView('camera')}
                 className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-teal-900/40 border-[4px] border-white dark:border-zinc-950 transition-transform active:scale-95 bg-gradient-to-b from-[#33ADAE] to-[#1F6E6C] text-white hover:scale-105 group"
             >
@@ -103,4 +108,3 @@ const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
 };
 
 export default NavBar;
-

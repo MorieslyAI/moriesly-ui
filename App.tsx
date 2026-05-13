@@ -39,6 +39,7 @@ import DashboardScreen from './components/DashboardScreen'; // NEW
 import StatusScreen from './components/StatusScreen'; // NEW
 import TrackScreen from './components/TrackScreen'; // NEW
 import ExploreScreen from './components/ExploreScreen'; // NEW
+import FeatureGuide, { GuideStep } from './components/FeatureGuide';
 
 import JSON5 from 'json5';
 import { GeminiLiveService } from './services/geminiLiveService';
@@ -65,6 +66,111 @@ function App() {
     const viewHistoryRef = useRef<ViewType[]>([]);
     const tabBackHandlerRef = useRef<(() => boolean) | null>(null);
     const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+    const [showHomeGuide, setShowHomeGuide] = useState(() => {
+      try {
+        return localStorage.getItem('hasSeenHomeGuide_v1') !== 'true';
+      } catch {
+        return true;
+      }
+    });
+
+    const homeGuideSteps = useMemo<GuideStep[]>(
+      () => [
+        {
+          target: 'home-logo',
+          title: 'Welcome to Moriesly AI',
+          description:
+            'This is your control center. From here, you can view your health summary, access your profile, and monitor your daily progress.',
+          placement: 'bottom',
+          padding: 4,
+          radius: 20,
+        },
+        {
+          target: 'notification-button',
+          title: 'Important Notice',
+          description:
+            'Check important alerts and insights, such as sugar debt, medical conditions, or reminders you need to pay attention to.',
+          placement: 'bottom',
+          padding: 7,
+          radius: 999,
+        },
+        {
+          target: 'chat-button',
+          title: 'AI Consultant',
+          description:
+            'Use the chat feature to consult directly with the AI about nutrition, food.',
+          placement: 'bottom',
+          padding: 7,
+          radius: 999,
+        },
+        {
+          target: 'metabolic-card',
+          title: 'Metabolic Health',
+          description:
+            'This section provides a summary of your metabolic health based on your daily blood sugar, calorie, food, and activity data.',
+          placement: 'bottom',
+          padding: 8,
+          radius: 20,
+        },
+        {
+          target: 'energy-card',
+          title: 'Energy Score',
+          description:
+            'Monitor your body’s readiness in terms of energy, recovery, hydration, glucose balance, and stress.',
+          placement: 'top',
+          padding: 8,
+          radius: 28,
+        },
+        {
+          target: 'scan-button',
+          title: 'Scan Food or Beverages',
+          description:
+            'Tap this camera button to scan food, drinks, nutrition labels, barcodes, receipts, or use comparison mode.',
+          placement: 'top',
+          padding: 8,
+          radius: 999,
+        },
+        {
+          target: 'explore-nav',
+          title: 'Explore',
+          description:
+            'Discover insights, recommendations, and other exploration features to help you better understand your lifestyle.',
+          placement: 'top',
+          padding: 6,
+          radius: 18,
+        },
+        {
+          target: 'history-nav',
+          title: 'History',
+          description:
+            'View your consumption history, scans, meal choices, and daily data that you’ve already recorded.',
+          placement: 'top',
+          padding: 6,
+          radius: 18,
+        },
+        {
+          target: 'profile-nav',
+          title: 'Profile',
+          description:
+            'Manage your profile, targets, settings, account preferences, and personal information from this page.',
+          placement: 'top',
+          padding: 6,
+          radius: 18,
+        },
+      ],
+      []
+    );
+
+    const handleFinishHomeGuide = useCallback(() => {
+      try {
+        localStorage.setItem('hasSeenHomeGuide_v1', 'true');
+      } catch {
+        // Ignore localStorage errors.
+      }
+
+      setShowHomeGuide(false);
+    }, []);
 
     const isNativePlatform = (): boolean => {
         try {
@@ -1319,9 +1425,20 @@ function App() {
         />
     );
 
-    return (
-        <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pb-10 transition-colors duration-500">
-
+  return (
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pb-10 transition-colors duration-500">
+    {showHomeGuide &&
+      currentView === 'dashboard' &&
+      isLoggedIn &&
+      isSetupComplete &&
+      !showOnboarding &&
+      !isFullScreenVideo && (
+        <FeatureGuide
+          steps={homeGuideSteps}
+          onDone={handleFinishHomeGuide}
+          onSkip={handleFinishHomeGuide}
+        />
+      )}
             {/* Hidden File Input for Upload */}
             <input
                 type="file"
@@ -1354,7 +1471,7 @@ function App() {
                     <div className="max-w-500 mx-auto w-full px-4 py-4">
                         <div className="flex items-center justify-between">
                             {/* CLICKABLE LOGO/AVATAR FOR PROFILE NAVIGATION */}
-                            <button onClick={() => navigateTo('profile')} className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left">
+                            <button data-guide="home-logo" onClick={() => navigateTo('profile')} className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left">
                                 <div className="w-8 h-8 bg-transparent rounded-lg flex items-center justify-center overflow-hidden border border-white/10 shadow-sm">
                                     <img src="https://i.ibb.co.com/hJYKch5n/Logo-Moriesly-remove-bg.png" alt="Moriesly AI" className="w-full h-full object-contain" />
                                 </div>
@@ -1367,6 +1484,7 @@ function App() {
                             <div className="flex gap-3">
                                 {/* NEW: Notification Button */}
                                 <button
+                                    data-guide="notification-button"
                                     onClick={() => navigateTo('notifications')}
                                     className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-white transition-colors relative"
                                 >
@@ -1378,6 +1496,7 @@ function App() {
 
                                 {/* Large Chat Button */}
                                 <button
+                                    data-guide="chat-button"
                                     onClick={() => navigateTo('consultant')}
                                     className="w-10 h-10 rounded-full bg-brand-500 border border-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 hover:bg-brand-600 transition-all active:scale-95"
                                 >

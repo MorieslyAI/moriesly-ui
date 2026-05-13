@@ -23,7 +23,7 @@ interface ConsultantScreenProps {
   connectionState: ConnectionState;
   onConnect: () => void;
   onDisconnect: (transcript?: {role: string, text: string}[]) => Promise<{summary?: string, advice?: string} | void> | void;
-  videoFeedNode: React.ReactNode; 
+  videoFeedNode: React.ReactNode;
   agentVolume?: number;
   consultationHistory: ConsultationSession[];
   onSaveSession: (session: ConsultationSession) => void;
@@ -49,11 +49,11 @@ const UserDefaultAvatar = ({ gender, className }: { gender: 'male' | 'female', c
   </div>
 );
 
-const ConsultantScreen: React.FC<ConsultantScreenProps> = ({ 
-  userProfile, 
-  connectionState, 
-  onConnect, 
-  onDisconnect, 
+const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
+  userProfile,
+  connectionState,
+  onConnect,
+  onDisconnect,
   videoFeedNode,
   agentVolume = 0,
   consultationHistory,
@@ -67,7 +67,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
   onToggleMute
 }) => {
   const [mode, setMode] = useState<'selection' | 'chat' | 'video' | 'history' | 'clinical'>('selection');
-  
+
   // Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([{
       id: 'welcome',
@@ -77,7 +77,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
   }]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isSaving, setIsSaving] = useState(false); 
+  const [isSaving, setIsSaving] = useState(false);
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
 
   // ── Backend session state ────────────────────────────────────────────────────
@@ -87,7 +87,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
   const [isResumingSession, setIsResumingSession] = useState(false);
   const [selectedBackendSession, setSelectedBackendSession] = useState<BackendSessionDetail | null>(null);
   const [isDeletingSession, setIsDeletingSession] = useState<string | null>(null);
-  
+
   // Clinical Decode State
   const [clinicalDoc, setClinicalDoc] = useState<{data: string, mimeType: string, name: string} | null>(null);
   const [clinicalReport, setClinicalReport] = useState<{ summary: string, details: string[] } | null>(null);
@@ -100,20 +100,20 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
 
   const drawerEndRef = useRef<HTMLDivElement>(null);
   const missionLogsRef = useRef(missionLogs);
-  
+
   // Custom User Photo State
   const [customUserPhoto, setCustomUserPhoto] = useState<string | null>(null);
-  
+
   // History Playback
   const [selectedSession, setSelectedSession] = useState<ConsultationSession | null>(null);
-  
+
   // Session Timing
   const sessionStartTime = useRef<number>(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null); 
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const profileInputRef = useRef<HTMLInputElement>(null);
-  const docInputRef = useRef<HTMLInputElement>(null); 
+  const docInputRef = useRef<HTMLInputElement>(null);
 
   // Use the realistic avatar URL for chat icon too
   const aiAvatarUrl = `https://images.unsplash.com/photo-1559839734-2b71ea86b48e?q=80&w=200&auto=format&fit=crop`;
@@ -277,7 +277,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
             **SAFETY OVERRIDE:** This analysis is for educational and tactical health optimization only. It does NOT constitute a medical diagnosis. Always consult a human physician.
           `;
           const response = await ai.models.generateContent({
-              model: 'gemini-2.5-flash', 
+              model: 'gemini-2.5-flash',
               contents: [{ role: 'user', parts: [{ inlineData: { mimeType: clinicalDoc.mimeType, data: clinicalDoc.data } }, { text: prompt }] }],
               config: { responseMimeType: "application/json" }
           });
@@ -285,7 +285,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
               try {
                   const data = JSON5.parse(response.text.replace(/```json/g,'').replace(/```/g,'').trim());
                   setClinicalReport(data);
-                  onAddXp(150); 
+                  onAddXp(150);
                   const session: ConsultationSession = {
                       id: uuidv4(),
                       date: new Date(),
@@ -344,31 +344,31 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
   };
 
   const handleEndCall = async () => {
-      setShowTranscriptDrawer(false); 
+      setShowTranscriptDrawer(false);
       onToggleFullScreen?.(false);
       const duration = (Date.now() - sessionStartTime.current) / 1000;
-      if (duration < 3) { 
+      if (duration < 3) {
           onDisconnect();
-          setMode('selection'); 
-          return; 
+          setMode('selection');
+          return;
       }
       setIsSaving(true);
       await new Promise(r => setTimeout(r, 100));
       const logsToSave = missionLogsRef.current.filter(log => new Date(log.timestamp).getTime() >= sessionStartTime.current);
       const formattedTranscript = logsToSave.map(log => ({ id: log.id, role: log.sender === 'user' ? 'user' : 'model', text: log.text, timestamp: log.timestamp })) as ChatMessage[];
-      
+
       const simpleTranscript = formattedTranscript.map(t => ({ role: t.role, text: t.text }));
       const disconnectResult = await onDisconnect(simpleTranscript);
-      
+
       let summary = disconnectResult?.summary;
       let advice = disconnectResult?.advice;
-      
+
       if (!summary || !advice) {
           const report = await generateSessionReport(simpleTranscript);
           summary = report.summary;
           advice = report.advice;
       }
-      
+
       const sessionId = (disconnectResult as any)?.sessionId || uuidv4();
       const session: ConsultationSession = { id: sessionId, date: new Date(), sessionType: 'video', summary: summary || '', advice: advice || '', transcript: formattedTranscript, userImages: [], durationSeconds: Math.round(duration) };
       onSaveSession(session);
@@ -528,7 +528,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
 
             <div className="grid grid-cols-2 gap-3">
                 {/* Instant Chat */}
-                <button 
+                <button
                   onClick={() => setMode('chat')}
                   className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-brand-500/50 rounded-2xl p-4 text-left transition-all group flex flex-col justify-between h-32 relative overflow-hidden"
                 >
@@ -543,7 +543,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                 </button>
 
                 {/* Video Coach */}
-                <button 
+                <button
                   onClick={() => {
                       setMode('video');
                       if (connectionState === ConnectionState.DISCONNECTED) {
@@ -577,9 +577,9 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
             </div>
 
             {/* Clinical Decode Card */}
-            <button 
+            <button
               onClick={() => setMode('clinical')}
-              className="w-full bg-gradient-to-br from-zinc-900 to-black hover:from-zinc-800 hover:to-zinc-900 border border-zinc-800 hover:border-brand-500/50 rounded-2xl p-5 text-left transition-all group relative overflow-hidden shadow-lg"
+              className="w-full bg-gradient-to-br from-zinc-900 to-black hover:from-zinc-800 hover:to-zinc-900 border border-zinc-800 hover:border-brand-500/50 rounded-2xl px-5 py-10 text-left transition-all group relative overflow-hidden shadow-lg"
             >
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay"></div>
                 <div className="absolute top-4 right-4 bg-brand-500/10 text-brand-400 text-[8px] font-black uppercase px-2 py-1 rounded border border-brand-500/20 tracking-wider">
@@ -597,7 +597,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
             </button>
         </div>
 
-        <button 
+        <button
           onClick={() => setMode('history')}
           className="mt-auto w-full py-3 border border-dashed border-zinc-800 rounded-xl text-zinc-500 hover:text-white hover:border-zinc-600 text-xs font-bold uppercase tracking-widest transition-colors"
         >
@@ -650,7 +650,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                                       </div>
                                   )}
                                   <div className="absolute inset-0 flex items-center justify-center">
-                                      <button 
+                                      <button
                                         onClick={(e) => { e.stopPropagation(); analyzeClinicalDoc(); }}
                                         disabled={analyzingDoc}
                                         className="bg-brand-600 hover:bg-brand-500 text-white px-6 py-3 rounded-xl font-bold uppercase tracking-widest shadow-lg flex items-center gap-2 z-10"
@@ -685,7 +685,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                                   </div>
                               ))}
                           </div>
-                          <button 
+                          <button
                             onClick={() => { setClinicalReport(null); setClinicalDoc(null); }}
                             className="w-full py-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white font-bold uppercase text-xs rounded-xl transition-colors"
                           >
@@ -706,7 +706,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
 
       return (
           <div className="fixed inset-0 z-[100] bg-zinc-950 flex flex-col overflow-hidden animate-in fade-in duration-500">
-              <div 
+              <div
                 className={viewFocus === 'ai' ? fullScreenClass : floatingClass}
                 onClick={viewFocus === 'user' ? toggleView : undefined}
               >
@@ -725,13 +725,13 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                   )}
               </div>
 
-              <div 
+              <div
                 className={viewFocus === 'user' ? fullScreenClass : floatingClass}
                 onClick={viewFocus === 'ai' ? toggleView : undefined}
               >
                   <div className="w-full h-full relative">
                       {videoFeedNode}
-                      <button 
+                      <button
                         onClick={(e) => { e.stopPropagation(); onFlipCamera(); }}
                         className="absolute bottom-2 right-2 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm hover:bg-black/70 z-40"
                       >
@@ -742,7 +742,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
 
               <div className="absolute top-0 left-0 right-0 p-4 pt-12 z-40 bg-gradient-to-b from-black/80 to-transparent flex justify-between items-start pointer-events-none">
                   <div className="flex items-center gap-3 pointer-events-auto">
-                      <button 
+                      <button
                         onClick={() => { onDisconnect(); setMode('selection'); }}
                         className="bg-black/40 backdrop-blur-md p-2 rounded-full text-white border border-white/10 hover:bg-white/10 shadow-lg"
                       >
@@ -761,19 +761,19 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 p-6 pb-8 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-40 flex justify-center items-center gap-6 pointer-events-auto">
-                  <button 
+                  <button
                     onClick={() => { const newState = !isMuted; setIsMuted(newState); onToggleMute?.(newState); }}
                     className={`p-4 rounded-full backdrop-blur-md text-white border border-white/10 transition-all active:scale-95 ${isMuted ? 'bg-zinc-700 text-zinc-400' : 'bg-zinc-800/80 hover:bg-zinc-700'}`}
                   >
                       {isMuted ? <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /><line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth={2} /></svg> : <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>}
                   </button>
-                  <button 
+                  <button
                     onClick={handleEndCall}
                     className="w-16 h-16 rounded-full bg-rose-600 hover:bg-rose-500 flex items-center justify-center text-white shadow-2xl shadow-rose-900/50 transform transition-transform hover:scale-110 active:scale-95"
                   >
                       <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1 0-1.41C2.86 9.3 7.29 7.5 12 7.5c4.71 0 9.14 1.8 11.71 4.17.39.39.39 1.03 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28a11.27 11.27 0 0 0-2.66-1.85.995.995 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
                   </button>
-                  <button 
+                  <button
                     onClick={() => setShowTranscriptDrawer(!showTranscriptDrawer)}
                     className={`p-4 rounded-full backdrop-blur-md text-white border border-white/10 transition-all active:scale-95 ${showTranscriptDrawer ? 'bg-brand-600 border-brand-500 shadow-brand-500/20' : 'bg-zinc-800/80 hover:bg-zinc-700'}`}
                   >

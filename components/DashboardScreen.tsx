@@ -2057,7 +2057,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-brand-500/5 rounded-full blur-3xl group-hover:bg-brand-500/10 transition-colors duration-700" />
 
         {/* Header & Actions */}
-        <div className="flex justify-between items-start mb-4 relative z-10">
+        <div className="flex justify-between items-start mb-4 relative z-10" data-guide="metabolic-card">
           <div>
             <h2 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Metabolic Health</h2>
             <div className="h-0.5 w-6 bg-brand-500 mt-1 rounded-full" />
@@ -2235,7 +2235,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </div>
 
         {/* Bottom Row: Macros & Energy (Professional Redesign) */}
-        <div className="flex flex-col gap-4 pt-6 border-t border-zinc-100 dark:border-zinc-800 relative z-10">
+        <div className="flex flex-col gap-4 pt-6 border-t border-zinc-100 dark:border-zinc-800 relative z-10" data-guide="energy-card">
           {/* Header: Title & Main Score */}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2.5">
@@ -3239,4 +3239,3 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 };
 
 export default DashboardScreen;
-
