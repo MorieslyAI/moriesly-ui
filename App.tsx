@@ -416,16 +416,70 @@ function App() {
         return ledger.consumed > ledger.limit || ledger.sugarDebt > 0 || (userStats.medicalConditions && userStats.medicalConditions.length > 0);
     }, [ledger, userStats]);
 
+    const applyServerProfile = useCallback((server: api.FullUserProfileResponse) => {
+    const p = server.profile;
+
+    setUserStats(prev => ({
+        ...prev,
+        email: server.email,
+        name: p?.name ?? server.displayName ?? prev.name,
+        gender: p?.gender ?? prev.gender,
+        age: p?.age ?? prev.age,
+        height: p?.height ?? prev.height,
+        weight: p?.weight ?? prev.weight,
+        medicalConditions: p?.medicalConditions ?? prev.medicalConditions,
+        archetypeId: p?.archetypeId ?? prev.archetypeId,
+        goalMode: p?.goalMode ?? prev.goalMode,
+        customSugarLimit: p?.customSugarLimit ?? prev.customSugarLimit,
+        isManualSugarOverride:
+        p?.isManualSugarOverride ?? prev.isManualSugarOverride,
+        isWearableConnected:
+        server.isWearableConnected ?? prev.isWearableConnected,
+        streak: server.streak ?? prev.streak,
+        lastCheckInDate: server.lastCheckInDate ?? prev.lastCheckInDate,
+        currentXp: server.currentXp ?? prev.currentXp,
+        level: server.level ?? prev.level,
+        nextLevelXp: server.nextLevelXp ?? prev.nextLevelXp,
+        rankTitle: server.rankTitle ?? prev.rankTitle,
+    }));
+
+    if (p?.sugarLimit) {
+        setLedger(prev => ({
+        ...prev,
+        limit: p.sugarLimit,
+        }));
+    }
+
+    if (p?.mission) {
+        setCurrentGoal(prev => ({
+        ...prev,
+        eventName: p.mission?.eventName ?? prev.eventName,
+        targetWeight: p.mission?.targetWeight ?? prev.targetWeight,
+        targetDate: p.mission?.targetDate ?? prev.targetDate,
+        currentWeight: p.weight ?? prev.currentWeight,
+        }));
+    }
+    }, []);
+
+    const hydrateUserProfile = useCallback(async () => {
+    try {
+        const serverProfile = await api.getUserProfile();
+        applyServerProfile(serverProfile);
+    } catch (err) {
+        console.error("[Profile] Failed to hydrate profile:", err);
+    }}, [applyServerProfile]);
+
     // ─── Session Restore ────────────────────────────────────────────────────────
     // Saat app pertama kali mount, coba restore sesi dari httpOnly cookie.
     // Jika berhasil, langsung masuk ke app tanpa perlu login ulang.
     useEffect(() => {
         api.tryRestoreSession()
-            .then((session) => {
+            .then(async (session) => {
                 if (session) {
                     setIsLoggedIn(true);
                     if (session.isCalibrationComplete) {
                         setIsSetupComplete(true);
+                        await hydrateUserProfile();
                     }
                     if (session.displayName) {
                         setUserStats(prev => ({ ...prev, name: session.displayName }));
@@ -578,11 +632,13 @@ function App() {
         addXp(50);
     };
 
-    const handleLoginSuccess = (result: LoginResult) => {
+    const handleLoginSuccess = async (result: LoginResult) => {
         setIsLoggedIn(true);
         setShowLegal(true);
+
         if (result.isCalibrationComplete) {
             setIsSetupComplete(true);
+            await hydrateUserProfile();
         }
     };
 

@@ -136,11 +136,10 @@ export async function googleSignIn(
 }
 
 export async function refreshToken(): Promise<AuthResponse> {
-  // Tidak perlu kirim body — Firebase SDK yang handle refresh token
   if (auth.currentUser) {
     const token = await auth.currentUser.getIdToken(true);
     setAccessToken(token);
-    return { accessToken: token, isCalibrationComplete: false }; // Dummy response karena format AuthResponse
+    return { accessToken: token, expiresIn: 3600 }; 
   }
   throw new Error("No user logged in");
 }
@@ -200,6 +199,7 @@ export interface UpdateSettingsPayload {
   targetDate?: string;
   // Account
   isWearableConnected?: boolean;
+  isManualSugarOverride?: boolean;
 }
 
 export interface UpdateSettingsResponse {
@@ -214,6 +214,45 @@ export async function updateUserSettings(
     method: "PUT",
     body: JSON.stringify(payload),
   });
+}
+
+// ─── get full profile ──────────────────────────────────────────────────────
+export interface FullUserProfileResponse {
+  userId: string;
+  email: string;
+  displayName: string;
+  role: string;
+  isCalibrationComplete: boolean;
+  createdAt?: string;
+  streak: number;
+  lastCheckInDate: string | null;
+  currentXp: number;
+  level: number;
+  nextLevelXp: number;
+  rankTitle: string;
+  isWearableConnected?: boolean;
+  profile?: {
+    name: string;
+    gender: "male" | "female";
+    age: number;
+    height: number;
+    weight: number;
+    archetypeId: "desk" | "field" | "heavy" | "custom";
+    medicalConditions: string[];
+    goalMode: "cut" | "maintain" | "bulk" | "custom";
+    customSugarLimit?: number | null;
+    isManualSugarOverride?: boolean;
+    sugarLimit: number;
+    mission?: {
+      eventName?: string;
+      targetWeight?: number;
+      targetDate?: string;
+    };
+  };
+}
+
+export async function getUserProfile(): Promise<FullUserProfileResponse> {
+  return request<FullUserProfileResponse>("/user/profile");
 }
 
 // ─── Dashboard Endpoints ──────────────────────────────────────────────────────

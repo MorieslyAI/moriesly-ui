@@ -96,8 +96,11 @@ export interface UserProfile {
   medicalConditions?: string[]; // NEW: Synced from Setup
   agent?: string; // NEW: Selected agent ID
   email?: string;
-  password?: string;
   isWearableConnected?: boolean;
+  archetypeId?: 'desk' | 'field' | 'heavy' | 'custom';
+  goalMode?: 'cut' | 'maintain' | 'bulk' | 'custom';
+  customSugarLimit?: number | null;
+  isManualSugarOverride?: boolean;
 }
 
 export interface PendingScanResult {
