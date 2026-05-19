@@ -1,6 +1,6 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { HistoryItem } from '../types';
+import { getDashboardHistory } from '../services/api';
 import { Plus, Dumbbell, Wheat, Droplet, Leaf, FlaskConical, X, Activity, Flame, Zap, Info, Clock, Calendar, ChevronRight, ChevronLeft, Search, Filter, Share2, Download, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
 import MetabolicInvoice from './MetabolicInvoice';
 import SugarPile from './SugarPile';
@@ -38,8 +38,108 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  // ─── Prefetch Cache ────────────────────────────────────────────────────────
+  // Menyimpan data server per tanggal (dateStr → HistoryItem[]) tanpa
+  // memicu re-render saat cache diisi di background.
+  const prefetchCacheRef = useRef<Map<string, HistoryItem[]>>(new Map());
+
+  // State hanya digunakan untuk trigger re-render setelah cache diisi
+  const [cacheVersion, setCacheVersion] = useState(0);
+  const [isFetchingDate, setIsFetchingDate] = useState(false);
+
+  // Helper: normalise raw items dari API
+  const normaliseItems = (items: any[]): HistoryItem[] =>
+    items.map((item: any) => ({
+      ...item,
+      timestamp: new Date(item.timestamp ?? item.createdAt ?? Date.now()),
+    }));
+
+  // Helper: toDateStr dari Date object
+  const toDateStr = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  // ─── PREFETCH: jalankan saat bulan berubah atau history lokal berubah ───────
+  useEffect(() => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+
+    // Kumpulkan tanggal unik di bulan ini yang punya data lokal
+    const uniqueDateStrs = new Set<string>();
+    history.forEach(item => {
+      const d = new Date(item.timestamp);
+      if (d.getFullYear() === year && d.getMonth() === month) {
+        uniqueDateStrs.add(toDateStr(d));
+      }
+    });
+
+    // Fetch semua tanggal yang belum ada di cache secara paralel (silent)
+    const toFetch = Array.from(uniqueDateStrs).filter(
+      ds => !prefetchCacheRef.current.has(ds)
+    );
+    if (toFetch.length === 0) return;
+
+    Promise.all(
+      toFetch.map(ds =>
+        getDashboardHistory(ds)
+          .then(items => ({ ds, items: normaliseItems(items) }))
+          .catch(() => null)
+      )
+    ).then(results => {
+      let updated = false;
+      results.forEach(r => {
+        if (r) {
+          prefetchCacheRef.current.set(r.ds, r.items);
+          updated = true;
+        }
+      });
+      if (updated) setCacheVersion(v => v + 1); // trigger re-render
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentMonth, history]);
+
+  // ─── ON-DEMAND FETCH: fallback jika tanggal diklik sebelum cache siap ──────
+  useEffect(() => {
+    if (!selectedDate) return;
+
+    const dateStr = toDateStr(selectedDate);
+
+    // Kalau sudah ada di cache → tidak perlu fetch
+    if (prefetchCacheRef.current.has(dateStr)) return;
+
+    // Belum ada di cache → fetch on-demand dengan spinner
+    setIsFetchingDate(true);
+    getDashboardHistory(dateStr)
+      .then(items => {
+        const normalised = normaliseItems(items);
+        prefetchCacheRef.current.set(dateStr, normalised);
+        setCacheVersion(v => v + 1);
+      })
+      .catch(err => {
+        console.error('[HistoryScreen] getDashboardHistory error:', err);
+        // Isi cache dengan array kosong agar tidak retry terus
+        prefetchCacheRef.current.set(dateStr, []);
+        setCacheVersion(v => v + 1);
+      })
+      .finally(() => setIsFetchingDate(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate]);
+
+  // ─── Merge: gabung data lokal + data server dari cache ────────────────────
+  const mergedHistory = useMemo(() => {
+    if (!selectedDate) return history;
+    const dateStr = toDateStr(selectedDate);
+    const serverItems = prefetchCacheRef.current.get(dateStr) ?? [];
+    if (serverItems.length === 0) return history;
+
+    const localIds = new Set(history.map(h => h.id));
+    const serverOnlyItems = serverItems.filter(s => !localIds.has(s.id));
+    return [...history, ...serverOnlyItems];
+  // cacheVersion memastikan useMemo re-compute saat cache diisi
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history, selectedDate, cacheVersion]);
+
   const filteredHistory = useMemo(() => {
-    return history.filter(item => {
+    return mergedHistory.filter(item => {
       // Date Filter
       if (selectedDate) {
         const itemDate = new Date(item.timestamp);
@@ -51,7 +151,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
       if (filter === 'all') return true;
       return item.action === filter;
     });
-  }, [history, filter, selectedDate]);
+  }, [mergedHistory, filter, selectedDate]);
 
   // --- Table Sorting Logic ---
   const sortedTableData = useMemo(() => {
@@ -254,7 +354,20 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
         </div>
         
         {selectedDate && (
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-2 mt-1">
+                {isFetchingDate ? (
+                    <div className="flex items-center gap-2 text-xs text-teal-600 dark:text-teal-400 font-bold animate-pulse">
+                        <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading...
+                    </div>
+                ) : (
+                    <span className="text-[10px] text-zinc-400 font-medium">
+                        {filteredHistory.length} items found
+                    </span>
+                )}
                 <button 
                     onClick={() => setSelectedDate(null)}
                     className="text-xs font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1 transition-colors"

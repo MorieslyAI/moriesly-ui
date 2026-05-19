@@ -2145,92 +2145,142 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               </div>
             </div>
 
-            {/* Daily Metabolic Summary (Mobile Only - now stacks or side-by-side depending on width) */}
-            <div className="lg:hidden w-full sm:w-auto flex flex-col items-stretch sm:items-end bg-zinc-50/50 dark:bg-zinc-800/50 backdrop-blur-xl px-4 py-3 rounded-[1.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
-              <div className="flex items-center justify-between sm:justify-end gap-4">
+            {/* Daily Metabolic Summary - Mobile Only */}
+            <div className="lg:hidden w-full sm:w-[320px] sm:ml-auto bg-zinc-50/70 dark:bg-zinc-800/60 backdrop-blur-xl px-3 py-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
+              {/* Main Stats */}
+              <div className="grid grid-cols-3 w-full divide-x divide-zinc-200 dark:divide-zinc-700">
                 {/* Sugar */}
-                <div className="flex flex-col items-end">
-                  <div className="flex items-center gap-1 mb-0.5">
-                    <Activity className={`w-2.5 h-2.5 ${filteredConsumed > ledger.limit ? 'text-rose-500' : 'text-emerald-500'}`} />
-                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Sugar</span>
+                <div className="min-w-0 px-2 first:pl-0 flex flex-col items-center text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1 min-w-0">
+                    <Activity
+                      className={`w-2.5 h-2.5 shrink-0 ${
+                        filteredConsumed > ledger.limit ? 'text-rose-500' : 'text-emerald-500'
+                      }`}
+                    />
+                    <span className="truncate text-[8px] font-black text-zinc-400 uppercase tracking-[0.14em]">
+                      Sugar
+                    </span>
                   </div>
-                  <div className="flex items-baseline gap-0.5 leading-none">
-                    <span className={`text-xl font-black tracking-tighter ${filteredConsumed > ledger.limit ? 'text-rose-500' : 'text-zinc-900 dark:text-zinc-100 dark:text-white'}`}>{Math.round(filteredConsumed)}</span>
+
+                  <div className="flex items-baseline justify-center gap-0.5 leading-none">
+                    <span
+                      className={`text-lg font-black tracking-tighter tabular-nums ${
+                        filteredConsumed > ledger.limit
+                          ? 'text-rose-500'
+                          : 'text-zinc-900 dark:text-white'
+                      }`}
+                    >
+                      {Math.round(filteredConsumed)}
+                    </span>
                     <span className="text-[10px] font-bold text-zinc-400">g</span>
                   </div>
                 </div>
 
                 {/* Protein */}
-                <div className="flex flex-col items-end border-l border-zinc-200 dark:border-zinc-700 dark:border-zinc-700 pl-4">
-                  <div className="flex items-center gap-1 mb-0.5">
-                    <Zap className="w-2.5 h-2.5 text-blue-500" />
-                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Prot</span>
+                <div className="min-w-0 px-2 flex flex-col items-center text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1 min-w-0">
+                    <Zap className="w-2.5 h-2.5 shrink-0 text-blue-500" />
+                    <span className="truncate text-[8px] font-black text-zinc-400 uppercase tracking-[0.14em]">
+                      Prot
+                    </span>
                   </div>
-                  <div className="flex items-baseline gap-0.5 leading-none">
-                    <span className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter">{Math.round(dailyProtein)}</span>
+
+                  <div className="flex items-baseline justify-center gap-0.5 leading-none">
+                    <span className="text-lg font-black text-zinc-900 dark:text-white tracking-tighter tabular-nums">
+                      {Math.round(dailyProtein)}
+                    </span>
                     <span className="text-[10px] font-bold text-zinc-400">g</span>
                   </div>
                 </div>
 
                 {/* Water */}
-                <div className="flex flex-col items-end border-l border-zinc-200 dark:border-zinc-700 dark:border-zinc-700 pl-4">
-                  <div className="flex items-center gap-1 mb-0.5">
-                    <Droplet className="w-2.5 h-2.5 text-cyan-500" />
-                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">H2O</span>
+                <div className="min-w-0 px-2 last:pr-0 flex flex-col items-center text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1 min-w-0">
+                    <Droplet className="w-2.5 h-2.5 shrink-0 text-cyan-500" />
+                    <span className="truncate text-[8px] font-black text-zinc-400 uppercase tracking-[0.14em]">
+                      H2O
+                    </span>
                   </div>
-                  <div className="flex items-baseline gap-0.5 leading-none">
-                    <span className="text-xl font-black text-zinc-900 dark:text-zinc-100 dark:text-white tracking-tighter">{hydrationPercent}</span>
+
+                  <div className="flex items-baseline justify-center gap-0.5 leading-none">
+                    <span className="text-lg font-black text-zinc-900 dark:text-white tracking-tighter tabular-nums">
+                      {hydrationPercent}
+                    </span>
                     <span className="text-[10px] font-bold text-zinc-400">%</span>
                   </div>
                 </div>
               </div>
 
               {/* Agent Goal Tracking */}
-              <div className="mt-3 w-full flex items-center justify-between gap-3 bg-white dark:bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-100 dark:border-zinc-800 text-[8px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">
-                <div className="flex items-center gap-1.5">
-                  <Target className="w-2.5 h-2.5" />
-                  {currentAgent.name}
+              <div className="mt-2.5 w-full flex items-center gap-2 bg-white dark:bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-zinc-100 dark:border-zinc-800 text-[8px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tight">
+                <div className="min-w-0 flex items-center gap-1.5 shrink">
+                  <Target className="w-2.5 h-2.5 shrink-0" />
+                  <span className="truncate">{currentAgent.name}</span>
                 </div>
-                <div className="flex items-center gap-2 flex-1">
+
+                <div className="flex items-center gap-2 flex-1 min-w-[70px]">
                   <div className="h-1 flex-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-500 dark:bg-indigo-400" style={{ width: `${currentAgent.completion}%` }} />
+                    <div
+                      className="h-full bg-indigo-500 dark:bg-indigo-400"
+                      style={{ width: `${currentAgent.completion}%` }}
+                    />
                   </div>
-                  <span className="min-w-[20px] text-right">{currentAgent.completion}%</span>
+
+                  <span className="shrink-0 min-w-[24px] text-right tabular-nums">
+                    {currentAgent.completion}%
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Right: 4 Quick Stats */}
-          <div className="flex overflow-x-auto scrollbar-hide sm:grid sm:grid-cols-4 lg:grid-cols-4 gap-3 flex-1 pb-2 sm:pb-0">
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
-              <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
-                <Activity className="w-4 h-4 text-rose-500" />
+          <div className="grid grid-cols-4 gap-2 flex-1">
+            {[
+              {
+                icon: <Activity className="w-3.5 h-3.5 text-rose-500" />,
+                value: avgGI || '-',
+                label: 'Avg GI',
+                bg: 'bg-rose-50 dark:bg-rose-500/10',
+              },
+              {
+                icon: <Zap className="w-3.5 h-3.5 text-blue-500" />,
+                value: insulinLoad,
+                label: 'Insulin',
+                bg: 'bg-blue-50 dark:bg-blue-500/10',
+              },
+              {
+                icon: <Flame className="w-3.5 h-3.5 text-orange-500" />,
+                value: dailyHistory.length === 0 ? 'Idle' : metabolicTrend >= 0 ? 'Active' : 'Slow',
+                label: 'Metab',
+                bg: 'bg-orange-50 dark:bg-orange-500/10',
+              },
+              {
+                icon: <Droplet className="w-3.5 h-3.5 text-emerald-500" />,
+                value: `${hydrationPercent}%`,
+                label: 'Water',
+                bg: 'bg-emerald-50 dark:bg-emerald-500/10',
+              },
+            ].map((stat, index) => (
+              <div
+                key={index}
+                className="min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl p-2 flex flex-col items-center justify-center gap-1 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group/stat"
+              >
+                <div
+                  className={`w-7 h-7 rounded-lg ${stat.bg} flex items-center justify-center group-hover/stat:scale-110 transition-transform`}
+                >
+                  {stat.icon}
+                </div>
+
+                <span className="max-w-full truncate text-sm font-black text-zinc-900 dark:text-white leading-none">
+                  {stat.value}
+                </span>
+
+                <span className="max-w-full truncate text-[8px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.08em]">
+                  {stat.label}
+                </span>
               </div>
-              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{avgGI || '-'}</span>
-              <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Avg GI</span>
-            </div>
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
-              <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
-                <Zap className="w-4 h-4 text-blue-500" />
-              </div>
-              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{insulinLoad}</span>
-              <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Insulin</span>
-            </div>
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
-              <div className="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
-                <Flame className="w-4 h-4 text-orange-500" />
-              </div>
-              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{dailyHistory.length === 0 ? 'Idle' : (metabolicTrend >= 0 ? 'Active' : 'Slow')}</span>
-              <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Metab</span>
-            </div>
-            <div className="min-w-[85px] sm:min-w-0 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1.5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 group/stat">
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center group-hover/stat:scale-110 transition-transform">
-                <Droplet className="w-4 h-4 text-emerald-500" />
-              </div>
-              <span className="text-base font-black text-zinc-900 dark:text-zinc-100 dark:text-white leading-none">{hydrationPercent}%</span>
-              <span className="text-[9px] font-black text-zinc-400 uppercase text-center leading-tight tracking-[0.1em]">Water</span>
-            </div>
+            ))}
           </div>
         </div>
 
