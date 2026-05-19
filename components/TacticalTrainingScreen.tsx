@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { UserProfile, LedgerState, OperationPlan, TimeBlock } from '../types';
 import {
   generateTrainingPlan,
@@ -439,32 +439,68 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mealFileInputRef = useRef<HTMLInputElement>(null);
   const loadoutRef = useRef<HTMLDivElement>(null);
+  // Track current UTC date string for day-change detection
+  const currentDayRef = useRef(new Date().toISOString().split('T')[0]);
 
   const sugarToBurn = ledger.consumed;
 
-  // ── Load active plan on mount ──────────────────────────────────────────────
-  useEffect(() => {
-    async function loadActivePlan() {
-      try {
-        setIsLoadingActive(true);
-        const res: ActiveTrainingResult = await getActiveTrainingPlan();
-        setCanGenerate(res.canGenerate);
-        setLockedUntil(new Date(res.lockedUntil));
-        if (res.plan) {
-          setPlan(res.plan as unknown as OperationPlan);
-          setActivePlanId(res.plan.id);
-          setCompletedWorkouts(res.plan.completedWorkoutIndices ?? []);
-          setCompletedMeals(res.plan.completedMealIndices ?? []);
-        }
-      } catch (err) {
-        console.error('Failed to load active training plan:', err);
-      } finally {
-        setIsLoadingActive(false);
+  // ── Load active plan ──────────────────────────────────────────────────────
+  const loadActivePlan = useCallback(async () => {
+    try {
+      setIsLoadingActive(true);
+      const res: ActiveTrainingResult = await getActiveTrainingPlan();
+      setCanGenerate(res.canGenerate);
+      setLockedUntil(new Date(res.lockedUntil));
+      if (res.plan) {
+        setPlan(res.plan as unknown as OperationPlan);
+        setActivePlanId(res.plan.id);
+        setCompletedWorkouts(res.plan.completedWorkoutIndices ?? []);
+        setCompletedMeals(res.plan.completedMealIndices ?? []);
+      } else {
+        // No training plan for today — clear any stale state from previous day
+        setPlan(null);
+        setActivePlanId(null);
+        setCompletedWorkouts([]);
+        setCompletedMeals([]);
       }
+    } catch (err) {
+      console.error('Failed to load active training plan:', err);
+    } finally {
+      setIsLoadingActive(false);
     }
-    loadActivePlan();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setPlan, setCompletedWorkouts]);
+
+  // Load on mount
+  useEffect(() => {
+    loadActivePlan();
+  }, [loadActivePlan]);
+
+  // ── Day-change detector: auto-refresh when UTC date flips ─────────────────
+  // Checks every 60s and also when the user returns to the tab
+  useEffect(() => {
+    const checkDayChange = () => {
+      const newDay = new Date().toISOString().split('T')[0];
+      if (newDay !== currentDayRef.current) {
+        currentDayRef.current = newDay;
+        // Immediately clear stale plan, then re-fetch fresh data
+        setPlan(null);
+        setActivePlanId(null);
+        setCompletedWorkouts([]);
+        setCompletedMeals([]);
+        setCanGenerate(true);
+        setCountdown('');
+        loadActivePlan();
+      }
+    };
+    const interval = setInterval(checkDayChange, 60_000);
+    document.addEventListener('visibilitychange', checkDayChange);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', checkDayChange);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadActivePlan]);
 
   // ── Countdown ticker ──────────────────────────────────────────────────────
   useEffect(() => {

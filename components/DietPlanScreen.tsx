@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { DietPlan, WeeklyPlan, UserProfile, MealItem } from '../types';
 import {
   generateDailyDietPlan,
@@ -206,43 +206,81 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
   const [verifyingWeeklyMeal, setVerifyingWeeklyMeal] = useState<{d: number, m: number} | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Track current UTC date string for day-change detection
+  const currentDayRef = useRef(new Date().toISOString().split('T')[0]);
 
-  // --- Load Active Plans from Backend on Mount ---
-  useEffect(() => {
-    async function loadActivePlans() {
-      try {
-        setIsLoadingActive(true);
-        const res = await getActiveDietPlans();
-        if (res.daily) {
-          setDietPlan(res.daily as unknown as DietPlan);
-          setActiveDailyPlanId(res.daily.id);
-          setSelectedCategory(res.daily.category || '');
-          // Restore consumed status from Firestore
-          setCompletedMealIndices(res.daily.consumedMealIndices ?? []);
-        }
-        if (res.weekly) {
-          setWeeklyPlan({
-            id: res.weekly.id,
-            weekName: res.weekly.weekName,
-            days: res.weekly.days,
-          } as WeeklyPlan);
-          if (!res.daily) setSelectedCategory(res.weekly.category || '');
-          // Restore consumed status from Firestore
-          setCompletedWeeklyIndices(res.weekly.consumedMealKeys ?? []);
-        }
-        setCanGenerateDaily(res.canGenerateDaily);
-        setCanGenerateWeekly(res.canGenerateWeekly);
-        setLockedUntilDaily(new Date(res.lockedUntilDaily));
-        setLockedUntilWeekly(new Date(res.lockedUntilWeekly));
-      } catch (err) {
-        console.error('Failed to load active diet plans:', err);
-      } finally {
-        setIsLoadingActive(false);
+  // --- Load Active Plans from Backend ---
+  const loadActivePlans = useCallback(async () => {
+    try {
+      setIsLoadingActive(true);
+      const res = await getActiveDietPlans();
+      if (res.daily) {
+        setDietPlan(res.daily as unknown as DietPlan);
+        setActiveDailyPlanId(res.daily.id);
+        setSelectedCategory(res.daily.category || '');
+        // Restore consumed status from Firestore
+        setCompletedMealIndices(res.daily.consumedMealIndices ?? []);
+      } else {
+        // No daily plan for today — clear any stale data from previous day
+        setDietPlan(null);
+        setActiveDailyPlanId(null);
+        setCompletedMealIndices([]);
       }
+      if (res.weekly) {
+        setWeeklyPlan({
+          id: res.weekly.id,
+          weekName: res.weekly.weekName,
+          days: res.weekly.days,
+        } as WeeklyPlan);
+        if (!res.daily) setSelectedCategory(res.weekly.category || '');
+        // Restore consumed status from Firestore
+        setCompletedWeeklyIndices(res.weekly.consumedMealKeys ?? []);
+      } else {
+        // No active weekly plan (expired or never created) — clear stale state
+        setWeeklyPlan(null);
+        setCompletedWeeklyIndices([]);
+      }
+      setCanGenerateDaily(res.canGenerateDaily);
+      setCanGenerateWeekly(res.canGenerateWeekly);
+      setLockedUntilDaily(new Date(res.lockedUntilDaily));
+      setLockedUntilWeekly(new Date(res.lockedUntilWeekly));
+    } catch (err) {
+      console.error('Failed to load active diet plans:', err);
+    } finally {
+      setIsLoadingActive(false);
     }
-    loadActivePlans();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setDietPlan]);
+
+  // Load on mount
+  useEffect(() => {
+    loadActivePlans();
+  }, [loadActivePlans]);
+
+  // --- Day-change detector: auto-refresh when UTC date flips ---
+  // Checks every 60s and also when the user returns to the tab
+  useEffect(() => {
+    const checkDayChange = () => {
+      const newDay = new Date().toISOString().split('T')[0];
+      if (newDay !== currentDayRef.current) {
+        currentDayRef.current = newDay;
+        // Immediately clear stale daily plan, then re-fetch fresh data
+        // (Weekly plan state will also be updated by loadActivePlans —
+        //  backend returns null if 7-day window has expired)
+        setDietPlan(null);
+        setActiveDailyPlanId(null);
+        setCompletedMealIndices([]);
+        loadActivePlans();
+      }
+    };
+    const interval = setInterval(checkDayChange, 60_000);
+    document.addEventListener('visibilitychange', checkDayChange);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', checkDayChange);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadActivePlans]);
 
   // --- Countdown ticker (satu interval, update keduanya) ---
   useEffect(() => {
