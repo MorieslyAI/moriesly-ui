@@ -1123,10 +1123,11 @@ export async function postAddonScan(
 
 export async function postSkinScan(
   base64Image: string,
+  landmarks?: { x: number; y: number; z: number }[],
 ): Promise<ScanResponse> {
   return request<ScanResponse>("/scan", {
     method: "POST",
-    body: JSON.stringify({ base64Image, scanMode: "skin" }),
+    body: JSON.stringify({ base64Image, scanMode: "skin", landmarks }),
   });
 }
 

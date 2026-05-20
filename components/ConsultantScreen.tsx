@@ -530,14 +530,14 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                 {/* Instant Chat */}
                 <button
                   onClick={() => setMode('chat')}
-                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-brand-500/50 rounded-2xl p-4 text-left transition-all group flex flex-col justify-between h-32 relative overflow-hidden"
+                  className="bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-950 hover:from-emerald-100 hover:via-green-100 hover:to-teal-100 dark:hover:from-zinc-800 dark:hover:via-zinc-800 dark:hover:to-zinc-900 border border-emerald-200/70 dark:border-zinc-800 hover:border-emerald-500 dark:hover:border-brand-500/50 rounded-2xl p-4 text-left transition-all group flex flex-col justify-between h-32 relative overflow-hidden shadow-sm shadow-emerald-100/60 dark:shadow-none"
                 >
                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                        <svg className="w-16 h-16 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                    </div>
                    <div className="bg-brand-500/10 w-8 h-8 rounded-lg flex items-center justify-center text-brand-500 mb-2">💬</div>
                    <div>
-                       <div className="font-bold text-white text-sm">Secure Chat</div>
+                       <div className="font-bold text-emerald-950 dark:text-white text-sm">Secure Chat</div>
                        <div className="text-[9px] text-zinc-500">Instant Advice</div>
                    </div>
                 </button>
@@ -550,14 +550,14 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                           onConnect();
                       }
                   }}
-                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-rose-500/50 rounded-2xl p-4 text-left transition-all group flex flex-col justify-between h-32 relative overflow-hidden"
+                  className="bg-gradient-to-br from-green-50 via-emerald-50 to-lime-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-950 hover:from-green-100 hover:via-emerald-100 hover:to-lime-100 dark:hover:from-zinc-800 dark:hover:via-zinc-800 dark:hover:to-zinc-900 border border-green-200/70 dark:border-zinc-800 hover:border-green-500 dark:hover:border-rose-500/50 rounded-2xl p-4 text-left transition-all group flex flex-col justify-between h-32 relative overflow-hidden shadow-sm shadow-green-100/60 dark:shadow-none"
                 >
                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                        <svg className="w-16 h-16 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                    </div>
                    <div className="bg-rose-500/10 w-8 h-8 rounded-lg flex items-center justify-center text-rose-500 mb-2">📹</div>
                    <div>
-                       <div className="font-bold text-white text-sm">Live Call</div>
+                       <div className="font-bold text-emerald-950 dark:text-white text-sm">Live Call</div>
                        <div className="text-[9px] text-zinc-500">Face-to-Face Consult</div>
                    </div>
                 </button>
@@ -579,7 +579,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
             {/* Clinical Decode Card */}
             <button
               onClick={() => setMode('clinical')}
-              className="w-full bg-gradient-to-br from-zinc-900 to-black hover:from-zinc-800 hover:to-zinc-900 border border-zinc-800 hover:border-brand-500/50 rounded-2xl px-5 py-10 text-left transition-all group relative overflow-hidden shadow-lg"
+              className="w-full bg-gradient-to-br from-emerald-50 via-green-50 to-teal-100 dark:from-zinc-900 dark:via-zinc-950 dark:to-black hover:from-emerald-100 hover:via-green-100 hover:to-teal-200 dark:hover:from-zinc-800 dark:hover:via-zinc-900 dark:hover:to-zinc-950 border border-emerald-200/80 dark:border-zinc-800 hover:border-emerald-500 dark:hover:border-brand-500/50 rounded-2xl px-5 py-10 text-left transition-all group relative overflow-hidden shadow-lg shadow-emerald-100/70 dark:shadow-black/30"
             >
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay"></div>
                 <div className="absolute top-4 right-4 bg-brand-500/10 text-brand-400 text-[8px] font-black uppercase px-2 py-1 rounded border border-brand-500/20 tracking-wider">
@@ -590,7 +590,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                         ⚕️
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white mb-1">Clinical Decode</h3>
+                        <h3 className="text-lg font-bold text-emerald-950 dark:text-white mb-1">Clinical Decode</h3>
                         <p className="text-xs text-zinc-400 leading-tight max-w-[200px]">Upload Lab Results & Medical Docs for Deep Forensic Analysis.</p>
                     </div>
                 </div>

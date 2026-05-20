@@ -216,13 +216,20 @@ export interface VersusResult {
   verdict: string;
 }
 
+// Satu titik landmark dari MediaPipe Face Landmarker (nilai 0.0–1.0 normalized)
+export interface FaceLandmarkPoint {
+  x: number;
+  y: number;
+  z: number;
+}
+
 export interface FaceZone {
   area: string;
   condition: string; // e.g. "Glycation Lines", "Puffy", "Acne"
   severity: 'Low' | 'Medium' | 'High';
   treatment: string; // Specific advice for this spot
   explanation?: string; // Detailed observation
-  coordinates?: { x: number; y: number }; // NEW: 0-100 Percentages relative to image
+  coordinates?: { x: number; y: number }; // 0-100 Percentages relative to image
 }
 
 export interface SkinAnalysis {
