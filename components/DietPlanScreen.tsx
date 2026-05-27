@@ -667,23 +667,23 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
     <div className="pb-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* --- PROTOCOL SWITCHER --- */}
-      <div className="flex bg-zinc-900 p-1 rounded-2xl mb-6 mx-4 md:mx-0 border border-zinc-800 overflow-x-auto">
+      <div className="flex bg-white dark:bg-zinc-900 p-1 rounded-2xl mb-6 mx-4 md:mx-0 border border-zinc-200 dark:border-zinc-800 overflow-x-auto shadow-sm">
           <button 
             onClick={() => setActiveTab('daily')}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'daily' ? 'bg-zinc-800 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+            className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'daily' ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-300'}`}
           >
               Mission Protocol
           </button>
           <button 
             onClick={() => setActiveTab('weekly')}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'weekly' ? 'bg-zinc-800 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300'}`}
+            className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === 'weekly' ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-300'}`}
           >
               Weekly Supply
           </button>
           <button 
             onClick={() => setActiveTab('shop')}
             disabled={!dietPlan && !weeklyPlan}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap flex items-center justify-center gap-2 ${activeTab === 'shop' ? 'bg-brand-900/30 text-brand-400 border border-brand-500/20 shadow-lg' : 'text-zinc-500 hover:text-zinc-300 disabled:opacity-30'}`}
+            className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap flex items-center justify-center gap-2 ${activeTab === 'shop' ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 border border-brand-500/20 shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-300 disabled:opacity-30'}`}
           >
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
               Logistics
@@ -692,7 +692,7 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
 
       {/* --- INPUT SECTION (Only show for Daily/Weekly) --- */}
       {activeTab !== 'shop' && (
-      <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl mb-6 relative overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-xl mb-6 relative overflow-hidden">
          <div className="absolute top-0 right-0 p-3 opacity-10">
              <svg className="w-32 h-32 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
          </div>
@@ -700,18 +700,18 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
          <div className="relative z-10">
              <div className="flex justify-between items-start mb-4">
                  <div>
-                     <h2 className="text-2xl font-black text-white mb-1 uppercase tracking-tight">
+                     <h2 className="text-2xl font-black text-zinc-900 dark:text-white mb-1 uppercase tracking-tight">
                          {activeTab === 'daily' ? 'Daily Rationing' : 'Logistics Planning'}
                      </h2>
-                     <p className="text-zinc-400 text-sm">
+                     <p className="text-zinc-500 dark:text-zinc-400 text-sm">
                          {activeTab === 'daily' ? 'Define nutritional parameters for next 24h.' : 'Establish supply chain for next 7 days.'}
                      </p>
                  </div>
                  
                  {/* Mode Toggle */}
-                 <div className="flex bg-black/40 p-1 rounded-lg border border-zinc-700/50">
-                     <button onClick={() => setInputMode('auto')} className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${inputMode === 'auto' ? 'bg-brand-500 text-black shadow' : 'text-zinc-500'}`}>Auto-Intel</button>
-                     <button onClick={() => setInputMode('manual')} className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${inputMode === 'manual' ? 'bg-zinc-700 text-white shadow' : 'text-zinc-500'}`}>Manual</button>
+                 <div className="flex bg-zinc-100 dark:bg-black/40 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700/50">
+                     <button onClick={() => setInputMode('auto')} className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${inputMode === 'auto' ? 'bg-brand-500 text-black shadow' : 'text-zinc-500 dark:text-zinc-400'}`}>Auto-Intel</button>
+                     <button onClick={() => setInputMode('manual')} className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase transition-all ${inputMode === 'manual' ? 'bg-brand-500 text-black shadow' : 'text-zinc-500 dark:text-zinc-400'}`}>Manual</button>
                  </div>
              </div>
              
@@ -726,8 +726,7 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
                                 onClick={() => setSelectedCategory(cat.id)}
                                 className={`relative p-4 rounded-2xl border-2 text-left transition-all group overflow-hidden ${
                                     selectedCategory === cat.id 
-                                    ? 'border-brand-500 bg-brand-900/20' 
-                                    : 'border-zinc-800 bg-zinc-950/50 hover:border-zinc-600'
+                                    ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950/50 hover:border-zinc-400 dark:hover:border-zinc-600'
                                 }`}
                              >
                                  {isRecommended && (
@@ -736,8 +735,8 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
                                      </div>
                                  )}
                                  <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-300">{cat.icon}</div>
-                                 <div className={`text-sm font-bold uppercase mb-1 ${selectedCategory === cat.id ? 'text-white' : 'text-zinc-400'}`}>{cat.title}</div>
-                                 <div className="text-[10px] text-zinc-500 leading-tight">{cat.desc}</div>
+                                 <div className={`text-sm font-bold uppercase mb-1 ${selectedCategory === cat.id ? 'text-zinc-900 dark:text-white' : 'text-zinc-700 dark:text-zinc-400'}`}>{cat.title}</div>
+                                 <div className="text-[10px] text-zinc-500 dark:text-zinc-500 leading-tight">{cat.desc}</div>
                              </button>
                          )
                      })}
@@ -752,7 +751,7 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
                         value={manualGoal}
                         onChange={(e) => setManualGoal(e.target.value)}
                         placeholder={activeTab === 'daily' ? "E.g. Lose fat, build muscle..." : "E.g. High protein meal prep..."}
-                        className="w-full bg-black/50 border border-zinc-700 rounded-2xl py-4 pl-4 pr-4 text-white placeholder-zinc-600 focus:outline-none focus:border-brand-500 transition-colors"
+                        className="w-full bg-white dark:bg-black/50 border border-zinc-300 dark:border-zinc-700 rounded-2xl py-4 pl-4 pr-4 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-brand-500 transition-colors"
                         onKeyDown={(e) => e.key === 'Enter' && (activeTab === 'daily' ? handleGeneratePlan() : handleGenerateWeekly())}
                      />
                  </div>
