@@ -1103,50 +1103,74 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
       )}
 
       {/* --- SHOPPING LIST TAB --- */}
-      {activeTab === 'shop' && (
-          <div className="animate-in slide-in-from-right-4 duration-500">
-              <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl mb-6">
-                  <div className="flex justify-between items-center mb-6">
-                      <div>
-                          <h2 className="text-2xl font-black text-white uppercase tracking-tight">Tactical Logistics</h2>
-                          <p className="text-zinc-400 text-sm">Procurement checklist for active mission.</p>
-                      </div>
-                      <div className="bg-teal-500/10 text-teal-500 p-2 rounded-xl">
-                          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                      </div>
-                  </div>
+        {activeTab === 'shop' && (
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-xl mb-6 relative overflow-hidden">
+            <div className="flex items-start justify-between mb-6">
+            <div>
+                <h2 className="text-2xl font-black text-zinc-900 dark:text-white mb-1 uppercase tracking-tight">
+                Tactical Logistics
+                </h2>
 
-                  {shoppingList.length === 0 ? (
-                      <div className="text-center py-10 text-zinc-500 italic">
-                          No active plan detected. Generate a diet protocol first.
-                      </div>
-                  ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {shoppingList.map((item, idx) => (
-                              <label key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-black/30 border border-zinc-800 hover:border-teal-500/50 cursor-pointer transition-all group">
-                                  <div className="relative">
-                                      <input type="checkbox" className="peer appearance-none w-5 h-5 rounded border border-zinc-600 bg-zinc-900 checked:bg-teal-500 checked:border-teal-500 transition-colors" />
-                                      <svg className="absolute top-1 left-1 w-3 h-3 text-black opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>
-                                  </div>
-                                  <span className="text-sm font-medium text-zinc-300 peer-checked:text-zinc-600 peer-checked:line-through transition-colors">
-                                      {item}
-                                  </span>
-                              </label>
-                          ))}
-                      </div>
-                  )}
-                  
-                  <div className="mt-6 pt-4 border-t border-zinc-800 text-center">
-                      <button 
-                        className="text-xs font-bold uppercase text-zinc-500 hover:text-white transition-colors bg-zinc-800 hover:bg-zinc-700 px-6 py-3 rounded-xl" 
-                        onClick={handlePrintManifest}
-                      >
-                          Print Document
-                      </button>
-                  </div>
-              </div>
-          </div>
-      )}
+                <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                Procurement checklist for active mission.
+                </p>
+            </div>
+
+            <button
+                onClick={handlePrintManifest}
+                disabled={shoppingList.length === 0}
+                className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 border border-brand-500/20 flex items-center justify-center disabled:opacity-40"
+                title="Print Document"
+            >
+                <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+                </svg>
+            </button>
+            </div>
+
+            {shoppingList.length === 0 ? (
+            <div className="bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 text-center">
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                No active plan detected. Generate a diet protocol first.
+                </p>
+            </div>
+            ) : (
+            <div className="space-y-3">
+                {shoppingList.map((item, idx) => (
+                <div
+                    key={`${item}-${idx}`}
+                    className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3"
+                >
+                    <div className="w-5 h-5 rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 flex-shrink-0" />
+
+                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    {item}
+                    </span>
+                </div>
+                ))}
+            </div>
+            )}
+
+            {shoppingList.length > 0 && (
+            <button
+                onClick={handlePrintManifest}
+                className="mt-6 w-full py-4 bg-brand-600 hover:bg-brand-500 text-white font-black uppercase rounded-xl shadow-[0_0_20px_rgba(51,173,174,0.35)] transition-all active:scale-95"
+            >
+                Print Document
+            </button>
+            )}
+        </div>
+        )}
 
       {/* --- EMPTY STATE --- */}
       {(!dietPlan && activeTab === 'daily' && !isLoading) && (

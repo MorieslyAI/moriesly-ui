@@ -644,7 +644,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
     <div className="pb-24 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* HEADER: OPERATIONAL STATUS */}
-      <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-xl mb-6 relative">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-xl mb-6 relative">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(0,255,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,0,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none rounded-3xl"></div>
           
           <div className="relative z-10">
@@ -654,9 +654,9 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                           <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></span>
                           Operations Center
                       </div>
-                      <h2 className="text-2xl font-black text-white leading-none uppercase">Tactical Schedule</h2>
+                      <h2 className="text-2xl font-black text-zinc-950 dark:text-white leading-none uppercase">Tactical Schedule</h2>
                   </div>
-                  <div className="bg-zinc-800 p-2 rounded-lg border border-zinc-700">
+                  <div className="bg-zinc-100 dark:bg-zinc-800 p-2 rounded-lg border border-zinc-200 dark:border-zinc-700">
                       <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase text-center">Load</div>
                       <div className={`text-xl font-black text-center ${sugarToBurn > 20 ? 'text-rose-500' : 'text-emerald-500'}`}>
                           {sugarToBurn}g
@@ -665,14 +665,14 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
               </div>
 
               {/* MISSION CONFIGURATOR */}
-              <div className="space-y-6 bg-black/20 p-4 rounded-2xl border border-zinc-800">
+              <div className="space-y-6 bg-zinc-50 dark:bg-black/20 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                   
                   {/* 1. OBJECTIVE */}
                   <div>
                       <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2 block">Objective</label>
-                      <div className="flex bg-black p-1 rounded-xl">
-                          <button onClick={() => setMode('burn')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'burn' ? 'bg-rose-600 text-white' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-300'}`}>Fat Burn</button>
-                          <button onClick={() => setMode('build')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'build' ? 'bg-orange-500 text-white' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-300'}`}>Muscle Build</button>
+                      <div className="flex bg-zinc-100 dark:bg-black p-1 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                          <button onClick={() => setMode('burn')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'burn' ? 'bg-rose-600 text-white shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-300'}`}>Fat Burn</button>
+                          <button onClick={() => setMode('build')} className={`flex-1 py-2 rounded-lg text-xs font-bold uppercase transition-all ${mode === 'build'  ? 'bg-orange-500 text-white shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-300'}`}>Muscle Build</button>
                       </div>
                   </div>
 
@@ -686,8 +686,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                   onClick={() => setFocusArea(zone)}
                                   className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all ${
                                       focusArea === zone 
-                                      ? 'bg-zinc-800 border-teal-500 text-teal-500 shadow-lg' 
-                                      : 'bg-zinc-900 border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-800'
+                                      ? 'bg-teal-50 dark:bg-zinc-800 border-teal-500 text-teal-600 dark:text-teal-500 shadow-lg' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800'
                                   }`}
                               >
                                   {/* RESPONSIVE ICON CONTAINER: Scale SVG to fit container */}
@@ -704,7 +703,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                               value={customFocusInput}
                               onChange={(e) => setCustomFocusInput(e.target.value)}
                               placeholder="Specific focus (e.g. Glutes, Shoulders)..."
-                              className="w-full mt-2 bg-black border border-zinc-700 rounded-lg p-2 text-xs text-white focus:border-teal-500 outline-none"
+                              className="w-full mt-2 bg-white dark:bg-black border border-zinc-300 dark:border-zinc-700 rounded-lg p-2 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-600 focus:border-teal-500 outline-none"
                           />
                       )}
                   </div>
@@ -716,7 +715,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                           <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2 block">Equipment</label>
                           <button 
                               onClick={() => setShowLoadoutMenu(!showLoadoutMenu)}
-                              className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-3 flex items-center justify-between text-xs text-white"
+                              className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xl p-3 flex items-center justify-between text-xs text-zinc-900 dark:text-white"
                           >
                               <div className="flex items-center gap-2">
                                   {loadoutIcons[equipment]}
@@ -726,12 +725,12 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                           </button>
                           
                           {showLoadoutMenu && (
-                              <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-900 border border-zinc-700 rounded-xl overflow-hidden z-50 shadow-xl">
+                              <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden z-50 shadow-xl">
                                   {(['Bodyweight', 'Dumbbells', 'Gym', 'Home Items'] as const).map(eq => (
                                       <button
                                           key={eq}
                                           onClick={() => { setEquipment(eq); setShowLoadoutMenu(false); }}
-                                          className="w-full text-left px-4 py-3 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white flex items-center gap-2"
+                                          className="w-full text-left px-4 py-3 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white flex items-center gap-2"
                                       >
                                           {loadoutIcons[eq]}
                                           {eq}
@@ -744,7 +743,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                       {/* Intensity */}
                       <div>
                           <label className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2 block">Intensity</label>
-                          <div className="flex bg-black p-1 rounded-xl h-[42px]">
+                          <div className="flex bg-zinc-100 dark:bg-black p-1 rounded-xl h-[42px]">
                               {(['Low', 'Medium', 'High'] as const).map(lvl => (
                                   <button
                                       key={lvl}
@@ -752,7 +751,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                       className={`flex-1 rounded-lg text-[9px] font-bold uppercase transition-all ${
                                           intensity === lvl 
                                           ? (lvl === 'High' ? 'bg-rose-600 text-white' : lvl === 'Medium' ? 'bg-orange-500 text-white' : 'bg-teal-500 text-white')
-                                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-300'
+                                          : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-300'
                                       }`}
                                   >
                                       {lvl}
@@ -766,7 +765,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                   <div className="flex items-center gap-2">
                       <button 
                           onClick={() => setInputMode(inputMode === 'auto' ? 'manual' : 'auto')}
-                          className="text-[10px] text-zinc-500 dark:text-zinc-400 underline hover:text-zinc-300"
+                          className="text-[10px] text-zinc-500 dark:text-zinc-400 underline hover:text-zinc-900 dark:hover:text-zinc-300"
                       >
                           {inputMode === 'auto' ? 'Switch to Manual Prompt' : 'Switch to Auto Selector'}
                       </button>
@@ -777,16 +776,16 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                           value={customParams}
                           onChange={(e) => setCustomParams(e.target.value)}
                           placeholder="Describe specific injuries, detailed equipment list, or specific workout style..."
-                          className="w-full bg-black border border-zinc-700 rounded-xl p-3 text-xs text-white h-24 focus:border-teal-500 outline-none resize-none"
+                          className="w-full bg-white dark:bg-black border border-zinc-300 dark:border-zinc-700 rounded-xl p-3 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-600 h-24 focus:border-teal-500 outline-none resize-none"
                       />
                   )}
 
                   {/* Lock Banner */}
                   {!canGenerate && (
-                      <div className="flex items-center gap-3 bg-zinc-800/80 border border-zinc-700 rounded-2xl px-4 py-3 mb-3">
+                      <div className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3 mb-3">
                           <div className="text-2xl">🔒</div>
                           <div className="flex-1 min-w-0">
-                              <div className="text-[11px] font-bold text-zinc-300 uppercase tracking-widest">Daily Mission Locked</div>
+                              <div className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest">Daily Mission Locked</div>
                               <div className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">
                                   Today's protocol has been created. Resets at midnight — available again in:
                               </div>
@@ -803,22 +802,40 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                   <button
                     onClick={generateMission}
                     disabled={loading || !canGenerate}
-                    className="w-full py-4 bg-white dark:bg-zinc-900 hover:bg-zinc-200 text-black font-black uppercase rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                      {loading ? (
-                          <>
-                              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                              Designing Protocol...
-                          </>
-                      ) : !canGenerate ? (
-                          <>
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                              LOCKED — COME BACK TOMORROW
-                          </>
-                      ) : (
-                          <>GENERATE DAILY ORDERS</>
-                      )}
-                  </button>
+                    className={`w-full py-4 font-black uppercase rounded-xl transition-all active:scale-95 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                        !canGenerate
+                        ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 shadow-none'
+                        : 'bg-brand-500 hover:bg-brand-400 text-white shadow-[0_0_20px_rgba(20,184,166,0.35)]'
+                    } ${loading ? 'opacity-80' : ''}`}
+                    >
+                    {loading ? (
+                        <>
+                        <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                        </svg>
+                        Designing Protocol...
+                        </>
+                    ) : !canGenerate ? (
+                        <>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            />
+                        </svg>
+                        LOCKED — COME BACK TOMORROW
+                        </>
+                    ) : (
+                        <>GENERATE DAILY ORDERS</>
+                    )}
+                    </button>
               </div>
           </div>
       </div>
@@ -941,7 +958,7 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
                                   </div>
 
                                   {/* FUEL SECTION (MEAL) */}
-                                  <div className={`p-4 bg-zinc-5 dark:bg-zinc-950/50 ${isMealCompleted ? 'opacity-50' : ''}`}>
+                                  <div className={`p-4 bg-zinc-50 dark:bg-zinc-950/50 ${isMealCompleted ? 'opacity-50' : ''}`}>
                                       <div className="flex items-start gap-4">
                                           {/* INSTANT DIGITAL ASSET - RESPONSIVE SIZE */}
                                           <div className="w-16 h-16 md:w-24 md:h-24 rounded-xl overflow-hidden bg-zinc-800 border border-zinc-700 relative flex-shrink-0 shadow-lg">
