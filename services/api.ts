@@ -139,14 +139,17 @@ export async function refreshToken(): Promise<AuthResponse> {
   if (auth.currentUser) {
     const token = await auth.currentUser.getIdToken(true);
     setAccessToken(token);
-    return { accessToken: token, expiresIn: 3600 }; 
+    return { accessToken: token, expiresIn: 3600 };
   }
   throw new Error("No user logged in");
 }
 
 export async function logout(): Promise<void> {
   await auth.signOut();
-  await request("/auth/logout", { method: "POST" }).catch(() => {});
+  await request("/auth/logout", {
+    method: "POST",
+    body: JSON.stringify({}),
+  }).catch(() => {});
   setAccessToken(null);
 }
 
@@ -375,7 +378,9 @@ export interface UserStatusResponse {
   nextEvaluation: string;
 }
 
-export async function getUserStatus(dateStr?: string): Promise<UserStatusResponse> {
+export async function getUserStatus(
+  dateStr?: string,
+): Promise<UserStatusResponse> {
   const query = dateStr ? `?date=${dateStr}` : "";
   return request<UserStatusResponse>(`/dashboard/status${query}`, {
     method: "GET",
@@ -430,7 +435,9 @@ export interface TrackFieldNote {
   createdAt: string;
 }
 
-export async function getTrackData(dateStr?: string): Promise<TrackDataResponse> {
+export async function getTrackData(
+  dateStr?: string,
+): Promise<TrackDataResponse> {
   const query = dateStr ? `?date=${dateStr}` : "";
   return request<TrackDataResponse>(`/track/data${query}`, { method: "GET" });
 }
@@ -439,14 +446,19 @@ export async function logWeight(
   weight: number,
   dateStr?: string,
 ): Promise<{ success: boolean; entry: TrackWeightEntry }> {
-  return request<{ success: boolean; entry: TrackWeightEntry }>("/track/weight", {
-    method: "POST",
-    body: JSON.stringify({ weight, date: dateStr }),
-  });
+  return request<{ success: boolean; entry: TrackWeightEntry }>(
+    "/track/weight",
+    {
+      method: "POST",
+      body: JSON.stringify({ weight, date: dateStr }),
+    },
+  );
 }
 
 export async function getTrackNotes(): Promise<{ notes: TrackFieldNote[] }> {
-  return request<{ notes: TrackFieldNote[] }>("/track/notes", { method: "GET" });
+  return request<{ notes: TrackFieldNote[] }>("/track/notes", {
+    method: "GET",
+  });
 }
 
 export async function createTrackNote(
@@ -1063,7 +1075,7 @@ export async function heartbeatVideoCallSession(
 export async function endVideoCallSession(
   sessionId: string,
   reason = "manual_end",
-  transcript?: Array<{ role: string; text: string }>
+  transcript?: Array<{ role: string; text: string }>,
 ): Promise<VideoCallEndResponse & { summary?: string; advice?: string }> {
   return request<VideoCallEndResponse & { summary?: string; advice?: string }>(
     `/chat/video/sessions/${sessionId}/end`,
@@ -1108,13 +1120,16 @@ export async function postReanalyzeScan(
 ): Promise<ScanResponse> {
   return request<ScanResponse>("/scan", {
     method: "POST",
-    body: JSON.stringify({ manualName, manualType, base64Image, scanMode: "reanalyze" }),
+    body: JSON.stringify({
+      manualName,
+      manualType,
+      base64Image,
+      scanMode: "reanalyze",
+    }),
   });
 }
 
-export async function postAddonScan(
-  text: string,
-): Promise<ScanResponse> {
+export async function postAddonScan(text: string): Promise<ScanResponse> {
   return request<ScanResponse>("/scan", {
     method: "POST",
     body: JSON.stringify({ text, scanMode: "addon" }),
@@ -1220,12 +1235,12 @@ export async function tryRestoreSession(): Promise<SessionResult | null> {
   return new Promise((resolve) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       unsubscribe(); // Hanya jalankan sekali saat cek awal
-      
+
       if (user) {
         try {
           const token = await user.getIdToken();
           setAccessToken(token);
-          
+
           const me = await getMe();
           resolve({
             accessToken: token,

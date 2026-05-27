@@ -69,7 +69,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       console.log('[GoogleSignIn] idToken prefix:', cred.idToken?.substring(0, 30));
       console.log('[GoogleSignIn] idToken length:', cred.idToken?.length);
       console.log('[GoogleSignIn] email:', cred.email);
-      
+
       // 2. Beri tahu Backend untuk sinkronisasi (bikin user di DB dsb)
       const authRes = await api.googleSignIn(cred.idToken, cred.refreshToken);
 
@@ -105,7 +105,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   };
 
   const handleSubscriptionRedirect = () => {
-    window.open("https://moriesly.ai/subscribe", "_blank");
+    window.open("https://www.moriesly.com/pricing", "_blank");
   };
 
   // ─── UI ─────────────────────────────────────────────────────────────────────
@@ -307,7 +307,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
         {/* Footer */}
         <div className="w-full text-center z-10 pt-6 pb-2">
-          <button className="text-[11px] text-zinc-500 hover:text-teal-400 font-bold uppercase tracking-widest transition-colors border-b border-transparent hover:border-teal-500 pb-0.5">
+          <button
+            type="button"
+            onClick={() => window.open("https://www.moriesly.com/auth/forgot-password", "_blank")}
+            className="text-[11px] text-zinc-500 hover:text-teal-400 font-bold uppercase tracking-widest transition-colors border-b border-transparent hover:border-teal-500 pb-0.5">
             Forgot Password?
           </button>
         </div>

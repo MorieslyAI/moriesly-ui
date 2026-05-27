@@ -975,7 +975,15 @@ function App() {
                     }
                 }
             }
-        } catch (e) { console.error(e); updateStreamingLog('spy', 'Scan Failed'); }
+        } catch (e: any) {
+            console.error(e);
+            updateStreamingLog('spy', 'Scan Failed');
+            if (e.message && e.message.includes('Limit')) {
+                alert(e.message);
+            } else {
+                alert("Scan failed. Please check your connection or try again.");
+            }
+        }
         finally { setIsScanning(false); }
     };
 
@@ -1766,8 +1774,8 @@ function App() {
                                                                                                                 <div className="flex items-center gap-3">
                                                                                                                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">DETECTED</span>
                                                                                                                     <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${pendingItem.type === 'drink'
-                                                                                                                            ? 'bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-800/50'
-                                                                                                                            : 'bg-orange-50 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-800/50'
+                                                                                                                        ? 'bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-800/50'
+                                                                                                                        : 'bg-orange-50 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-100 dark:border-orange-800/50'
                                                                                                                         }`}>
                                                                                                                         {pendingItem.type}
                                                                                                                     </span>
