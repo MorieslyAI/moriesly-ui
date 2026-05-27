@@ -49,6 +49,38 @@ const UserDefaultAvatar = ({ gender, className }: { gender: 'male' | 'female', c
   </div>
 );
 
+const MorieslyChatAvatar = ({ className = '' }: { className?: string }) => (
+  <div
+    className={`relative flex items-center justify-center rounded-full bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-500/30 overflow-hidden flex-shrink-0 ${className}`}
+  >
+    <svg
+      className="w-[70%] h-[70%] text-brand-600 dark:text-brand-300"
+      viewBox="0 0 48 48"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect x="13" y="14" width="22" height="22" rx="7" fill="currentColor" opacity="0.16" />
+      <rect x="16" y="17" width="16" height="16" rx="5" stroke="currentColor" strokeWidth="2.4" />
+
+      <circle cx="21" cy="24" r="1.6" fill="currentColor" />
+      <circle cx="27" cy="24" r="1.6" fill="currentColor" />
+
+      <path
+        d="M21 29c1.8 1.3 4.2 1.3 6 0"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+
+      <path d="M24 13V8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+      <circle cx="24" cy="7" r="2" fill="currentColor" />
+
+      <path d="M13 25H9" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M39 25h-4" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+    </svg>
+  </div>
+);
+
 const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
   userProfile,
   connectionState,
@@ -114,9 +146,6 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const profileInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
-
-  // Use the realistic avatar URL for chat icon too
-  const aiAvatarUrl = `https://images.unsplash.com/photo-1559839734-2b71ea86b48e?q=80&w=200&auto=format&fit=crop`;
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -521,7 +550,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                     <span className="animate-pulse">●</span>
                 </div>
                 <div>
-                    <h3 className="text-sm font-black text-white uppercase tracking-widest">Dr. Moriesly</h3>
+                    <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-widest">Dr. Moriesly</h3>
                     <div className="text-[10px] text-zinc-500 font-mono">24/7 METABOLIC SPECIALIST</div>
                 </div>
             </div>
@@ -571,7 +600,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                     <span className="text-xs">🧬</span>
                 </div>
                 <div>
-                    <h3 className="text-sm font-black text-white uppercase tracking-widest">Medical Intelligence</h3>
+                    <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-widest">Medical Intelligence</h3>
                     <div className="text-[10px] text-zinc-500 font-mono">LAB DECRYPTION UNIT</div>
                 </div>
             </div>
@@ -599,7 +628,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
 
         <button
           onClick={() => setMode('history')}
-          className="mt-auto w-full py-3 border border-dashed border-zinc-800 rounded-xl text-zinc-500 hover:text-white hover:border-zinc-600 text-xs font-bold uppercase tracking-widest transition-colors"
+          className="mt-auto w-full py-3 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-xl text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-500 dark:hover:border-zinc-600 text-xs font-bold uppercase tracking-widest transition-colors"
         >
             History
         </button>
@@ -617,11 +646,11 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                       </div>
                       <div>
-                          <h2 className="text-xl font-black text-white uppercase tracking-tight">Clinical Decode</h2>
+                          <h2 className="text-xl font-black text-zinc-900 dark:text-white uppercase tracking-tight">Clinical Decode</h2>
                           <div className="text-[10px] text-zinc-500 font-medium">Powered by Med-Gemma Logic</div>
                       </div>
                   </div>
-                  <button onClick={() => setMode('selection')} className="text-zinc-500 hover:text-white">
+                  <button onClick={() => setMode('selection')} className="text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
                       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>
               </div>
@@ -988,12 +1017,12 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
           <div className="flex flex-col h-full animate-in fade-in zoom-in-95 duration-300 mb-20">
               <div className="flex justify-between items-center mb-6">
                   <div>
-                      <h2 className="text-2xl font-black text-white uppercase tracking-tight">Your Journey</h2>
+                      <h2 className="text-2xl font-black text-zinc-900 dark:text-white uppercase tracking-tight">Your Journey</h2>
                       <p className="text-[10px] text-zinc-500 font-mono uppercase mt-0.5">
                           {backendSessions.length} chat{backendSessions.length !== 1 ? 's' : ''} · {consultationHistory.length} other sessions
                       </p>
                   </div>
-                  <button onClick={() => setMode('selection')} className="text-zinc-400 hover:text-white text-sm">Back</button>
+                  <button onClick={() => setMode('selection')} className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white text-sm">Back</button>
               </div>
 
               <div className="flex-1 overflow-y-auto space-y-3">
@@ -1011,7 +1040,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                               <button
                                   key={session.id}
                                   onClick={() => handleOpenBackendSession(session)}
-                                  className="w-full bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex items-center justify-between hover:border-brand-500 transition-colors group text-left"
+                                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl flex items-center justify-between hover:border-brand-500 hover:shadow-lg hover:shadow-brand-500/5 transition-all group text-left"
                               >
                                   <div className="flex items-center gap-4 min-w-0 flex-1">
                                       <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-brand-500/20 text-brand-400 group-hover:bg-brand-500 group-hover:text-white transition-colors">
@@ -1019,19 +1048,19 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                                       </div>
                                       <div className="min-w-0 flex-1">
                                           <div className="text-xs font-bold text-zinc-500 uppercase flex items-center gap-2">
-                                              <span>{new Date(session.createdAt).toLocaleDateString()}</span>
+                                              <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-500 flex items-center gap-1.5">{new Date(session.createdAt).toLocaleDateString()}</span>
                                               {session.status === 'active' ? (
-                                                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-brand-500/20 text-brand-400 border border-brand-500/30 animate-pulse">
+                                                  <span className="px-1.5 py-0.5 rounded bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-[9px] font-black uppercase">
                                                       ● Active
                                                   </span>
                                               ) : (
-                                                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-zinc-800 text-zinc-500">
+                                                  <span className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 text-[9px] font-black uppercase">
                                                       ended
                                                   </span>
                                               )}
                                               <span>· {session.messageCount} msgs</span>
                                           </div>
-                                          <div className="font-bold text-white text-sm truncate">
+                                          <div className="text-sm font-black text-zinc-900 dark:text-white truncate max-w-[220px]">
                                               {session.summary || 'Chat session'}
                                           </div>
                                       </div>
@@ -1048,7 +1077,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                                               : <Trash2 className="w-3.5 h-3.5" />
                                           }
                                       </button>
-                                      <span className="text-zinc-500 group-hover:text-white">→</span>
+                                      <span className="text-zinc-400 dark:text-zinc-600 group-hover:text-brand-500 transition-colors">→</span>
                                   </div>
                               </button>
                           ))}
@@ -1058,7 +1087,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                               <button
                                   key={session.id}
                                   onClick={() => setSelectedSession(session)}
-                                  className="w-full bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex items-center justify-between hover:border-brand-500 transition-colors group"
+                                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl flex items-center justify-between hover:border-brand-500 hover:shadow-lg hover:shadow-brand-500/5 transition-all group text-left"
                               >
                                   <div className="flex items-center gap-4 text-left">
                                       <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors shrink-0 ${session.sessionType === 'video' ? 'bg-rose-500/20 text-rose-400 group-hover:bg-rose-500 group-hover:text-white' : 'bg-brand-500/20 text-brand-400 group-hover:bg-brand-500 group-hover:text-white'}`}>
@@ -1066,13 +1095,13 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                                       </div>
                                       <div className="min-w-0">
                                           <div className="text-xs font-bold text-zinc-500 uppercase flex gap-2">
-                                              <span>{session.date.toLocaleDateString()}</span>
+                                              <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-500">{session.date.toLocaleDateString()}</span>
                                               {session.sessionType === 'video' && <span>• {session.durationSeconds}s</span>}
                                           </div>
-                                          <div className="font-bold text-white text-sm line-clamp-1">{session.summary}</div>
+                                          <div className="text-sm font-black text-zinc-900 dark:text-white truncate max-w-[220px]">{session.summary}</div>
                                       </div>
                                   </div>
-                                  <div className="text-zinc-500 group-hover:text-white">→</div>
+                                  <div className="text-zinc-400 dark:text-zinc-600 group-hover:text-brand-500 transition-colors">→</div>
                               </button>
                           ))}
                       </>
@@ -1086,30 +1115,42 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
   if (mode === 'chat') {
       return (
           <div className="flex flex-col h-[calc(100dvh-130px)] md:h-[750px] bg-zinc-50 dark:bg-black rounded-3xl border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-in slide-in-from-right-4 duration-300 relative z-10 shadow-xl mx-[-10px] md:mx-0 mb-24">
-              <div className="bg-zinc-100 dark:bg-zinc-900 p-3 md:p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between flex-shrink-0 z-30 relative">
-                  <div className="flex items-center gap-3">
-                      <button onClick={() => setMode('selection')} className="text-zinc-500 hover:text-brand-500">
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                      </button>
-                      <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/30 overflow-hidden border-2 border-white dark:border-zinc-700 shadow-md">
-                              <img src={aiAvatarUrl} alt="Moriesly AI" className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex flex-col">
-                              <span className="text-sm font-bold text-zinc-900 dark:text-white">Dr. Moriesly</span>
-                              <span className="text-[10px] text-brand-500 font-medium flex items-center gap-1"><span className="w-1.5 h-1.5 bg-brand-500 rounded-full animate-pulse"></span> Caring for you</span>
-                          </div>
-                      </div>
-                  </div>
-                  <button onClick={handleEndChat} disabled={isSaving || messages.length <= 1} className="bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-600 dark:text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
-                      {isSaving ? ( <>Wrap up...</> ) : ( <> <span className="hidden sm:inline">Finish</span> <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> </> )}
-                  </button>
-              </div>
+              <div className="bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                    onClick={() => setMode('selection')}
+                    className="text-zinc-500 hover:text-brand-500 flex-shrink-0"
+                    >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    </button>
+
+                    <MorieslyChatAvatar className="w-10 h-10" />
+
+                    <div className="min-w-0">
+                    <h3 className="text-sm font-black text-zinc-900 dark:text-white leading-tight truncate">
+                        Dr. Moriesly
+                    </h3>
+                    <p className="text-[11px] text-brand-600 dark:text-brand-400 leading-tight truncate">
+                        • Caring for you
+                    </p>
+                    </div>
+                </div>
+
+                <button
+                    onClick={handleEndChat}
+                    disabled={isSaving}
+                    className="px-3 py-2 rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 text-xs font-bold hover:text-brand-600 dark:hover:text-brand-400 disabled:opacity-50"
+                >
+                    {isSaving ? 'Wrap up...' : 'Finish'}
+                </button>
+                </div>
               {/* Loading overlay while checking / restoring active session */}
               {isResumingSession && (
-                  <div className="absolute inset-0 z-20 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
+                  <div className="absolute inset-0 z-20 bg-white/70 dark:bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
                       <Loader2 className="w-8 h-8 animate-spin text-brand-400" />
-                      <p className="text-sm text-zinc-300 font-medium">Loading your session…</p>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-300 font-medium">Loading your session…</p>
                   </div>
               )}
 
@@ -1117,9 +1158,24 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                   {messages.map((msg) => (
                       <div key={msg.id} className={`flex items-end gap-2 md:gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                           <div className="relative group flex-shrink-0">
-                              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-sm bg-zinc-100 dark:bg-zinc-800 cursor-pointer">
-                                  {msg.role === 'user' ? ( customUserPhoto ? ( <img src={`data:image/jpeg;base64,${customUserPhoto}`} alt={msg.role} className="w-full h-full object-cover" onClick={() => profileInputRef.current?.click()} /> ) : ( <div onClick={() => profileInputRef.current?.click()} className="w-full h-full"> <UserDefaultAvatar gender={userProfile.gender} /> </div> ) ) : ( <img src={aiAvatarUrl} alt="Moriesly AI" className="w-full h-full object-cover" /> )}
-                              </div>
+                              {msg.role === 'user' ? (
+                                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-sm bg-zinc-100 dark:bg-zinc-800 cursor-pointer">
+                                      {customUserPhoto ? (
+                                          <img
+                                              src={`data:image/jpeg;base64,${customUserPhoto}`}
+                                              alt={userProfile.name}
+                                              className="w-full h-full object-cover"
+                                              onClick={() => profileInputRef.current?.click()}
+                                          />
+                                      ) : (
+                                          <div onClick={() => profileInputRef.current?.click()} className="w-full h-full">
+                                              <UserDefaultAvatar gender={userProfile.gender || 'male'} />
+                                          </div>
+                                      )}
+                                  </div>
+                              ) : (
+                                  <MorieslyChatAvatar className="w-8 h-8 md:w-10 md:h-10" />
+                              )}
                               {msg.role === 'user' && ( <button className="absolute -bottom-1 -right-1 bg-zinc-800 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => profileInputRef.current?.click()} title="Change Photo"> <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg> </button> )}
                           </div>
                           <div className={`max-w-[85%] md:max-w-[80%] rounded-2xl p-3 md:p-4 shadow-sm text-sm md:text-base ${msg.role === 'user' ? 'bg-brand-600 text-white rounded-br-none' : 'bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-bl-none border border-zinc-200 dark:border-zinc-700'}`}>
@@ -1131,9 +1187,7 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                   ))}
                   {isTyping && (
                       <div className="flex items-end gap-2 md:gap-3">
-                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden flex-shrink-0 border border-zinc-200 dark:border-zinc-700 shadow-sm bg-zinc-100 dark:bg-zinc-800">
-                              <img src={aiAvatarUrl} alt="Thinking" className="w-full h-full object-cover" />
-                          </div>
+                          <MorieslyChatAvatar className="w-8 h-8 md:w-10 md:h-10" />
                           <div className="bg-white dark:bg-zinc-800 rounded-2xl rounded-bl-none p-4 border border-zinc-200 dark:border-zinc-700">
                               <div className="flex gap-1"> <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce"></span> <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span> <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span> </div>
                           </div>
