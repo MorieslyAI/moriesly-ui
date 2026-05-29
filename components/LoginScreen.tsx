@@ -13,6 +13,27 @@ interface LoginScreenProps {
   onLogin: (result: LoginResult) => void;
 }
 
+const getAuthErrorMessage = (err: unknown): string => {
+  const code = (err as { code?: string })?.code;
+
+  switch (code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+      return "Email or password wrong.";
+    case "auth/invalid-email":
+      return "Email format is not valid.";
+    case "auth/user-disabled":
+      return "Account is disabled.";
+    case "auth/too-many-requests":
+      return "Too many login attempts. Please try again later.";
+    case "auth/network-request-failed":
+      return "Connection failed. Please check your internet connection.";
+    default:
+      return "An error occurred. Please try again.";
+  }
+};
+
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,7 +51,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
   const handleEmailAuth = async () => {
     if (!email || !password) {
-      setError("Email dan password wajib diisi.");
+      setError("Email and password are required.");
       return;
     }
     setIsLoading(true);
@@ -49,8 +70,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         accessToken: token,
         isCalibrationComplete,
       });
-    } catch (err: any) {
-      setError(err.message ?? "Terjadi kesalahan. Coba lagi.");
+    } catch (err: unknown) {
+      setError(getAuthErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -92,13 +113,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         isCalibrationComplete,
         isNewUser: authRes.isNewUser,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Popup ditutup user → abaikan
-      if (err?.code === "auth/popup-closed-by-user") {
+      if ((err as { code?: string })?.code === "auth/popup-closed-by-user") {
         setIsLoading(false);
         return;
       }
-      setError(err.message ?? "Google Sign-In gagal. Coba lagi.");
+      setError(getAuthErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -237,16 +258,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             </div>
 
             {/* Divider */}
-            <div className="flex items-center gap-4 py-1 md:py-2">
+            {/* <div className="flex items-center gap-4 py-1 md:py-2">
               <div className="h-px bg-zinc-800 flex-1" />
               <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
                 Or
               </span>
               <div className="h-px bg-zinc-800 flex-1" />
-            </div>
+            </div> */}
 
             {/* Google Sign-In */}
-            <button
+            {/* <button
               onClick={handleGoogleSignIn}
               disabled={isLoading}
               className="w-full py-3 md:py-3.5 rounded-xl border border-zinc-700 hover:border-zinc-500 bg-black/20 hover:bg-black/40 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wide transition-all flex items-center justify-center gap-3 backdrop-blur-sm active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -270,10 +291,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 />
               </svg>
               Continue with Google
-            </button>
+            </button> */}
 
             {/* Subscribe Link */}
-            <div className="mt-2 pt-3 md:pt-4 border-t border-zinc-800/50">
+            {/* <div className="mt-2 pt-3 md:pt-4 border-t border-zinc-800/50">
               <button
                 onClick={handleSubscriptionRedirect}
                 className="w-full group relative py-2.5 md:py-3 rounded-xl overflow-hidden bg-gradient-to-r from-zinc-900 to-black border border-zinc-800 hover:border-teal-900/50 transition-all active:scale-95"
@@ -301,7 +322,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                   </span>
                 </div>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
