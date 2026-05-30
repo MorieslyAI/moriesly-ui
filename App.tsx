@@ -891,7 +891,9 @@ function App() {
                     try {
                         const data = apiRes.data;
                         setVersusResult(data);
-                        // Versus stage reset happens in UI close
+                        setVersusStage('idle');
+                        setUploadedImage(null);
+                        goBack();
                     } catch (err) {
                         console.error("Failed to parse versus result:", err);
                         alert("Failed to analyze comparison. Please try again.");
@@ -1519,7 +1521,7 @@ function App() {
             />
 
             {/* MODALS */}
-            {receiptResult && (<div className="fixed inset-0 z-100 bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in"><div className="w-full max-w-lg"><ReceiptAnalysis data={receiptResult} onClose={() => setReceiptResult(null)} /></div></div>)}
+            {receiptResult && (<div className="fixed inset-0 z-100 bg-zinc-900/40 dark:bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in"><div className="w-full max-w-lg"><ReceiptAnalysis data={receiptResult} onClose={() => setReceiptResult(null)} /></div></div>)}
 
             {/* VERSUS ARENA MODAL */}
             {versusResult && (
