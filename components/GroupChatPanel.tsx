@@ -221,7 +221,7 @@ export default function GroupChatPanel({
 
         {!loadingGroups && groups.length === 0 && (
           <div className="text-sm text-zinc-500 dark:text-zinc-400 py-8 text-center">
-            Belum ada group chat.
+            There isn't a group chat yet.
           </div>
         )}
       </aside>
@@ -264,12 +264,12 @@ export default function GroupChatPanel({
                   </div>
 
                   <h4 className="font-black text-zinc-900 dark:text-white mb-2">
-                    Invite belum diterima
+                    Invitation not received
                   </h4>
 
                   <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mb-5">
-                    Kamu sudah diundang ke group ini, tapi belum bisa membaca
-                    pesan sampai kamu klik Accept Invite.
+                    You've been invited to this group, but you won't be able to
+                    read the messages until you click Accept Invite.
                   </p>
 
                   <button
@@ -313,7 +313,9 @@ export default function GroupChatPanel({
                   )}
 
                   {messages.map((msg) => {
-                    const isMine = Boolean(currentUserId && msg.senderId === currentUserId);
+                    const isMine = Boolean(
+                      currentUserId && msg.senderId === currentUserId,
+                    );
 
                     return (
                       <div

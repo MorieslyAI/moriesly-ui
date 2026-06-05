@@ -58,7 +58,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     setError(null);
     try {
       // Sign in directly via Firebase client to maintain state locally
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       const token = await userCredential.user.getIdToken();
       api.setAccessToken(token);
 
@@ -87,9 +91,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       const cred = await signInWithGoogle();
 
       // DEBUG — hapus setelah masalah terselesaikan
-      console.log('[GoogleSignIn] idToken prefix:', cred.idToken?.substring(0, 30));
-      console.log('[GoogleSignIn] idToken length:', cred.idToken?.length);
-      console.log('[GoogleSignIn] email:', cred.email);
+      console.log(
+        "[GoogleSignIn] idToken prefix:",
+        cred.idToken?.substring(0, 30),
+      );
+      console.log("[GoogleSignIn] idToken length:", cred.idToken?.length);
+      console.log("[GoogleSignIn] email:", cred.email);
 
       // 2. Beri tahu Backend untuk sinkronisasi (bikin user di DB dsb)
       const authRes = await api.googleSignIn(cred.idToken, cred.refreshToken);
@@ -267,7 +274,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             </div> */}
 
             {/* Google Sign-In */}
-            {/* <button
+            <button
               onClick={handleGoogleSignIn}
               disabled={isLoading}
               className="w-full py-3 md:py-3.5 rounded-xl border border-zinc-700 hover:border-zinc-500 bg-black/20 hover:bg-black/40 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wide transition-all flex items-center justify-center gap-3 backdrop-blur-sm active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -291,7 +298,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 />
               </svg>
               Continue with Google
-            </button> */}
+            </button>
 
             {/* Subscribe Link */}
             {/* <div className="mt-2 pt-3 md:pt-4 border-t border-zinc-800/50">
@@ -330,8 +337,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         <div className="w-full text-center z-10 pt-6 pb-2">
           <button
             type="button"
-            onClick={() => window.open("https://www.moriesly.com/auth/forgot-password", "_blank")}
-            className="text-[11px] text-zinc-500 hover:text-teal-400 font-bold uppercase tracking-widest transition-colors border-b border-transparent hover:border-teal-500 pb-0.5">
+            onClick={() =>
+              window.open(
+                "https://www.moriesly.com/auth/forgot-password",
+                "_blank",
+              )
+            }
+            className="text-[11px] text-zinc-500 hover:text-teal-400 font-bold uppercase tracking-widest transition-colors border-b border-transparent hover:border-teal-500 pb-0.5"
+          >
             Forgot Password?
           </button>
         </div>

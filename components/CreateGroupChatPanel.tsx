@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Loader2, Plus, Users } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Loader2, Plus, Search, Users, X } from "lucide-react";
 import * as api from "../services/api";
 
 interface CreateGroupChatPanelProps {
@@ -11,18 +11,75 @@ export default function CreateGroupChatPanel({
 }: CreateGroupChatPanelProps) {
   const [newGroupName, setNewGroupName] = useState("");
   const [description, setDescription] = useState("");
-  const [inviteeIdsText, setInviteeIdsText] = useState("");
+  const [inviteeQuery, setInviteeQuery] = useState("");
+  const [inviteeResults, setInviteeResults] = useState<
+    api.GroupInviteeSearchResult[]
+  >([]);
+  const [selectedInvitees, setSelectedInvitees] = useState<
+    api.GroupInviteeSearchResult[]
+  >([]);
+  const [searchingInvitees, setSearchingInvitees] = useState(false);
+  const [isInviteeListOpen, setIsInviteeListOpen] = useState(false);
   const [creatingGroup, setCreatingGroup] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const searchRequestRef = useRef(0);
+
+  useEffect(() => {
+    const query = inviteeQuery.trim();
+    if (query.length < 2) {
+      setInviteeResults([]);
+      setSearchingInvitees(false);
+      return;
+    }
+
+    const requestId = ++searchRequestRef.current;
+    const timeoutId = window.setTimeout(async () => {
+      setSearchingInvitees(true);
+
+      try {
+        const response = await api.searchGroupInvitees(query);
+        if (requestId !== searchRequestRef.current) return;
+
+        const selectedIds = new Set(selectedInvitees.map((user) => user.id));
+        setInviteeResults(
+          response.users.filter((user) => !selectedIds.has(user.id)),
+        );
+        setIsInviteeListOpen(true);
+      } catch (err: any) {
+        if (requestId !== searchRequestRef.current) return;
+        setInviteeResults([]);
+        setError(err.message ?? "Gagal mencari user.");
+      } finally {
+        if (requestId === searchRequestRef.current) {
+          setSearchingInvitees(false);
+        }
+      }
+    }, 300);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [inviteeQuery, selectedInvitees]);
+
+  function selectInvitee(user: api.GroupInviteeSearchResult) {
+    setSelectedInvitees((current) =>
+      current.some((item) => item.id === user.id)
+        ? current
+        : [...current, user],
+    );
+    setInviteeQuery("");
+    setInviteeResults([]);
+    setIsInviteeListOpen(false);
+    setError(null);
+  }
+
+  function removeInvitee(userId: string) {
+    setSelectedInvitees((current) =>
+      current.filter((user) => user.id !== userId),
+    );
+  }
 
   async function handleCreateGroup() {
     if (!newGroupName.trim() || creatingGroup) return;
-
-    const inviteeIds = inviteeIdsText
-      .split(",")
-      .map((value) => value.trim())
-      .filter(Boolean);
 
     setCreatingGroup(true);
     setSuccess(null);
@@ -32,13 +89,17 @@ export default function CreateGroupChatPanel({
       await api.createGroupChat({
         name: newGroupName.trim(),
         description: description.trim() || undefined,
-        inviteeIds,
+        inviteeIds: selectedInvitees.map((user) => user.id),
       });
 
-      setSuccess("Group berhasil dibuat. User yang diinvite bisa melihatnya di tab Group Chat.");
+      setSuccess(
+        "Group berhasil dibuat. User yang diinvite bisa melihatnya di tab Group Chat.",
+      );
       setNewGroupName("");
       setDescription("");
-      setInviteeIdsText("");
+      setInviteeQuery("");
+      setInviteeResults([]);
+      setSelectedInvitees([]);
 
       onCreated?.();
     } catch (err: any) {
@@ -107,18 +168,99 @@ export default function CreateGroupChatPanel({
 
         <div>
           <label className="block text-xs font-black uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
-            Invite User IDs
+            Invite Users
           </label>
 
-          <input
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
-            placeholder="uid1, uid2, uid3"
-            value={inviteeIdsText}
-            onChange={(e) => setInviteeIdsText(e.target.value)}
-          />
+          <div className="relative">
+            <div className="min-h-[50px] flex flex-wrap items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 px-3 py-2 focus-within:ring-2 focus-within:ring-brand-500">
+              {selectedInvitees.map((user) => (
+                <span
+                  key={user.id}
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand-100 dark:bg-brand-950 px-3 py-1.5 text-sm font-bold text-brand-700 dark:text-brand-300"
+                >
+                  {user.displayName}
+                  <button
+                    type="button"
+                    onClick={() => removeInvitee(user.id)}
+                    className="rounded-full text-brand-500 hover:bg-brand-200 hover:text-brand-800 dark:hover:bg-brand-900 dark:hover:text-white"
+                    aria-label={`Hapus ${user.displayName} dari daftar invite`}
+                  >
+                    <X size={14} />
+                  </button>
+                </span>
+              ))}
+
+              <div className="flex min-w-[180px] flex-1 items-center gap-2">
+                <Search size={16} className="shrink-0 text-zinc-400" />
+                <input
+                  className="min-w-0 flex-1 bg-transparent py-1.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 dark:text-white"
+                  placeholder={
+                    selectedInvitees.length > 0
+                      ? "Search Another User..."
+                      : "Type the username..."
+                  }
+                  value={inviteeQuery}
+                  onChange={(e) => {
+                    setInviteeQuery(e.target.value);
+                    setIsInviteeListOpen(true);
+                    setError(null);
+                  }}
+                  onFocus={() => setIsInviteeListOpen(true)}
+                  onBlur={() =>
+                    window.setTimeout(() => setIsInviteeListOpen(false), 150)
+                  }
+                  autoComplete="off"
+                />
+                {searchingInvitees && (
+                  <Loader2
+                    size={16}
+                    className="shrink-0 animate-spin text-brand-500"
+                  />
+                )}
+              </div>
+            </div>
+
+            {isInviteeListOpen && inviteeQuery.trim().length >= 2 && (
+              <div className="absolute z-20 mt-2 max-h-64 w-full overflow-y-auto rounded-xl border border-zinc-200 bg-white p-1 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+                {!searchingInvitees && inviteeResults.length === 0 ? (
+                  <p className="px-3 py-4 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                    User Not Found.
+                  </p>
+                ) : (
+                  inviteeResults.map((user) => (
+                    <button
+                      key={user.id}
+                      type="button"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => selectInvitee(user)}
+                      className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    >
+                      {user.avatarUrl ? (
+                        <img
+                          src={user.avatarUrl}
+                          alt=""
+                          className="h-9 w-9 rounded-full object-cover"
+                        />
+                      ) : (
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-black text-brand-700 dark:bg-brand-950 dark:text-brand-300">
+                          {user.displayName.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-bold text-zinc-900 dark:text-white">
+                          {user.displayName}
+                        </span>
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
 
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
-            For now, we're still using user IDs separated by commas. Later, we can upgrade to searching for users by name or email.
+            Type at least 2 characters, then click the user name. You can select
+            more than one user.
           </p>
         </div>
 

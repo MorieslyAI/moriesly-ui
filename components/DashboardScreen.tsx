@@ -448,6 +448,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [filteredConsumed, avgGI]);
 
   const metabolicScore = React.useMemo(() => {
+    if (timeRange !== '24H' && rangeMetrics && rangeMetrics.metabolicScore !== undefined) {
+      return rangeMetrics.metabolicScore;
+    }
     if (dashboardData) return dashboardData.healthMetrics.metabolicScore;
     const consumedItems = dailyHistory.filter(item => item.action === 'consumed');
     if (consumedItems.length === 0) return 0;
@@ -462,7 +465,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       score += itemImpact;
     });
     return Math.max(0, Math.min(100, score));
-  }, [dailyHistory]);
+  }, [timeRange, rangeMetrics, dashboardData, dailyHistory]);
 
   // When backend range metrics are available use them; fall back to client-side
   // estimation using today-only history (accurate only for the current day).

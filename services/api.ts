@@ -330,6 +330,7 @@ export type TimeRange = "30S" | "1M" | "15M" | "1H" | "24H" | "7D" | "30D";
 
 export interface RangeMetricsResponse {
   timeRange: TimeRange;
+  metabolicScore: number;
   metabolicTrend: number;
   energyTrend: number;
 }
@@ -1178,6 +1179,21 @@ export interface GroupChatMessage {
   createdAt: string;
   editedAt?: string | null;
   deletedAt?: string | null;
+}
+
+export interface GroupInviteeSearchResult {
+  id: string;
+  displayName: string;
+  avatarUrl: string;
+}
+
+export async function searchGroupInvitees(
+  query: string,
+): Promise<{ users: GroupInviteeSearchResult[] }> {
+  return request(
+    `/group-chats/users/search?q=${encodeURIComponent(query.trim())}`,
+    { method: "GET" },
+  );
 }
 
 export async function createGroupChat(payload: {
