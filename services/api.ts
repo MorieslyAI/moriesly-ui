@@ -1238,6 +1238,45 @@ export async function sendGroupMessage(
   });
 }
 
+export type GroupChatMember = {
+  id: string;
+  userId?: string;
+  displayName?: string;
+  avatarUrl?: string;
+  role?: "owner" | "admin" | "member" | string;
+  status?: "invited" | "joined" | "left" | string;
+  invitedAt?: string | null;
+  joinedAt?: string | null;
+  leftAt?: string | null;
+};
+
+export async function addGroupMembers(
+  groupId: string,
+  inviteeIds: string[],
+): Promise<{
+  success: boolean;
+  addedCount?: number;
+  invitedUserIds?: string[];
+}> {
+  return request<{
+    success: boolean;
+    addedCount?: number;
+    invitedUserIds?: string[];
+  }>(`/group-chats/${groupId}/members`, {
+    method: "POST",
+    body: JSON.stringify({ inviteeIds }),
+  });
+}
+
+export async function leaveGroupChat(
+  groupId: string,
+): Promise<{ success: boolean }> {
+  return request<{ success: boolean }>(`/group-chats/${groupId}/leave`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
 // ─── Session Restore ──────────────────────────────────────────────────────────
 // Dipanggil saat app pertama kali mount untuk restore session dari cookie.
 
