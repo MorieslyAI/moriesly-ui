@@ -1222,10 +1222,16 @@ export async function postReanalyzeScan(
   });
 }
 
-export async function postAddonScan(text: string): Promise<ScanResponse> {
-  return request<ScanResponse>("/scan", {
+export async function postAddonScan(text: string): Promise<{
+  success: boolean;
+  data: any;
+}> {
+  return request<{ success: boolean; data: any }>("/scan", {
     method: "POST",
-    body: JSON.stringify({ text, scanMode: "addon" }),
+    body: JSON.stringify({
+      scanMode: "addon",
+      addOnText: text,
+    }),
   });
 }
 
