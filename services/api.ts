@@ -770,6 +770,14 @@ export async function createPost(payload: {
   });
 }
 
+export async function deleteSocialPost(
+  postId: string,
+): Promise<{ success: boolean }> {
+  return request<{ success: boolean }>(`/explore/posts/${postId}`, {
+    method: "DELETE",
+  });
+}
+
 export async function toggleLike(postId: string): Promise<{ liked: boolean }> {
   return request<{ liked: boolean }>(`/explore/posts/${postId}/like`, {
     method: "POST",
@@ -815,6 +823,18 @@ export async function createPostComment(
       body: JSON.stringify(payload),
     },
   );
+}
+
+// ==========================================
+// FIX: Hapus Komentar mengarah ke endpoint yang benar
+// ==========================================
+export async function deletePostComment(
+  postId: string,
+  commentId: string,
+): Promise<{ success: boolean }> {
+  return request<{ success: boolean }>(`/explore/comments/${commentId}`, {
+    method: "DELETE",
+  });
 }
 
 export async function toggleCommentLike(

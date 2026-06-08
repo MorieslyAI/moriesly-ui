@@ -261,6 +261,19 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
   );
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [activePostMenu, setActivePostMenu] = useState<string | null>(null);
+  const [activeCommentMenu, setActiveCommentMenu] = useState<string | null>(
+    null,
+  );
+
+  // Undo Toast State
+  const [commentToast, setCommentToast] = useState<{
+    postId: string;
+    comment: SocialCommentWithReply;
+    timeout: NodeJS.Timeout;
+  } | null>(null);
+
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!onSetBackHandler) return;
@@ -433,7 +446,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
   const handleJoinGroup = useCallback(
     async (postId: string) => {
       try {
-        const res = await api.joinGroup(postId);
+        const res = await joinGroup(postId);
 
         setJoinedGroups((prev) => {
           const next = new Set(prev);
@@ -727,6 +740,64 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
     }
   };
 
+  const handleInitiateDeleteComment = (
+    postId: string,
+    comment: SocialCommentWithReply,
+  ) => {
+    setActiveCommentMenu(null); // Tutup menu
+
+    // 1. Optimistic UI: Hapus langsung dari tampilan FE
+    setFullComments((prev) => ({
+      ...prev,
+      [postId]: (prev[postId] ?? []).filter((c) => c.id !== comment.id),
+    }));
+
+    // Sesuaikan hitungan komentar di tampilan post
+    setCommentCountOverrides((prev) => ({
+      ...prev,
+      [postId]: Math.max(0, (prev[postId] ?? 1) - 1),
+    }));
+
+    // 2. Set Timer untuk menunda aksi ke Backend (memberi waktu untuk Undo)
+    const timeout = setTimeout(async () => {
+      try {
+        await api.deletePostComment(postId, comment.id);
+      } catch (e: any) {
+        console.error("Gagal menghapus komentar permanen:", e.message);
+      }
+      setCommentToast(null); // Hilangkan toast setelah dieksekusi
+    }, 4000); // 4 detik waktu untuk undo
+
+    // 3. Tampilkan Toast Undo
+    setCommentToast({ postId, comment, timeout });
+  };
+
+  const handleUndoDeleteComment = () => {
+    if (commentToast) {
+      clearTimeout(commentToast.timeout); // Batalkan API Delete
+
+      // Kembalikan komentar ke state UI
+      setFullComments((prev) => {
+        const restored = [
+          ...(prev[commentToast.postId] ?? []),
+          commentToast.comment,
+        ];
+        return {
+          ...prev,
+          [commentToast.postId]: sortNewestComments(restored),
+        };
+      });
+
+      // Kembalikan hitungan
+      setCommentCountOverrides((prev) => ({
+        ...prev,
+        [commentToast.postId]: (prev[commentToast.postId] ?? 0) + 1,
+      }));
+
+      setCommentToast(null); // Tutup toast
+    }
+  };
+
   const renderCommentComposer = (postId: string) => {
     const isSubmitting = submittingComments.has(postId);
     const draft = commentDrafts[postId] ?? "";
@@ -840,11 +911,26 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
     const liked = comment.likedByMe ?? likedComments.has(comment.id);
     const replyToName = normalizeMentionName(comment.replyToName);
     const targetRootCommentId = rootCommentId ?? comment.parentId ?? comment.id;
+    const isMyComment = comment.authorName === userStats.name;
+
+    // Handlers untuk Long Press
+    const handlePointerDown = () => {
+      if (!isMyComment) return;
+      longPressTimer.current = setTimeout(() => {
+        setActiveCommentMenu(comment.id);
+      }, 500); // Tahan 500ms untuk memunculkan menu
+    };
+
+    const handlePointerUpOrLeave = () => {
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+      }
+    };
 
     return (
       <div
         key={comment.id}
-        className={`flex gap-3 ${isReply ? "ml-10 mt-3" : ""}`}
+        className={`flex gap-3 relative ${isReply ? "ml-10 mt-3" : ""}`}
       >
         <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-500 flex items-center justify-center text-white text-xs font-black overflow-hidden">
           {comment.authorAvatar ? (
@@ -859,7 +945,13 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="rounded-2xl bg-zinc-100 dark:bg-zinc-900 px-4 py-3">
+          <div
+            className="rounded-2xl bg-zinc-100 dark:bg-zinc-900 px-4 py-3 select-none transition-colors"
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUpOrLeave}
+            onPointerLeave={handlePointerUpOrLeave}
+            style={{ WebkitUserSelect: "none", WebkitTouchCallout: "none" }}
+          >
             <div className="flex items-center justify-between gap-3">
               <h4 className="text-sm font-black text-zinc-900 dark:text-white">
                 {comment.authorName}
@@ -887,10 +979,31 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
               <img
                 src={comment.imageUrl}
                 alt="Comment attachment"
-                className="mt-3 max-h-72 w-full rounded-2xl object-cover"
+                className="mt-3 max-h-80 w-full rounded-2xl object-cover cursor-pointer transition-opacity hover:opacity-90"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFullscreenImage(comment.imageUrl!);
+                }}
               />
             )}
           </div>
+
+          {activeCommentMenu === comment.id && (
+            <div className="mt-2 flex overflow-hidden rounded-xl border border-red-200 dark:border-red-900/30">
+              <button
+                onClick={() => handleInitiateDeleteComment(postId, comment)}
+                className="flex-1 bg-red-50 dark:bg-red-950/30 py-2.5 text-xs font-black text-red-600 dark:text-red-400 flex items-center justify-center gap-2 transition-colors hover:bg-red-100 dark:hover:bg-red-900/50"
+              >
+                <Trash2 size={14} /> Hapus Komentar
+              </button>
+              <button
+                onClick={() => setActiveCommentMenu(null)}
+                className="bg-zinc-100 dark:bg-zinc-800 px-4 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
 
           <div className="mt-2 flex items-center gap-4 px-2">
             <button
@@ -1045,6 +1158,16 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
             </p>
           </div>
         </div>
+
+        {/* --- TOMBOL TITIK 3 UNTUK POSTINGAN SENDIRI --- */}
+        {post.authorName === userStats.name && (
+          <button
+            onClick={() => setActivePostMenu(post.id)}
+            className="p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-full transition-colors"
+          >
+            <MoreVertical size={20} />
+          </button>
+        )}
       </div>
 
       <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 mb-4 whitespace-pre-line">
@@ -1134,7 +1257,10 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
           src={post.mediaUrl}
           alt="Post media"
           className="w-full rounded-2xl mb-4 object-cover max-h-80 cursor-pointer transition-opacity hover:opacity-90"
-          onClick={() => setFullscreenImage(post.mediaUrl!)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setFullscreenImage(post.mediaUrl!);
+          }}
         />
       )}
 
@@ -1725,13 +1851,17 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
       {/* FULLSCREEN IMAGE MODAL */}
       {fullscreenImage && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-[150] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4"
           onClick={() => setFullscreenImage(null)}
         >
           <button
-            onClick={() => setFullscreenImage(null)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setFullscreenImage(null);
+            }}
             className="absolute top-4 right-4 md:top-6 md:right-6 text-white p-2 bg-zinc-800/50 hover:bg-zinc-700/80 rounded-full transition-colors z-10"
             title="Close"
+            type="button"
           >
             <X size={24} />
           </button>
@@ -1847,6 +1977,94 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
 
             {renderCommentComposer(selectedPost.id)}
           </div>
+        </div>
+      )}
+
+      {/* 1. BOTTOM SHEET MENU UNTUK POSTINGAN */}
+      {activePostMenu && (
+        <div className="fixed inset-0 z-[110] flex items-end justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-t-3xl overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300">
+            <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
+              <h3 className="font-black text-sm text-zinc-900 dark:text-white">
+                Opsi Postingan
+              </h3>
+              <button
+                onClick={() => setActivePostMenu(null)}
+                className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="p-2">
+              <button
+                onClick={() => {
+                  setPostToDelete(activePostMenu);
+                  setActivePostMenu(null);
+                }}
+                className="w-full flex items-center gap-3 p-4 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-2xl transition-colors text-left font-bold"
+              >
+                <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded-xl">
+                  <Trash2 size={18} />
+                </div>
+                Hapus Postingan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. CONFIRMATION MODAL HAPUS POSTINGAN */}
+      {postToDelete && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm p-5 animate-in fade-in">
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in-95">
+            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-2xl flex items-center justify-center mb-4">
+              <Trash2 size={24} />
+            </div>
+            <h3 className="text-xl font-black text-zinc-900 dark:text-white mb-2">
+              Hapus Postingan?
+            </h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+              Postingan ini akan dihapus secara permanen dari feed dan tidak
+              dapat dikembalikan.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPostToDelete(null)}
+                disabled={isDeleting}
+                className="flex-1 py-3 px-4 rounded-xl font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleDeletePost}
+                disabled={isDeleting}
+                className="flex-1 py-3 px-4 rounded-xl font-bold bg-red-600 hover:bg-red-700 text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isDeleting ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : (
+                  "Ya, Hapus"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. TOAST UNDO COMMENT DELETION */}
+      {commentToast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[105] flex items-center gap-4 bg-zinc-900 dark:bg-white px-5 py-3 rounded-full shadow-2xl animate-in slide-in-from-bottom-5 fade-in">
+          <span className="text-sm font-bold text-white dark:text-zinc-900">
+            Deleted
+          </span>
+          <div className="w-px h-4 bg-zinc-700 dark:bg-zinc-200" />
+          <button
+            onClick={handleUndoDeleteComment}
+            className="text-sm font-black text-brand-400 hover:text-brand-300 dark:text-brand-600 flex items-center gap-1.5"
+          >
+            <Reply size={14} className="scale-x-[-1]" />
+            Undo
+          </button>
         </div>
       )}
     </div>
