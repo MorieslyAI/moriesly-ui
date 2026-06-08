@@ -686,6 +686,26 @@ export interface SocialPost {
   duration?: string;
 }
 
+export interface SocialComment {
+  id: string;
+  postId: string;
+  parentId?: string | null;
+
+  replyToCommentId?: string | null;
+  replyToUserId?: string | null;
+  replyToName?: string | null;
+
+  authorId: string;
+  authorName: string;
+  authorAvatar?: string | null;
+  content: string;
+  imageUrl?: string | null;
+  createdAt: string;
+  likes: number;
+  repliesCount?: number;
+  likedByMe: boolean;
+}
+
 export interface ShopProduct {
   id: string;
   name: string;
@@ -755,6 +775,58 @@ export async function toggleLike(postId: string): Promise<{ liked: boolean }> {
     method: "POST",
     body: JSON.stringify({}),
   });
+}
+
+export async function getPostComments(
+  postId: string,
+  params?: {
+    parentId?: string | null;
+    sort?: "top" | "newest";
+    limit?: number;
+  },
+): Promise<{ comments: SocialComment[] }> {
+  const search = new URLSearchParams();
+
+  if (params?.parentId) search.set("parentId", params.parentId);
+  if (params?.sort) search.set("sort", params.sort);
+  if (params?.limit) search.set("limit", String(params.limit));
+
+  const suffix = search.toString() ? `?${search.toString()}` : "";
+
+  return request<{ comments: SocialComment[] }>(
+    `/explore/posts/${postId}/comments${suffix}`,
+    { method: "GET" },
+  );
+}
+
+export async function createPostComment(
+  postId: string,
+  payload: {
+    content: string;
+    parentId?: string | null;
+    replyToCommentId?: string | null;
+    imageBase64?: string | null;
+  },
+): Promise<{ success: boolean; comment: SocialComment }> {
+  return request<{ success: boolean; comment: SocialComment }>(
+    `/explore/posts/${postId}/comments`,
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+  );
+}
+
+export async function toggleCommentLike(
+  commentId: string,
+): Promise<{ liked: boolean; likes: number }> {
+  return request<{ liked: boolean; likes: number }>(
+    `/explore/comments/${commentId}/like`,
+    {
+      method: "POST",
+      body: JSON.stringify({}),
+    },
+  );
 }
 
 export async function rsvpEvent(postId: string): Promise<{ rsvp: boolean }> {
