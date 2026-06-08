@@ -2004,7 +2004,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       className={`text-[10px] font-bold uppercase tracking-wider mb-1 text-${intelDisplay.color}-600`}
                     >
                       {intelDisplay.color === "emerald"
-                        ? "Metabolik Optimal"
+                        ? "Optimal Metabolic"
                         : "Blindspot Detected"}
                     </div>
                     <h3 className="text-zinc-900 dark:text-zinc-100 text-base font-bold leading-tight">
