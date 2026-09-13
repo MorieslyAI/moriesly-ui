@@ -1310,7 +1310,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
   );
 
   return (
-    <div className="space-y-6 pb-10 relative">
+    <div className="space-y-6 pb-10 relative px-2">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-black text-zinc-900 dark:text-white">

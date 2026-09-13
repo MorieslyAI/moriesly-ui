@@ -357,6 +357,20 @@ export async function getDashboardHistory(dateStr: string): Promise<any[]> {
   });
 }
 
+export interface HistoryMonthSummaryItem {
+  date: string; // YYYY-MM-DD
+  hasIssues: boolean;
+}
+
+export async function getDashboardHistoryMonthSummary(
+  monthStr: string, // format YYYY-MM
+): Promise<HistoryMonthSummaryItem[]> {
+  return request<HistoryMonthSummaryItem[]>(
+    `/dashboard/history/summary?month=${monthStr}`,
+    { method: "GET" },
+  );
+}
+
 export type TimeRange = "30S" | "1M" | "15M" | "1H" | "24H" | "7D" | "30D";
 
 export interface RangeMetricsResponse {

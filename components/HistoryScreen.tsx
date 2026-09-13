@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { HistoryItem } from '../types';
-import { getDashboardHistory } from '../services/api';
+import { getDashboardHistory, getDashboardHistoryMonthSummary } from '../services/api';
 import { Plus, Dumbbell, Wheat, Droplet, Leaf, FlaskConical, X, Activity, Flame, Zap, Info, Clock, Calendar, ChevronRight, ChevronLeft, Search, Filter, Share2, Download, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
 import MetabolicInvoice from './MetabolicInvoice';
 import SugarPile from './SugarPile';
@@ -62,6 +62,35 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
   // State hanya digunakan untuk trigger re-render setelah cache diisi
   const [cacheVersion, setCacheVersion] = useState(0);
   const [isFetchingDate, setIsFetchingDate] = useState(false);
+
+  // ─── Month Summary Cache ───────────────────────────────────────────────────
+  // Menyimpan info "tanggal mana saja yang punya history" per bulan (monthStr →
+  // Map<dateStr, hasIssues>), diambil langsung dari backend (MasterAPI). Ini
+  // memastikan dot indikator di kalender tetap muncul walau item history-nya
+  // belum ke-load di local state (mis. setelah reload app atau ganti bulan).
+  const monthSummaryCacheRef = useRef<Map<string, Map<string, boolean>>>(new Map());
+  const [monthSummaryVersion, setMonthSummaryVersion] = useState(0);
+
+  const toMonthStr = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+  useEffect(() => {
+    const monthStr = toMonthStr(currentMonth);
+    if (monthSummaryCacheRef.current.has(monthStr)) return;
+
+    getDashboardHistoryMonthSummary(monthStr)
+      .then(items => {
+        const map = new Map<string, boolean>();
+        items.forEach(item => map.set(item.date, item.hasIssues));
+        monthSummaryCacheRef.current.set(monthStr, map);
+        setMonthSummaryVersion(v => v + 1);
+      })
+      .catch(err => {
+        console.error('[HistoryScreen] getDashboardHistoryMonthSummary error:', err);
+        monthSummaryCacheRef.current.set(monthStr, new Map());
+        setMonthSummaryVersion(v => v + 1);
+      });
+  }, [currentMonth]);
 
   // Helper: normalise raw items dari API
   const normaliseItems = (items: any[]): HistoryItem[] =>
@@ -341,10 +370,13 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
                     const isSelected = selectedDate?.toDateString() === date.toDateString();
                     const isToday = new Date().toDateString() === date.toDateString();
                     
-                    // Check for data
+                    // Check for data: gabung local state (item yang sudah di-load) dengan
+                    // ringkasan bulan dari backend (mencakup tanggal yang belum ke-load lokal)
+                    const dateStr = toDateStr(date);
                     const dayData = history.filter(h => new Date(h.timestamp).toDateString() === date.toDateString());
-                    const hasData = dayData.length > 0;
-                    const hasIssues = dayData.some(h => h.action === 'rejected' || (h.sugarg || 0) > 20);
+                    const summaryHasIssues = monthSummaryCacheRef.current.get(toMonthStr(currentMonth))?.get(dateStr);
+                    const hasData = dayData.length > 0 || summaryHasIssues !== undefined;
+                    const hasIssues = dayData.some(h => h.action === 'rejected' || (h.sugarg || 0) > 20) || !!summaryHasIssues;
 
                     days.push(
                         <button

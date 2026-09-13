@@ -1759,7 +1759,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const Icon = intelDisplay?.icon;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 pb-32 pt-8 md:pt-12 font-sans px-4">
+    <div className="min-h-screen  dark:text-zinc-100 pb-32 pt-8 md:pt-12 font-sans px-2">
       {/* --- HIGHLIGHT SLIDER (Restored & Optimized) --- */}
       <div className="flex gap-4 overflow-x-auto snap-x scrollbar-hide mb-8 -mx-4 px-4 pb-4">
         {/* Card 1: Daily Directive (Actionable Recommendations) */}
@@ -2248,19 +2248,41 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       {showAgentModal && (
         <div className="fixed inset-0 z-[100] flex flex-col bg-white dark:bg-zinc-900/95 backdrop-blur-md p-4 sm:p-8 overflow-y-auto">
           <div className="max-w-[2000px] mx-auto w-full px-4 animate-in fade-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-between mb-8">
-              <div>
+            <div className="flex items-start justify-between gap-4 mb-8">
+              <div className="flex-1 min-w-0">
                 <h3 className="text-2xl font-black text-zinc-900 dark:text-zinc-100">
                   Initialize Protocol
                 </h3>
-                <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-1">
+
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mt-1">
                   Launch a new targeted health intervention managed by Moriesly
                   AI.
                 </p>
               </div>
+
               <button
                 onClick={() => setShowAgentModal(false)}
-                className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 hover:text-zinc-900 dark:text-zinc-100 transition-colors border border-zinc-200 dark:border-zinc-700 dark:border-zinc-700"
+                className="
+                  shrink-0
+                  size-10
+                  rounded-full
+                  bg-zinc-100
+                  dark:bg-zinc-800
+                  flex
+                  items-center
+                  justify-center
+                  text-zinc-500
+                  dark:text-zinc-400
+                  hover:bg-zinc-200
+                  hover:text-zinc-900
+                  dark:hover:bg-zinc-700
+                  dark:hover:text-zinc-100
+                  transition-colors
+                  border
+                  border-zinc-200
+                  dark:border-zinc-700
+                "
+                aria-label="Close"
               >
                 ✕
               </button>
@@ -3447,7 +3469,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   <div className="flex items-center justify-center gap-1 mb-1 min-w-0">
                     <Zap className="w-2.5 h-2.5 shrink-0 text-blue-500" />
                     <span className="truncate text-[8px] font-black text-zinc-400 uppercase tracking-[0.14em]">
-                      Prot
+                      Protein
                     </span>
                   </div>
 
