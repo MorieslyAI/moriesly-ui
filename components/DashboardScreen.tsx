@@ -733,6 +733,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   }, [filteredConsumed, avgGI]);
 
   const metabolicScore = React.useMemo(() => {
+    // 1. Prioritaskan data dari Backend
     if (
       timeRange !== "24H" &&
       rangeMetrics &&
@@ -741,21 +742,28 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       return rangeMetrics.metabolicScore;
     }
     if (dashboardData) return dashboardData.healthMetrics.metabolicScore;
+
+    // 2. Fallback Lokal (Perbaikan Hitungan Rata-rata)
     const consumedItems = dailyHistory.filter(
       (item) => item.action === "consumed",
     );
     if (consumedItems.length === 0) return 0;
-    let score = 0;
+
+    let totalScore = 0;
     consumedItems.forEach((item) => {
-      let itemImpact = 50; // Increased base positive impact
-      const sugar = item.sugarg || 0;
+      let itemScore = 100; // Base score per item
+      const sugar = item.sugarg || item.sugar || 0;
       const gi = item.glycemicIndex || 0;
-      if (sugar > 10) itemImpact -= (sugar - 10) * 0.2; // Reduced penalty
-      if (gi > 55) itemImpact -= (gi - 55) * 0.1; // Reduced penalty
-      if (item.macros?.protein) itemImpact += item.macros.protein * 0.3; // Bonus for protein
-      score += itemImpact;
+
+      if (sugar > 10) itemScore -= (sugar - 10) * 1.5;
+      if (gi > 55) itemScore -= (gi - 55) * 0.5;
+      if (item.macros?.protein) itemScore += item.macros.protein * 0.5;
+
+      totalScore += Math.max(0, Math.min(100, itemScore));
     });
-    return Math.max(0, Math.min(100, score));
+
+    // Kembalikan rata-rata
+    return Math.round(totalScore / consumedItems.length);
   }, [timeRange, rangeMetrics, dashboardData, dailyHistory]);
 
   // When backend range metrics are available use them; fall back to client-side
@@ -799,18 +807,22 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     else prevStart.setDate(startTime.getDate() - days);
 
     const calcScore = (hist: HistoryItem[]) => {
-      if (hist.length === 0) return 0;
-      let score = 0;
-      hist.forEach((item) => {
-        let impact = 20;
-        const sugar = item.sugarg || 0;
+      const consumed = hist.filter((i) => i.action === "consumed");
+      if (consumed.length === 0) return 0;
+
+      let totalScore = 0;
+      consumed.forEach((item) => {
+        let itemScore = 100;
+        const sugar = item.sugarg || item.sugar || 0;
         const gi = item.glycemicIndex || 0;
-        if (sugar > 10) impact -= (sugar - 10) * 0.5;
-        if (gi > 55) impact -= (gi - 55) * 0.2;
-        if (item.macros?.protein) impact += item.macros.protein * 0.3;
-        score += impact;
+
+        if (sugar > 10) itemScore -= (sugar - 10) * 1.5;
+        if (gi > 55) itemScore -= (gi - 55) * 0.5;
+        if (item.macros?.protein) itemScore += item.macros.protein * 0.5;
+
+        totalScore += Math.max(0, Math.min(100, itemScore));
       });
-      return Math.max(0, Math.min(100, score));
+      return Math.round(totalScore / consumed.length);
     };
     const cur = calcScore(
       history.filter((i) => {

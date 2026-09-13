@@ -717,47 +717,51 @@ function App() {
     }
   }, [currentView]);
 
-  const addXp = (amount: number) => {
-    setUserStats((prev) => {
-      let newXp = prev.currentXp + amount;
-      let newLevel = prev.level;
-      let nextXp = prev.nextLevelXp;
-      while (newXp >= nextXp && newLevel < 100) {
-        newLevel += 1;
-        newXp = newXp - nextXp;
-        nextXp = Math.floor(nextXp * 1.15);
-      }
-      if (newLevel >= 100) {
-        newLevel = 100;
-        newXp = 0;
-      }
-      const newRank =
-        newLevel >= 100
-          ? "The Glycemic God"
-          : newLevel >= 75
-            ? "Bio-Hacking Legend"
-            : newLevel >= 50
-              ? "Master of Metabolism"
-              : newLevel >= 30
-                ? "Elite Detective"
-                : newLevel >= 20
-                  ? "Metabolic Enforcer"
-                  : newLevel >= 10
-                    ? "Sugar Hunter"
-                    : newLevel >= 5
-                      ? "Field Operative"
-                      : "Rookie Agent";
-      return {
-        ...prev,
-        level: newLevel,
-        currentXp: newXp,
-        nextLevelXp: nextXp,
-        rankTitle: newRank,
-      };
-    });
+  const computeXpUpdate = (
+    prev: Pick<typeof userStats, "currentXp" | "level" | "nextLevelXp">,
+    amount: number,
+  ) => {
+    let newXp = prev.currentXp + amount;
+    let newLevel = prev.level;
+    let nextXp = prev.nextLevelXp;
+    while (newXp >= nextXp && newLevel < 100) {
+      newLevel += 1;
+      newXp = newXp - nextXp;
+      nextXp = Math.floor(nextXp * 1.15);
+    }
+    if (newLevel >= 100) {
+      newLevel = 100;
+      newXp = 0;
+    }
+    const newRank =
+      newLevel >= 100
+        ? "The Glycemic God"
+        : newLevel >= 75
+          ? "Bio-Hacking Legend"
+          : newLevel >= 50
+            ? "Master of Metabolism"
+            : newLevel >= 30
+              ? "Elite Detective"
+              : newLevel >= 20
+                ? "Metabolic Enforcer"
+                : newLevel >= 10
+                  ? "Sugar Hunter"
+                  : newLevel >= 5
+                    ? "Field Operative"
+                    : "Rookie Agent";
+    return {
+      level: newLevel,
+      currentXp: newXp,
+      nextLevelXp: nextXp,
+      rankTitle: newRank,
+    };
   };
 
-  const handleCheckIn = () => {
+  const addXp = (amount: number) => {
+    setUserStats((prev) => ({ ...prev, ...computeXpUpdate(prev, amount) }));
+  };
+
+  const handleCheckIn = async () => {
     const today = getLocalDateString();
     if (userStats.lastCheckInDate === today) return;
 
@@ -772,16 +776,38 @@ function App() {
       lastUpdatedDate: today,
     }));
 
-    setUserStats((prev) => {
-      let newStreak = prev.streak;
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      if (prev.lastCheckInDate === getLocalDateString(yesterday))
-        newStreak += 1;
-      else if (prev.lastCheckInDate !== today) newStreak = 1;
-      return { ...prev, streak: newStreak, lastCheckInDate: today };
-    });
-    addXp(50);
+    // Optimistic local update so the UI reacts immediately
+    const xpUpdate = computeXpUpdate(userStats, 50);
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const optimisticStreak =
+      userStats.lastCheckInDate === getLocalDateString(yesterday)
+        ? userStats.streak + 1
+        : 1;
+
+    setUserStats((prev) => ({
+      ...prev,
+      ...xpUpdate,
+      streak: optimisticStreak,
+      lastCheckInDate: today,
+    }));
+
+    // Persist to backend — server is the source of truth for streak/XP so a
+    // reload doesn't wipe out the check-in (previously this never called the API).
+    try {
+      const result = await api.checkIn({ ...xpUpdate, date: today });
+      setUserStats((prev) => ({
+        ...prev,
+        streak: result.streak,
+        lastCheckInDate: result.lastCheckInDate,
+        currentXp: result.currentXp,
+        level: result.level,
+        nextLevelXp: result.nextLevelXp,
+        rankTitle: result.rankTitle,
+      }));
+    } catch (err) {
+      console.error("[CheckIn] Failed to sync check-in to backend:", err);
+    }
   };
 
   const handleLoginSuccess = async (result: LoginResult) => {
@@ -918,6 +944,12 @@ function App() {
       await saveDashboardHistoryItem(updatedItem);
     } catch (e) {
       console.error("Failed to update history to backend:", e);
+      // Revert optimistic update so History does not show unsaved changes
+      setHistory((prev) =>
+        prev.map((item) => (item.id === updatedItem.id ? oldItem : item)),
+      );
+      alert("Failed to save changes. Please try again.");
+      return;
     }
 
     // 3. Update ledger (subtract old values, add new values)
@@ -992,7 +1024,19 @@ function App() {
     return { ...data, calories, sugar, glycemicIndex, macros };
   };
 
-  const handleTextAddOn = async (itemId: string, text: string) => {
+  // Sugar level presets for add-ons: scales the AI-detected sugar amount
+  // relative to the detected/base amount (No Sugar = 0, Less = half, Normal = as detected).
+  const SUGAR_LEVEL_MULTIPLIERS: Record<"none" | "less" | "normal", number> = {
+    none: 0,
+    less: 0.5,
+    normal: 1,
+  };
+
+  const handleTextAddOn = async (
+    itemId: string,
+    text: string,
+    sugarLevel: "none" | "less" | "normal" = "normal",
+  ) => {
     if (isScanning) return null;
     setIsScanning(true);
     updateStreamingLog("spy", `Analyzing add-on: ${text}...`);
@@ -1002,13 +1046,15 @@ function App() {
 
       if (response.success && response.data) {
         const data = sanitizeNutritionalData(response.data);
+        const sugarMultiplier = SUGAR_LEVEL_MULTIPLIERS[sugarLevel] ?? 1;
+        const addOnSugar =
+          Math.round((data.sugar || 0) * sugarMultiplier * 10) / 10;
         const item = history.find((h) => h.id === itemId);
         if (item) {
           const updatedItem = {
             ...item,
             name: `${item.name} (+ ${text})`,
-            sugarg:
-              Math.round(((item.sugarg || 0) + (data.sugar || 0)) * 10) / 10,
+            sugarg: Math.round(((item.sugarg || 0) + addOnSugar) * 10) / 10,
             calories:
               Math.round(((item.calories || 0) + (data.calories || 0)) * 10) /
               10,
@@ -1035,7 +1081,7 @@ function App() {
           };
           handleUpdateHistoryItem(updatedItem);
           updateStreamingLog("spy", `Add-on processed: +${data.calories} kcal`);
-          return data;
+          return { ...data, sugar: addOnSugar };
         }
       }
     } catch (err) {

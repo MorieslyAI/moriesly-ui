@@ -258,6 +258,37 @@ export async function getUserProfile(): Promise<FullUserProfileResponse> {
   return request<FullUserProfileResponse>("/user/profile");
 }
 
+// ─── Check-in Endpoint ──────────────────────────────────────────────────────
+
+export interface CheckInPayload {
+  currentXp?: number;
+  level?: number;
+  nextLevelXp?: number;
+  rankTitle?: string;
+  // Tanggal lokal device (YYYY-MM-DD) — dipakai backend sebagai acuan "hari
+  // ini" agar streak tidak salah karena perbedaan timezone dengan server.
+  date?: string;
+}
+
+export interface CheckInResponse {
+  alreadyCheckedIn: boolean;
+  streak: number;
+  lastCheckInDate: string;
+  currentXp: number;
+  level: number;
+  nextLevelXp: number;
+  rankTitle: string;
+}
+
+export async function checkIn(
+  payload: CheckInPayload = {},
+): Promise<CheckInResponse> {
+  return request<CheckInResponse>("/user/checkin", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 // ─── Dashboard Endpoints ──────────────────────────────────────────────────────
 
 export interface DashboardInsights {

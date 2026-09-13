@@ -11,12 +11,26 @@ import ReceiptAnalysis from './ReceiptAnalysis';
 import VersusArena from './VersusArena';
 import DeceptionDetector from './DeceptionDetector';
 
+// Sugar level presets: scales the detected sugar value relative to the
+// AI-detected/base amount (No Sugar = 0, Less = half, Normal = as detected).
+type SugarLevel = 'none' | 'less' | 'normal';
+const SUGAR_LEVEL_MULTIPLIERS: Record<SugarLevel, number> = {
+  none: 0,
+  less: 0.5,
+  normal: 1,
+};
+const SUGAR_LEVEL_LABELS: Record<SugarLevel, string> = {
+  none: 'No Sugar',
+  less: 'Less Sugar',
+  normal: 'Normal Sugar',
+};
+
 interface HistoryScreenProps {
   history: HistoryItem[];
   onExport: () => void;
   onUpdateHistoryItem: (updatedItem: HistoryItem) => void;
   onScanAddOn: (item: HistoryItem) => void;
-  onTextAddOn: (itemId: string, text: string) => Promise<any>;
+  onTextAddOn: (itemId: string, text: string, sugarLevel?: SugarLevel) => Promise<any>;
 }
 
 const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpdateHistoryItem, onScanAddOn, onTextAddOn }) => {
@@ -24,7 +38,9 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editMacros, setEditMacros] = useState({ protein: 0, carbs: 0, fat: 0, fiber: 0 });
+  const [editSugar, setEditSugar] = useState(0);
   const [addOnText, setAddOnText] = useState('');
+  const [addOnSugarLevel, setAddOnSugarLevel] = useState<SugarLevel>('normal');
   const [showAddOnOptions, setShowAddOnOptions] = useState(false);
   const [isProcessingAddOn, setIsProcessingAddOn] = useState(false);
   const [addOnResult, setAddOnResult] = useState<any>(null);
@@ -513,6 +529,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
                                             onClick={() => {
                                                 setIsEditing(true);
                                                 setEditMacros(selectedItem.macros || { protein: 0, carbs: 0, fat: 0, fiber: 0 });
+                                                setEditSugar(selectedItem.sugarg || 0);
                                             }}
                                             className="text-xs font-bold text-zinc-500 hover:text-zinc-700 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full"
                                         >
@@ -552,26 +569,47 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
                                         </button>
                                     </div>
                                     <div className="space-y-2">
+                                        <label className="text-[9px] font-bold text-teal-600/60 uppercase tracking-widest">Sugar Level</label>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {(Object.keys(SUGAR_LEVEL_MULTIPLIERS) as SugarLevel[]).map(level => (
+                                                <button
+                                                    key={level}
+                                                    type="button"
+                                                    disabled={isProcessingAddOn}
+                                                    onClick={() => setAddOnSugarLevel(level)}
+                                                    className={`py-1.5 rounded-lg text-[10px] font-bold uppercase transition-colors disabled:opacity-50 ${
+                                                        addOnSugarLevel === level
+                                                        ? 'bg-teal-500 text-white'
+                                                        : 'bg-white dark:bg-zinc-900 border border-teal-100 dark:border-teal-900/30 text-zinc-600 dark:text-zinc-400 hover:border-teal-500'
+                                                    }`}
+                                                >
+                                                    {SUGAR_LEVEL_LABELS[level]}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
                                         <label className="text-[9px] font-bold text-teal-600/60 uppercase tracking-widest">Manual Typing</label>
                                         <div className="relative">
-                                            <input 
+                                            <input
                                                 id="addon-text-input"
-                                                type="text" 
+                                                type="text"
                                                 disabled={isProcessingAddOn}
                                                 placeholder="e.g. 2 tbsp soy sauce, 1 tsp chili sauce"
                                                 value={addOnText}
                                                 onChange={e => setAddOnText(e.target.value)}
                                                 className="w-full bg-white dark:bg-zinc-900 border border-teal-100 dark:border-teal-900/30 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none disabled:opacity-50"
                                             />
-                                            <button 
+                                            <button
                                                 disabled={!addOnText.trim() || isProcessingAddOn}
                                                 onClick={async () => {
                                                     setIsProcessingAddOn(true);
-                                                    const result = await onTextAddOn(selectedItem!.id, addOnText);
+                                                    const result = await onTextAddOn(selectedItem!.id, addOnText, addOnSugarLevel);
                                                     setIsProcessingAddOn(false);
                                                     if (result) {
                                                         setAddOnResult(result);
                                                         setAddOnText('');
+                                                        setAddOnSugarLevel('normal');
                                                         // Keep options open to show result, or close after timeout
                                                         setTimeout(() => {
                                                             setAddOnResult(null);
@@ -624,7 +662,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
                                         {['protein', 'carbs', 'fat', 'fiber'].map(macro => (
                                             <div key={macro}>
                                                 <label className="text-[10px] font-bold text-zinc-500 uppercase">{macro}</label>
-                                                <input 
+                                                <input
                                                     type="number"
                                                     value={editMacros[macro as keyof typeof editMacros]}
                                                     onChange={e => setEditMacros(prev => ({...prev, [macro]: parseFloat(e.target.value) || 0}))}
@@ -632,11 +670,35 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
                                                 />
                                             </div>
                                         ))}
+                                        <div>
+                                            <label className="text-[10px] font-bold text-zinc-500 uppercase">sugar</label>
+                                            <input
+                                                type="number"
+                                                value={editSugar}
+                                                onChange={e => setEditSugar(parseFloat(e.target.value) || 0)}
+                                                className="w-full bg-white dark:bg-zinc-900 p-2 rounded-lg border border-zinc-200 dark:border-zinc-700 text-sm font-bold"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-zinc-500 uppercase mb-1 block">Sugar Level Preset</label>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {(Object.entries(SUGAR_LEVEL_MULTIPLIERS) as [SugarLevel, number][]).map(([level, multiplier]) => (
+                                                <button
+                                                    key={level}
+                                                    type="button"
+                                                    onClick={() => setEditSugar(Math.round((selectedItem.sugarg || 0) * multiplier * 10) / 10)}
+                                                    className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 py-1.5 rounded-lg text-[10px] font-bold uppercase text-zinc-600 dark:text-zinc-300 hover:border-teal-500 hover:text-teal-600 transition-colors"
+                                                >
+                                                    {SUGAR_LEVEL_LABELS[level]}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button 
+                                        <button
                                             onClick={() => {
-                                                const updatedItem = { ...selectedItem, macros: editMacros };
+                                                const updatedItem = { ...selectedItem, macros: editMacros, sugarg: editSugar };
                                                 onUpdateHistoryItem(updatedItem);
                                                 setSelectedItem(updatedItem);
                                                 setIsEditing(false);
