@@ -723,6 +723,8 @@ export interface SocialPost {
   createdAt: string;
   likes: number;
   comments: number;
+  /** true bila user yang sedang login sudah me-like post ini (dari server). */
+  likedByMe?: boolean;
   mediaUrl?: string;
   eventDate?: string;
   attendees?: number;
@@ -974,10 +976,18 @@ export async function getNotifications(
 export async function markAllNotificationsRead(): Promise<{
   success: boolean;
 }> {
+  // Backend mendefinisikan PUT /notifications/read-all (sebelumnya salah POST → 404).
   return request<{ success: boolean }>("/notifications/read-all", {
-    method: "POST",
-    body: JSON.stringify({}),
+    method: "PUT",
   });
+}
+
+export async function getUnreadNotificationCount(): Promise<number> {
+  const res = await request<{ unreadCount: number }>(
+    "/notifications/unread-count",
+    { method: "GET" },
+  );
+  return res.unreadCount ?? 0;
 }
 
 export async function deleteNotification(
@@ -985,6 +995,41 @@ export async function deleteNotification(
 ): Promise<{ success: boolean }> {
   return request<{ success: boolean }>(`/notifications/${notificationId}`, {
     method: "DELETE",
+  });
+}
+
+// ─── Bio-Synergy Endpoints ────────────────────────────────────────────────────
+// Analisis AI lintas-data. Dibatasi 1x per 24 jam per user oleh server; hasil
+// terakhir selalu tersimpan di server dan ikut dikembalikan.
+
+export interface BioSynergyReport {
+  text: string;
+  model: string;
+  createdAt: string;
+}
+
+export interface BioSynergyStatus {
+  report: BioSynergyReport | null;
+  canGenerate: boolean;
+  /** ISO — kapan boleh generate lagi; null bila sudah boleh sekarang. */
+  nextAvailableAt: string | null;
+}
+
+export async function getBioSynergy(): Promise<BioSynergyStatus> {
+  return request<BioSynergyStatus>("/bio-synergy", { method: "GET" });
+}
+
+/**
+ * Jalankan engine. Melempar error dengan `code`:
+ *  - "BIO_SYNERGY_COOLDOWN"    → sudah dijalankan dalam 24 jam terakhir (status 409)
+ *  - "BIO_SYNERGY_IN_PROGRESS" → request sebelumnya masih diproses (status 409)
+ */
+export async function generateBioSynergy(
+  localDate: string,
+): Promise<BioSynergyStatus> {
+  return request<BioSynergyStatus>("/bio-synergy/generate", {
+    method: "POST",
+    body: JSON.stringify({ localDate }),
   });
 }
 

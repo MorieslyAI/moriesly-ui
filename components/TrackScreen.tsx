@@ -8,6 +8,7 @@ import {
   type TrackDataResponse,
   type TrackFieldNote,
 } from "../services/api";
+import { useRememberedState } from "../services/viewMemory";
 import {
   AreaChart,
   Area,
@@ -47,9 +48,9 @@ interface TrackScreenProps {
 }
 
 const TrackScreen: React.FC<TrackScreenProps> = ({ onSetBackHandler }) => {
-  const [activeTab, setActiveTab] = useState<"body" | "nutrition" | "notes">(
-    "body",
-  );
+  const [activeTab, setActiveTab] = useRememberedState<
+    "body" | "nutrition" | "notes"
+  >("track.activeTab", "body");
 
   useEffect(() => {
     if (!onSetBackHandler) return;
@@ -303,7 +304,7 @@ const TrackScreen: React.FC<TrackScreenProps> = ({ onSetBackHandler }) => {
                     value={newWeight}
                     onChange={(e) => setNewWeight(e.target.value)}
                     placeholder="Update Weight (kg)..."
-                    className="flex-1 bg-transparent border-none text-white text-sm placeholder-white/40 dark:placeholder-zinc-600 focus:ring-0"
+                    className="flex-1 bg-transparent border-none text-zinc-900 dark:text-white text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:ring-0"
                     onKeyDown={(e) => e.key === "Enter" && handleAddWeight()}
                   />
                   <button
@@ -483,29 +484,42 @@ const TrackScreen: React.FC<TrackScreenProps> = ({ onSetBackHandler }) => {
                 <h3 className="text-sm font-bold uppercase text-zinc-500 dark:text-zinc-400 mb-4">
                   Macros
                 </h3>
-                <div className="flex gap-2 h-24 items-end">
-                  {macroData.map((macro, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 flex flex-col items-center gap-1"
-                    >
+
+                <div className="flex gap-3 h-32">
+                  {macroData.map((macro) => {
+                    const percentage = Math.min(
+                      (Number(macro.value) / 150) * 100,
+                      100,
+                    );
+
+                    return (
                       <div
-                        className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-lg relative overflow-hidden"
-                        style={{ height: "100%" }}
+                        key={macro.name}
+                        className="flex-1 h-full flex flex-col items-center gap-2"
                       >
-                        <div
-                          className="absolute bottom-0 w-full transition-all duration-500"
-                          style={{
-                            height: `${Math.min((macro.value / 150) * 100, 100)}%`,
-                            backgroundColor: macro.color,
-                          }}
-                        />
+                        {/* Value */}
+                        <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                          {macro.value}g
+                        </span>
+
+                        {/* Bar */}
+                        <div className="relative flex-1 w-full min-h-0 bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
+                          <div
+                            className="absolute bottom-0 left-0 w-full transition-all duration-500"
+                            style={{
+                              height: `${percentage}%`,
+                              backgroundColor: macro.color,
+                            }}
+                          />
+                        </div>
+
+                        {/* Label */}
+                        <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">
+                          {macro.name}
+                        </span>
                       </div>
-                      <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">
-                        {macro.name}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

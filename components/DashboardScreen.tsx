@@ -1,4 +1,5 @@
 import React from "react";
+import { useBackHandler } from "../services/backStack";
 import {
   Utensils,
   Zap,
@@ -1418,6 +1419,20 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [isCalendarExpanded, setIsCalendarExpanded] = React.useState(false);
   const [showAgentModal, setShowAgentModal] = React.useState(false);
 
+  // Tombol back Android menutup modal/dropdown yang terbuka, bukan keluar app.
+  useBackHandler(showAgentModal, () => setShowAgentModal(false));
+  useBackHandler(showDietDetails, () => setShowDietDetails(false));
+  useBackHandler(showTrainingModal, () => setShowTrainingModal(false));
+  useBackHandler(showAllNutrients, () => setShowAllNutrients(false));
+  useBackHandler(isInsightsModalOpen, () => setIsInsightsModalOpen(false));
+  useBackHandler(isShareModalOpen, () => setIsShareModalOpen(false));
+  useBackHandler(isTimeRangeDropdownOpen, () =>
+    setIsTimeRangeDropdownOpen(false),
+  );
+  useBackHandler(selectedHistoryItem !== null, () =>
+    setSelectedHistoryItem(null),
+  );
+
   const hasAction =
     history.length > 0 || completedWorkouts.length > 0 || dietPlan !== null;
   const currentAgent = hasAction
@@ -1757,6 +1772,25 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     : currentIntel;
 
   const Icon = intelDisplay?.icon;
+
+  const burnWorkoutTotal =
+    trainingPlan?.schedule.filter((block) => block.sugarImpact < 0).length ?? 0;
+
+  const completedBurnWorkouts = trainingPlan
+    ? completedWorkouts.filter((idx) => {
+        const block = trainingPlan.schedule[idx];
+
+        return !!block && block.sugarImpact < 0;
+      }).length
+    : 0;
+
+  const burnProgress =
+    burnWorkoutTotal > 0
+      ? Math.min(
+          100,
+          Math.round((completedBurnWorkouts / burnWorkoutTotal) * 100),
+        )
+      : 0;
 
   return (
     <div className="min-h-screen  dark:text-zinc-100 pb-32 pt-8 md:pt-12 font-sans px-2">
@@ -3776,84 +3810,79 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   <div className="w-6 h-6 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
                     <Flame className="w-3.5 h-3.5 text-orange-500" />
                   </div>
+
                   <h3 className="text-[10px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
                     Burn Progress
                   </h3>
                 </div>
+
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-black text-zinc-900 dark:text-zinc-100">
-                    {completedWorkouts.length} /{" "}
-                    {
-                      trainingPlan.schedule.filter((b) => b.sugarImpact < 0)
-                        .length
-                    }
+                  <span className="text-[10px] font-black text-zinc-900 dark:text-zinc-100 tabular-nums">
+                    {completedBurnWorkouts} / {burnWorkoutTotal}
                   </span>
+
                   <span className="text-[8px] font-bold text-zinc-400 uppercase">
                     Workouts
                   </span>
                 </div>
               </div>
 
+              {/* Progress Bar */}
               <div className="relative h-12 bg-zinc-50 dark:bg-zinc-800 rounded-xl border border-zinc-100 dark:border-zinc-800 overflow-hidden p-1">
+                {/* Progress Fill */}
                 <div
-                  className="h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-lg transition-all duration-1000 ease-out relative"
+                  className="h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-lg transition-[width] duration-1000 ease-out relative overflow-hidden"
                   style={{
-                    width: `${Math.round((completedWorkouts.length / (trainingPlan.schedule.filter((b) => b.sugarImpact < 0).length || 1)) * 100)}%`,
+                    width: `${burnProgress}%`,
                   }}
                 >
-                  <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,white_2px,white_4px)]"></div>
-                  <div className="absolute inset-0 flex items-center justify-end pr-3">
-                    <span className="text-[10px] font-black text-white drop-shadow-sm">
-                      {Math.round(
-                        (completedWorkouts.length /
-                          (trainingPlan.schedule.filter(
-                            (b) => b.sugarImpact < 0,
-                          ).length || 1)) *
-                          100,
-                      )}
-                      %
-                    </span>
-                  </div>
+                  {/* Stripe Pattern */}
+                  <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(45deg,transparent,transparent_2px,white_2px,white_4px)]" />
+                </div>
+
+                {/* Percentage Label */}
+                <div className="absolute inset-y-0 right-2 flex items-center z-10 pointer-events-none">
+                  <span className="min-w-[42px] px-2 py-1 rounded-lg bg-white/90 dark:bg-zinc-950/80 border border-zinc-200/70 dark:border-zinc-700 text-[10px] font-black text-zinc-900 dark:text-zinc-100 text-center tabular-nums shadow-sm backdrop-blur-sm">
+                    {burnProgress}%
+                  </span>
                 </div>
               </div>
 
               {/* Training Reminders */}
               <div className="mt-3 flex flex-col gap-2">
-                {trainingPlan.schedule
-                  .map((block, idx) => {
-                    if (
-                      block.sugarImpact < 0 &&
-                      !completedWorkouts.includes(idx)
-                    ) {
-                      return (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                            <div>
-                              <p className="text-[9px] font-black text-zinc-900 dark:text-zinc-100 leading-none">
-                                {block.activity}
-                              </p>
-                              <p className="text-[8px] font-bold text-zinc-400 uppercase mt-0.5">
-                                Next Workout Reminder
-                              </p>
-                            </div>
+                {trainingPlan.schedule.map((block, idx) => {
+                  if (
+                    block.sugarImpact < 0 &&
+                    !completedWorkouts.includes(idx)
+                  ) {
+                    return (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800 rounded-xl p-2 border border-zinc-100 dark:border-zinc-800"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                          <div>
+                            <p className="text-[9px] font-black text-zinc-900 dark:text-zinc-100 leading-none">
+                              {block.activity}
+                            </p>
+                            <p className="text-[8px] font-bold text-zinc-400 uppercase mt-0.5">
+                              Next Workout Reminder
+                            </p>
                           </div>
-                          <button
-                            onClick={() => onNavigate("training")}
-                            className="text-[8px] font-black text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
-                          >
-                            START
-                          </button>
                         </div>
-                      );
-                    }
-                    return null;
-                  })
-                  .filter(Boolean)
-                  .slice(0, 1)}
+                        <button
+                          onClick={() => onNavigate("training")}
+                          className="text-[8px] font-black text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                        >
+                          START
+                        </button>
+                      </div>
+                    );
+                  }
+
+                  return null;
+                })}
               </div>
             </div>
           )}
@@ -3870,40 +3899,6 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${ad.color} opacity-[0.05]`}
               ></div>
-
-              <div className="flex flex-row items-center p-3 md:p-4 gap-3 relative z-10">
-                {/* Image/Illustration */}
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-lg overflow-hidden shadow-sm relative shrink-0 border border-white transition-transform duration-500">
-                  <img
-                    src={ad.image}
-                    alt={ad.title}
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-
-                {/* Text Content */}
-                <div className="flex-1 text-left">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <div
-                      className={`inline-flex items-center justify-center p-0.5 rounded bg-gradient-to-br ${ad.color} shadow-sm`}
-                    >
-                      {React.cloneElement(ad.icon as React.ReactElement, {
-                        className: "w-2.5 h-2.5 text-white",
-                      })}
-                    </div>
-                    <h3 className="text-[11px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
-                      {ad.title}
-                    </h3>
-                  </div>
-                  <p className="text-[10px] text-zinc-600 leading-tight font-medium line-clamp-2">
-                    {ad.text}
-                  </p>
-                  <button className="mt-0.5 text-[8px] font-black uppercase tracking-[0.1em] text-zinc-400 hover:text-zinc-900 dark:text-zinc-100 transition-colors">
-                    View Report →
-                  </button>
-                </div>
-              </div>
             </div>
           );
         })()}

@@ -5,9 +5,11 @@ import { Home, Compass, Calendar, MessageSquare, User } from 'lucide-react';
 interface NavBarProps {
   currentView: 'dashboard' | 'camera' | 'diet' | 'consultant' | 'tracker' | 'history' | 'blog' | 'training' | 'medical' | 'settings' | 'devices' | 'profile' | 'notifications' | 'status' | 'track' | 'calendar' | 'chat' | 'explore';
   onChangeView: (view: 'dashboard' | 'camera' | 'diet' | 'consultant' | 'tracker' | 'history' | 'blog' | 'training' | 'medical' | 'settings' | 'devices' | 'profile' | 'notifications' | 'status' | 'track' | 'calendar' | 'chat' | 'explore') => void;
+  /** Disables only the center scan button — e.g. while a scan is already being analyzed. */
+  scanDisabled?: boolean;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
+const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView, scanDisabled = false }) => {
   return (
     <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-800 dark:border-zinc-900 px-4 pb-2 pt-2 z-[90] h-16 rounded-t-[1.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
 
@@ -60,8 +62,9 @@ const NavBar: React.FC<NavBarProps> = ({ currentView, onChangeView }) => {
         <div className="absolute left-1/2 -translate-x-1/2 -top-6">
             <button
                 data-guide="scan-button"
-                onClick={() => onChangeView('camera')}
-                className="w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-teal-900/40 border-[4px] border-white dark:border-zinc-950 transition-transform active:scale-95 bg-gradient-to-b from-[#33ADAE] to-[#1F6E6C] text-white hover:scale-105 group"
+                onClick={() => { if (!scanDisabled) onChangeView('camera'); }}
+                disabled={scanDisabled}
+                className={`w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-teal-900/40 border-[4px] border-white dark:border-zinc-950 transition-transform bg-gradient-to-b from-[#33ADAE] to-[#1F6E6C] text-white group ${scanDisabled ? 'opacity-50 grayscale' : 'active:scale-95 hover:scale-105'}`}
             >
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="group-hover:rotate-90 transition-transform duration-500 ease-out">
                     {/* Center Dot (Slightly Larger) */}

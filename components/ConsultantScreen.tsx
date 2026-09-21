@@ -7,6 +7,7 @@ import { Loader2, Trash2 } from 'lucide-react';
 import { ChatMessage, ConnectionState, UserProfile, ConsultationSession, LogEntry } from '../types';
 import AgentAvatar from './AgentAvatar';
 import { API_KEY } from '../constants';
+import { useBackHandler } from '../services/backStack';
 import {
     createChatSession,
     getChatSessions,
@@ -449,6 +450,22 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
         setMessages([{ id: 'welcome', role: 'model', text: `Hi again, ${userProfile.name}! Ready to chat about your health?`, timestamp: new Date() }]);
         setMode('history');
     };
+
+    // Tombol back Android: tutup lapisan terdalam dulu (drawer/detail), lalu
+    // kembali ke pemilihan mode. Mode 'selection' diserahkan ke navigasi App.
+    useBackHandler(mode !== 'selection', () => {
+        if (mode === 'video') {
+            if (isSaving) return;
+            if (showTranscriptDrawer) setShowTranscriptDrawer(false);
+            else handleEndCall();
+        } else if (mode === 'history') {
+            if (selectedBackendSession) setSelectedBackendSession(null);
+            else if (selectedSession) setSelectedSession(null);
+            else setMode('selection');
+        } else {
+            setMode('selection');
+        }
+    });
 
     const handleSendMessage = async () => {
         if ((!input.trim() && !attachedImage) || isTyping) return;

@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { HistoryItem } from '../types';
 import { getDashboardHistory, getDashboardHistoryMonthSummary } from '../services/api';
+import { useBackHandler } from '../services/backStack';
+import { useRememberedState } from '../services/viewMemory';
 import { Plus, Dumbbell, Wheat, Droplet, Leaf, FlaskConical, X, Activity, Flame, Zap, Info, Clock, Calendar, ChevronRight, ChevronLeft, Search, Filter, Share2, Download, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
 import MetabolicInvoice from './MetabolicInvoice';
 import SugarPile from './SugarPile';
@@ -34,7 +36,7 @@ interface HistoryScreenProps {
 }
 
 const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpdateHistoryItem, onScanAddOn, onTextAddOn }) => {
-  const [filter, setFilter] = useState<'all' | 'consumed' | 'rejected' | 'scanned'>('all');
+  const [filter, setFilter] = useRememberedState<'all' | 'consumed' | 'rejected' | 'scanned'>('history.filter', 'all');
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editMacros, setEditMacros] = useState({ protein: 0, carbs: 0, fat: 0, fiber: 0 });
@@ -47,12 +49,21 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ history, onExport, onUpda
   const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
   
   // New State for View Mode and Sorting
-  const [viewMode, setViewMode] = useState<'list' | 'table'>('list');
-  const [sortConfig, setSortConfig] = useState<{ key: keyof HistoryItem; direction: 'asc' | 'desc' }>({ key: 'timestamp', direction: 'desc' });
-  
-  // Calendar State
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [viewMode, setViewMode] = useRememberedState<'list' | 'table'>('history.viewMode', 'list');
+  const [sortConfig, setSortConfig] = useRememberedState<{ key: keyof HistoryItem; direction: 'asc' | 'desc' }>('history.sortConfig', { key: 'timestamp', direction: 'desc' });
+
+  // Calendar State (diingat agar kembali ke bulan/tanggal yang terakhir dilihat)
+  const [currentMonth, setCurrentMonth] = useRememberedState<Date>('history.currentMonth', () => new Date());
+  const [selectedDate, setSelectedDate] = useRememberedState<Date | null>('history.selectedDate', null);
+
+  // Tombol back Android menutup lapisan teratas dulu: foto layar penuh -> detail -> filter tanggal.
+  useBackHandler(selectedDate !== null, () => setSelectedDate(null));
+  useBackHandler(selectedItem !== null, () => {
+    if (isEditing) setIsEditing(false);
+    else if (showAddOnOptions) setShowAddOnOptions(false);
+    else setSelectedItem(null);
+  });
+  useBackHandler(fullScreenImage !== null, () => setFullScreenImage(null));
 
   // ─── Prefetch Cache ────────────────────────────────────────────────────────
   // Menyimpan data server per tanggal (dateStr → HistoryItem[]) tanpa

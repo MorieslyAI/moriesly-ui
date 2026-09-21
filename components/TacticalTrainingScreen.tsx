@@ -8,6 +8,7 @@ import {
   type TrainingPlanResponse,
   type ActiveTrainingResult,
 } from '../services/api';
+import { syncTrainingReminders } from '../services/localNotifications';
 
 interface TacticalTrainingScreenProps {
   userProfile: UserProfile;
@@ -475,6 +476,15 @@ const TacticalTrainingScreen: React.FC<TacticalTrainingScreenProps> = ({ userPro
   useEffect(() => {
     loadActivePlan();
   }, [loadActivePlan]);
+
+  // ── Pengingat lokal: jadwalkan ulang setiap plan / status selesai berubah ──
+  // Mencakup plan baru di-generate, plan aktif ter-load, dan blok selesai
+  // (blok yang sudah selesai tidak diingatkan lagi). Menunggu load awal agar
+  // plan lama tidak sempat dijadwalkan ulang.
+  useEffect(() => {
+    if (isLoadingActive) return;
+    syncTrainingReminders(plan?.schedule ?? null, completedWorkouts, completedMeals);
+  }, [isLoadingActive, plan, completedWorkouts, completedMeals]);
 
   // ── Day-change detector: auto-refresh when UTC date flips ─────────────────
   // Checks every 60s and also when the user returns to the tab

@@ -10,6 +10,7 @@ import {
   type DietPlanResponse,
   type WeeklyPlanResponse,
 } from '../services/api';
+import { syncDietReminders } from '../services/localNotifications';
 
 interface DietPlanScreenProps {
     userProfile: UserProfile;
@@ -256,6 +257,12 @@ const DietPlanScreen: React.FC<DietPlanScreenProps> = ({ userProfile, onAddXp, d
   useEffect(() => {
     loadActivePlans();
   }, [loadActivePlans]);
+
+  // --- Pengingat makan lokal: jadwalkan ulang saat plan / status consumed berubah ---
+  useEffect(() => {
+    if (isLoadingActive) return;
+    syncDietReminders(dietPlan?.meals ?? null, completedMealIndices);
+  }, [isLoadingActive, dietPlan, completedMealIndices]);
 
   // --- Day-change detector: auto-refresh when UTC date flips ---
   // Checks every 60s and also when the user returns to the tab

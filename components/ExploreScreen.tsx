@@ -37,6 +37,9 @@ import type {
   LeaderboardEntry,
 } from "../services/api";
 
+import { useBackHandler } from "../services/backStack";
+import { useRememberedState } from "../services/viewMemory";
+
 import GroupChatPanel from "./GroupChatPanel";
 import CreateGroupChatPanel from "./CreateGroupChatPanel";
 
@@ -51,6 +54,8 @@ type SocialCommentWithReply = SocialComment & {
   replyToCommentId?: string | null;
   replyToUserId?: string | null;
   replyToName?: string | null;
+  /** True while this comment is an optimistic, not-yet-confirmed local placeholder. */
+  pending?: boolean;
 };
 
 type ReplyTarget = {
@@ -72,11 +77,14 @@ type ReplyTarget = {
 function useFetch<T>(
   fetcher: () => Promise<T>,
   deps: React.DependencyList = [],
+  debugLabel?: string,
 ): {
   data: T | null;
   loading: boolean;
   error: string | null;
   refetch: () => void;
+  /** Patch the cached data locally (optimistic updates) without a network refetch. */
+  setData: React.Dispatch<React.SetStateAction<T | null>>;
 } {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,6 +93,14 @@ function useFetch<T>(
 
   useEffect(() => {
     let cancelled = false;
+
+    if (debugLabel) {
+      // TEMP DEBUG — remove once the "like causes a feed reload" report is diagnosed.
+      console.trace(`[useFetch:${debugLabel}] fetch effect fired`, {
+        tick,
+        deps,
+      });
+    }
 
     setLoading(true);
     setError(null);
@@ -112,6 +128,7 @@ function useFetch<T>(
     loading,
     error,
     refetch: () => setTick((t) => t + 1),
+    setData,
   };
 }
 
@@ -205,13 +222,14 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
   userStats,
   onSetBackHandler,
 }) => {
-  const [activeTab, setActiveTab] = useState<"news" | "social" | "shop">(
-    "news",
-  );
+  // Tab yang sedang dibuka diingat agar back dari halaman lain kembali ke sini.
+  const [activeTab, setActiveTab] = useRememberedState<
+    "news" | "social" | "shop"
+  >("explore.activeTab", "news");
 
-  const [socialTab, setSocialTab] = useState<
+  const [socialTab, setSocialTab] = useRememberedState<
     "feed" | "events" | "groups" | "privateChats" | "profile" | "leaderboard"
-  >("feed");
+  >("explore.socialTab", "feed");
 
   const [groupRefreshKey, setGroupRefreshKey] = useState(0);
 
@@ -284,6 +302,11 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
         setReplyingTo(null);
         return true;
       });
+    } else if (activeTab === "social" && socialTab !== "feed") {
+      onSetBackHandler(() => {
+        setSocialTab("feed");
+        return true;
+      });
     } else if (activeTab !== "news") {
       onSetBackHandler(() => {
         setActiveTab("news");
@@ -296,7 +319,14 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
     return () => {
       onSetBackHandler(null);
     };
-  }, [activeTab, selectedPost, onSetBackHandler]);
+  }, [activeTab, socialTab, selectedPost, onSetBackHandler]);
+
+  // Overlay di atas halaman (foto layar penuh, menu, konfirmasi) ditutup dulu.
+  useBackHandler(fullscreenImage !== null, () => setFullscreenImage(null));
+  useBackHandler(activePostMenu !== null, () => setActivePostMenu(null));
+  useBackHandler(postToDelete !== null, () => {
+    if (!isDeleting) setPostToDelete(null);
+  });
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -329,12 +359,27 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
     loading: postsLoading,
     error: postsError,
     refetch: refetchPosts,
+    setData: setPostsData,
   } = useFetch(
     () =>
       shouldFetchPosts
-        ? api.getPosts({ type: feedType as any, limit: 50 })
+        ? api.getPosts({ type: feedType as any, limit: 50 }).then((res) => {
+            // Server adalah sumber kebenaran status like → pulihkan warna merah
+            // setelah refresh. Dilakukan di sini (bukan effect pada postsData)
+            // agar patch optimistik like tidak menimpa state saat tap.
+            setLikedPosts((prev) => {
+              const next = new Set(prev);
+              res.posts.forEach((p) => {
+                if (p.likedByMe) next.add(p.id);
+                else if (p.likedByMe === false) next.delete(p.id);
+              });
+              return next;
+            });
+            return res;
+          })
         : Promise.resolve({ posts: [], hasMore: false }),
     [feedType, shouldFetchPosts],
+    "posts",
   );
 
   // ── Leaderboard ──────────────────────────────────────────────────────────
@@ -399,70 +444,132 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
     }
   }, [newPostContent, newPostImage, isPosting, refetchPosts]);
 
+  /** Patches a single post's counters in the cached feed without refetching it. */
+  const patchPost = useCallback(
+    (postId: string, patch: (post: SocialPost) => SocialPost) => {
+      setPostsData((prev) =>
+        prev
+          ? {
+              ...prev,
+              posts: prev.posts.map((p) =>
+                p.id === postId ? patch(p) : p,
+              ),
+            }
+          : prev,
+      );
+    },
+    [setPostsData],
+  );
+
   const handleLike = useCallback(
     async (postId: string) => {
+      // TEMP DEBUG — remove once the "like causes a feed reload" report is diagnosed.
+      console.debug("[handleLike] tap", postId);
+
+      const wasLiked = likedPosts.has(postId);
+      const nextLiked = !wasLiked;
+
+      // Optimistic, Instagram-style: flip instantly, sync with the server
+      // in the background — no feed reload/flicker.
+      setLikedPosts((prev) => {
+        const next = new Set(prev);
+        if (nextLiked) next.add(postId);
+        else next.delete(postId);
+        return next;
+      });
+      patchPost(postId, (p) => ({
+        ...p,
+        likes: Math.max(0, p.likes + (nextLiked ? 1 : -1)),
+      }));
+
       try {
-        const res = await api.toggleLike(postId);
-
-        setLikedPosts((prev) => {
-          const next = new Set(prev);
-
-          if (res.liked) next.add(postId);
-          else next.delete(postId);
-
-          return next;
-        });
-
-        refetchPosts();
+        await api.toggleLike(postId);
       } catch (e: any) {
         console.error("Failed to like:", e.message);
+        // Roll back on failure.
+        setLikedPosts((prev) => {
+          const next = new Set(prev);
+          if (wasLiked) next.add(postId);
+          else next.delete(postId);
+          return next;
+        });
+        patchPost(postId, (p) => ({
+          ...p,
+          likes: Math.max(0, p.likes + (nextLiked ? -1 : 1)),
+        }));
       }
     },
-    [refetchPosts],
+    [likedPosts, patchPost],
   );
 
   const handleRsvp = useCallback(
     async (postId: string) => {
+      const wasGoing = rsvpPosts.has(postId);
+      const nextGoing = !wasGoing;
+
+      setRsvpPosts((prev) => {
+        const next = new Set(prev);
+        if (nextGoing) next.add(postId);
+        else next.delete(postId);
+        return next;
+      });
+      patchPost(postId, (p) => ({
+        ...p,
+        attendees: Math.max(0, (p.attendees ?? 0) + (nextGoing ? 1 : -1)),
+      }));
+
       try {
-        const res = await api.rsvpEvent(postId);
-
-        setRsvpPosts((prev) => {
-          const next = new Set(prev);
-
-          if (res.rsvp) next.add(postId);
-          else next.delete(postId);
-
-          return next;
-        });
-
-        refetchPosts();
+        await api.rsvpEvent(postId);
       } catch (e: any) {
         console.error("Failed to RSVP:", e.message);
+        setRsvpPosts((prev) => {
+          const next = new Set(prev);
+          if (wasGoing) next.add(postId);
+          else next.delete(postId);
+          return next;
+        });
+        patchPost(postId, (p) => ({
+          ...p,
+          attendees: Math.max(0, (p.attendees ?? 0) + (nextGoing ? -1 : 1)),
+        }));
       }
     },
-    [refetchPosts],
+    [rsvpPosts, patchPost],
   );
 
   const handleJoinGroup = useCallback(
     async (postId: string) => {
+      const wasJoined = joinedGroups.has(postId);
+      const nextJoined = !wasJoined;
+
+      setJoinedGroups((prev) => {
+        const next = new Set(prev);
+        if (nextJoined) next.add(postId);
+        else next.delete(postId);
+        return next;
+      });
+      patchPost(postId, (p) => ({
+        ...p,
+        members: Math.max(0, (p.members ?? 0) + (nextJoined ? 1 : -1)),
+      }));
+
       try {
-        const res = await joinGroup(postId);
-
-        setJoinedGroups((prev) => {
-          const next = new Set(prev);
-
-          if (res.joined) next.add(postId);
-          else next.delete(postId);
-
-          return next;
-        });
-
-        refetchPosts();
+        await api.joinGroup(postId);
       } catch (e: any) {
         console.error("Failed to join group:", e.message);
+        setJoinedGroups((prev) => {
+          const next = new Set(prev);
+          if (wasJoined) next.add(postId);
+          else next.delete(postId);
+          return next;
+        });
+        patchPost(postId, (p) => ({
+          ...p,
+          members: Math.max(0, (p.members ?? 0) + (nextJoined ? -1 : 1)),
+        }));
       }
     },
-    [refetchPosts],
+    [joinedGroups, patchPost],
   );
 
   const handleBuy = useCallback(
@@ -599,7 +706,78 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
 
       if ((!content && !imageBase64) || submittingComments.has(postId)) return;
 
+      const replyMeta = replyingTo?.postId === postId ? replyingTo : null;
+      const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+      // Instagram-style optimistic send: the comment appears immediately
+      // (tagged "Sending...") instead of waiting for the round trip, and the
+      // composer clears right away so the next comment can be typed.
+      const optimisticComment: SocialCommentWithReply = {
+        id: tempId,
+        postId,
+        parentId,
+        replyToCommentId,
+        replyToUserId: null,
+        replyToName: replyMeta?.authorName ?? null,
+        authorId: profileData?.name ?? userStats.name,
+        authorName: profileData?.name ?? userStats.name,
+        authorAvatar: profileData?.avatarUrl ?? null,
+        content,
+        imageUrl: imageBase64,
+        createdAt: new Date().toISOString(),
+        likes: 0,
+        repliesCount: 0,
+        likedByMe: false,
+        pending: true,
+      };
+
       setSubmittingComments((prev) => new Set(prev).add(postId));
+
+      setFullComments((prev) => ({
+        ...prev,
+        [postId]: sortNewestComments([
+          optimisticComment,
+          ...(prev[postId] ?? []),
+        ]),
+      }));
+
+      setCommentPreviews((prev) => {
+        const merged = [optimisticComment, ...(prev[postId] ?? [])];
+
+        return {
+          ...prev,
+          [postId]: sortTopComments(merged).slice(0, TOP_COMMENT_LIMIT),
+        };
+      });
+
+      setCommentCountOverrides((prev) => ({
+        ...prev,
+        [postId]:
+          (prev[postId] ??
+            selectedPost?.comments ??
+            postsData?.posts?.find((post) => post.id === postId)?.comments ??
+            0) + 1,
+      }));
+
+      setCommentDrafts((prev) => ({
+        ...prev,
+        [postId]: "",
+      }));
+
+      setCommentImages((prev) => ({
+        ...prev,
+        [postId]: null,
+      }));
+
+      setReplyingTo(null);
+
+      const replacePending = (
+        list: SocialCommentWithReply[],
+        replacement: SocialCommentWithReply | null,
+      ) =>
+        replacement
+          ? list.map((c) => (c.id === tempId ? replacement : c))
+          : list.filter((c) => c.id !== tempId);
 
       try {
         const res = await api.createPostComment(postId, {
@@ -609,53 +787,43 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
           imageBase64,
         });
 
-        const commentWithReplyMeta: SocialComment = {
+        const commentWithReplyMeta: SocialCommentWithReply = {
           ...res.comment,
           parentId: res.comment.parentId ?? parentId,
           replyToCommentId: res.comment.replyToCommentId ?? replyToCommentId,
-          replyToName:
-            res.comment.replyToName ?? replyingTo?.authorName ?? null,
+          replyToName: res.comment.replyToName ?? replyMeta?.authorName ?? null,
         };
 
         setFullComments((prev) => ({
           ...prev,
-          [postId]: sortNewestComments([
-            commentWithReplyMeta,
-            ...(prev[postId] ?? []),
-          ]),
+          [postId]: replacePending(prev[postId] ?? [], commentWithReplyMeta),
         }));
 
-        setCommentPreviews((prev) => {
-          const merged = [commentWithReplyMeta, ...(prev[postId] ?? [])];
-
-          return {
-            ...prev,
-            [postId]: sortTopComments(merged).slice(0, TOP_COMMENT_LIMIT),
-          };
-        });
-
-        setCommentCountOverrides((prev) => ({
+        setCommentPreviews((prev) => ({
           ...prev,
-          [postId]:
-            (prev[postId] ??
-              selectedPost?.comments ??
-              postsData?.posts?.find((post) => post.id === postId)?.comments ??
-              0) + 1,
+          [postId]: sortTopComments(
+            replacePending(prev[postId] ?? [], commentWithReplyMeta),
+          ).slice(0, TOP_COMMENT_LIMIT),
         }));
-
-        setCommentDrafts((prev) => ({
-          ...prev,
-          [postId]: "",
-        }));
-
-        setCommentImages((prev) => ({
-          ...prev,
-          [postId]: null,
-        }));
-
-        setReplyingTo(null);
       } catch (e: any) {
         console.error("Failed to create comment:", e.message);
+
+        // Roll back: drop the pending bubble and give the user their draft back.
+        setFullComments((prev) => ({
+          ...prev,
+          [postId]: replacePending(prev[postId] ?? [], null),
+        }));
+        setCommentPreviews((prev) => ({
+          ...prev,
+          [postId]: replacePending(prev[postId] ?? [], null),
+        }));
+        setCommentCountOverrides((prev) => ({
+          ...prev,
+          [postId]: Math.max(0, (prev[postId] ?? 1) - 1),
+        }));
+        setCommentDrafts((prev) => ({ ...prev, [postId]: content }));
+        setCommentImages((prev) => ({ ...prev, [postId]: imageBase64 }));
+        if (replyMeta) setReplyingTo(replyMeta);
       } finally {
         setSubmittingComments((prev) => {
           const next = new Set(prev);
@@ -668,9 +836,12 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
       commentDrafts,
       commentImages,
       postsData?.posts,
+      profileData?.avatarUrl,
+      profileData?.name,
       replyingTo,
       selectedPost?.comments,
       submittingComments,
+      userStats.name,
     ],
   );
 
@@ -715,14 +886,20 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
 
   const handleCommentLike = useCallback(
     async (postId: string, commentId: string) => {
+      const wasLiked = likedComments.has(commentId);
+      const nextLiked = !wasLiked;
+
+      // Optimistic: flip instantly, sync with the server in the background.
+      patchCommentLike(postId, commentId, nextLiked);
+
       try {
-        const res = await api.toggleCommentLike(commentId);
-        patchCommentLike(postId, commentId, res.liked);
+        await api.toggleCommentLike(commentId);
       } catch (e: any) {
         console.error("Failed to like comment:", e.message);
+        patchCommentLike(postId, commentId, wasLiked);
       }
     },
-    [patchCommentLike],
+    [likedComments, patchCommentLike],
   );
 
   const handleDeletePost = async () => {
@@ -730,7 +907,11 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
     setIsDeleting(true);
     try {
       await api.deleteSocialPost(postToDelete);
-      refetchPosts(); // Refresh feed
+      setPostsData((prev) =>
+        prev
+          ? { ...prev, posts: prev.posts.filter((p) => p.id !== postToDelete) }
+          : prev,
+      );
       refetchProfile(); // Refresh profile count
     } catch (e: any) {
       console.error("Gagal menghapus postingan:", e);
@@ -946,7 +1127,7 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
 
         <div className="min-w-0 flex-1">
           <div
-            className="rounded-2xl bg-zinc-100 dark:bg-zinc-900 px-4 py-3 select-none transition-colors"
+            className={`rounded-2xl bg-zinc-100 dark:bg-zinc-900 px-4 py-3 select-none transition-colors ${comment.pending ? "opacity-60" : ""}`}
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUpOrLeave}
             onPointerLeave={handlePointerUpOrLeave}
@@ -956,11 +1137,20 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
               <h4 className="text-sm font-black text-zinc-900 dark:text-white">
                 {comment.authorName}
               </h4>
-              <span className="text-[11px] font-bold text-zinc-400">
-                {new Date(comment.createdAt).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "short",
-                })}
+              <span
+                className={`text-[11px] font-bold ${comment.pending ? "text-brand-500 flex items-center gap-1" : "text-zinc-400"}`}
+              >
+                {comment.pending ? (
+                  <>
+                    <Loader2 size={10} className="animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  new Date(comment.createdAt).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                  })
+                )}
               </span>
             </div>
 
@@ -1005,34 +1195,36 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
             </div>
           )}
 
-          <div className="mt-2 flex items-center gap-4 px-2">
-            <button
-              onClick={() => void handleCommentLike(postId, comment.id)}
-              className={`inline-flex items-center gap-1 text-xs font-black transition-colors ${
-                liked
-                  ? "text-rose-500"
-                  : "text-zinc-500 hover:text-rose-500 dark:text-zinc-400"
-              }`}
-            >
-              <Heart size={14} className={liked ? "fill-current" : ""} />
-              {comment.likes}
-            </button>
+          {!comment.pending && (
+            <div className="mt-2 flex items-center gap-4 px-2">
+              <button
+                onClick={() => void handleCommentLike(postId, comment.id)}
+                className={`inline-flex items-center gap-1 text-xs font-black transition-colors ${
+                  liked
+                    ? "text-rose-500"
+                    : "text-zinc-500 hover:text-rose-500 dark:text-zinc-400"
+                }`}
+              >
+                <Heart size={14} className={liked ? "fill-current" : ""} />
+                {comment.likes}
+              </button>
 
-            <button
-              onClick={() =>
-                setReplyingTo({
-                  postId,
-                  rootCommentId: targetRootCommentId,
-                  targetCommentId: comment.id,
-                  authorName: comment.authorName,
-                })
-              }
-              className="inline-flex items-center gap-1 text-xs font-black text-zinc-500 hover:text-brand-500 dark:text-zinc-400"
-            >
-              <Reply size={14} />
-              Reply
-            </button>
-          </div>
+              <button
+                onClick={() =>
+                  setReplyingTo({
+                    postId,
+                    rootCommentId: targetRootCommentId,
+                    targetCommentId: comment.id,
+                    authorName: comment.authorName,
+                  })
+                }
+                className="inline-flex items-center gap-1 text-xs font-black text-zinc-500 hover:text-brand-500 dark:text-zinc-400"
+              >
+                <Reply size={14} />
+                Reply
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1077,15 +1269,24 @@ const ExploreScreen: React.FC<ExploreScreenProps> = ({
               </div>
 
               <div className="min-w-0 flex-1">
-                <div className="rounded-2xl bg-white dark:bg-zinc-900 px-3 py-2">
+                <div
+                  className={`rounded-2xl bg-white dark:bg-zinc-900 px-3 py-2 ${comment.pending ? "opacity-60" : ""}`}
+                >
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-black text-zinc-900 dark:text-white">
                       {comment.authorName}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-500">
-                      <Heart size={11} className="fill-current" />
-                      {comment.likes}
-                    </span>
+                    {comment.pending ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-500">
+                        <Loader2 size={10} className="animate-spin" />
+                        Sending...
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-500">
+                        <Heart size={11} className="fill-current" />
+                        {comment.likes}
+                      </span>
+                    )}
                   </div>
                   <p className="line-clamp-2 text-sm text-zinc-600 dark:text-zinc-300">
                     {comment.replyToName && (

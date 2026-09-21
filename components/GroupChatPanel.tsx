@@ -18,6 +18,7 @@ import {
 import * as api from "../services/api";
 import type { GroupChat, GroupChatMessage } from "../services/api";
 import type { UserProfile } from "../types";
+import { useBackHandler } from "../services/backStack";
 
 interface GroupChatPanelProps {
   userStats: UserProfile;
@@ -84,6 +85,14 @@ export default function GroupChatPanel({
   const activeStatus = activeGroup?.currentMember?.status ?? "invited";
   const canReadMessages = Boolean(activeGroup && activeStatus === "joined");
   const activeMembers = activeGroup ? getGroupMembers(activeGroup) : [];
+
+  // Tombol back Android: tutup menu/dialog dulu, lalu keluar dari ruang chat
+  // ke daftar grup (bukan langsung meninggalkan halaman Explore).
+  useBackHandler(activeGroup !== null, goBackToGroups);
+  useBackHandler(menuOpen, () => setMenuOpen(false));
+  useBackHandler(infoOpen, () => setInfoOpen(false));
+  useBackHandler(addMemberOpen, () => setAddMemberOpen(false));
+  useBackHandler(leaveConfirmOpen, () => setLeaveConfirmOpen(false));
 
   function getGroupMembers(group: GroupChat): GroupMemberDetail[] {
     const richMembers = (group as GroupChat & { members?: GroupMemberDetail[] })

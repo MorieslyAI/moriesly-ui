@@ -1,5 +1,4 @@
-import React, { useState, useMemo } from "react";
-import { GoogleGenAI } from "@google/genai";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Flame,
   Zap,
@@ -23,7 +22,8 @@ import {
 } from "../types";
 import AgentAvatar from "./AgentAvatar";
 import OrganMap from "./OrganMap";
-import { API_KEY } from "../constants";
+import * as api from "../services/api";
+import { getLocalDateString } from "../utils";
 
 interface UnifiedProfileDashboardProps {
   userProfile: UserProfile;
@@ -49,7 +49,11 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
   onSettings,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+  // Hasil Bio-Synergy dari server (persisten; server yang menegakkan limit 1x/24 jam).
+  const [bio, setBio] = useState<api.BioSynergyStatus | null>(null);
+  const [bioLoading, setBioLoading] = useState(true);
+  const [bioError, setBioError] = useState<string | null>(null);
+  const [nowMs, setNowMs] = useState(() => Date.now());
   const [activeTab, setActiveTab] = useState<
     "overview" | "body" | "analysis" | "data"
   >("overview");
@@ -82,56 +86,66 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
     return Math.min(100, Math.max(0, score));
   }, [ledger, dietPlan, trainingPlan, skinResult, userProfile]);
 
-  // --- AI ANALYSIS GENERATOR ---
-  const generateBioSynergyReport = async () => {
-    setIsGenerating(true);
-    try {
-      const apiKey = API_KEY || process.env.API_KEY;
-      if (!apiKey) {
-        alert("API Key required for synthesis.");
-        setIsGenerating(false);
-        return;
-      }
-
-      const ai = new GoogleGenAI({ apiKey });
-
-      const context = `
-            PROFILE: ${userProfile.name}, ${userProfile.age}y, ${userProfile.gender}, ${userProfile.weight}kg, BMI ${bmi}.
-            MEDICAL: ${userProfile.medicalConditions?.join(", ") || "None"}.
-            STATUS: Sugar Intake ${ledger.consumed}/${ledger.limit}g. Streak: ${userProfile.streak}.
-
-            RECENT DATA:
-            - Diet Plan: ${dietPlan ? dietPlan.target : "None"}
-            - Training: ${trainingPlan ? trainingPlan.codename : "None"}
-            - Skin: ${skinResult ? `Age ${skinResult.biologicalAge}, Glycation ${skinResult.glycationLevel}` : "No Scan"}
-            - Last Chat: ${consultationHistory[0] ? consultationHistory[0].summary : "None"}
-            - History: Scanned ${totalScans} items, Total Sugar ${totalSugar}g.
-          `;
-
-      const prompt = `
-            Act as a "Bio-Synergy Architect". Analyze the user's unified data above.
-            Generate a personalized "Executive Summary" (3 paragraphs):
-            1. **Status Report**: Current biological state based on sugar/BMI/Skin.
-            2. **Synergy Check**: How their diet aligns with their training and skin data.
-            3. **Tactical Directive**: One specific, high-impact habit change to implement immediately.
-
-            Tone: Professional, Elite, Encouraging yet strict.
-          `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: [
-          { role: "user", parts: [{ text: context }, { text: prompt }] },
-        ],
+  // --- BIO-SYNERGY (server-side, 1x / 24 jam / user) ---
+  // Muat hasil terakhir saat halaman dibuka → analisis tidak hilang saat refresh
+  // atau pindah halaman selama belum waktunya generate ulang.
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .getBioSynergy()
+      .then((res) => {
+        if (!cancelled) setBio(res);
+      })
+      .catch((e: Error) => {
+        if (!cancelled) setBioError(e.message);
+      })
+      .finally(() => {
+        if (!cancelled) setBioLoading(false);
       });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-      if (response.text) {
-        setAiAnalysis(response.text);
-        setActiveTab("analysis");
+  // Tick tiap detik hanya selama masih dalam cooldown (untuk hitung mundur).
+  const nextAtMs = bio?.nextAvailableAt
+    ? new Date(bio.nextAvailableAt).getTime()
+    : null;
+  const isLocked = nextAtMs !== null && nextAtMs > nowMs;
+  useEffect(() => {
+    if (nextAtMs === null) return;
+    setNowMs(Date.now());
+    const id = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [nextAtMs]);
+
+  const formatCountdown = (ms: number) => {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  };
+
+  const generateBioSynergyReport = async () => {
+    if (isGenerating || isLocked) return;
+    setIsGenerating(true);
+    setBioError(null);
+    try {
+      const res = await api.generateBioSynergy(getLocalDateString());
+      setBio(res);
+      setActiveTab("analysis");
+    } catch (e: any) {
+      if (e?.code === "BIO_SYNERGY_COOLDOWN" || e?.code === "BIO_SYNERGY_IN_PROGRESS") {
+        // Sudah dijalankan (mis. dari perangkat lain / double-tap) → sinkronkan
+        // dengan server agar hasil terakhir + hitung mundur tampil.
+        try {
+          setBio(await api.getBioSynergy());
+        } catch {
+          /* abaikan; pesan error di bawah cukup */
+        }
       }
-    } catch (e) {
-      console.error(e);
-      alert("Synthesis Failed.");
+      setBioError(e?.message || "Synthesis failed. Try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -628,7 +642,13 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
         {/* CONTENT: ANALYSIS */}
         {activeTab === "analysis" && (
           <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
-            {!aiAnalysis ? (
+            {bioLoading ? (
+              <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-[2rem] border border-zinc-200 dark:border-zinc-700 border-dashed shadow-sm">
+                <p className="text-zinc-400 text-xs font-bold uppercase tracking-widest animate-pulse">
+                  Loading Bio-Report...
+                </p>
+              </div>
+            ) : !bio?.report ? (
               <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-[2rem] border border-zinc-200 dark:border-zinc-700 border-dashed shadow-sm">
                 <div className="mb-6 inline-flex p-4 rounded-full bg-zinc-50 dark:bg-zinc-800 animate-pulse">
                   <Brain className="w-12 h-12 text-zinc-300" />
@@ -638,21 +658,27 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                 </h3>
                 <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-8 max-w-sm mx-auto leading-relaxed">
                   Moriesly AI will cross-reference your diet, training, and scan
-                  history to generate a unified strategy.
+                  history to generate a unified strategy. Available once every
+                  24 hours.
                 </p>
                 <button
                   onClick={generateBioSynergyReport}
-                  disabled={isGenerating}
+                  disabled={isGenerating || isLocked}
                   className="bg-[#33ADAE] text-white px-8 py-4 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-[#2A9192] transition-all shadow-lg shadow-teal-500/20 disabled:opacity-50 active:scale-95"
                 >
                   {isGenerating
                     ? "Computing Synergy..."
                     : "Run Bio-Synergy Engine"}
                 </button>
+                {bioError && (
+                  <p className="mt-4 text-xs font-medium text-rose-500">
+                    {bioError}
+                  </p>
+                )}
               </div>
             ) : (
               <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 md:p-8 border border-zinc-100 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-black/30">
-                <div className="flex justify-between items-center mb-8 pb-6 border-b border-zinc-100 dark:border-zinc-800">
+                <div className="flex justify-between items-center mb-8 pb-6 border-b border-zinc-100 dark:border-zinc-800 gap-3">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-teal-50 dark:bg-teal-900/30 rounded-lg">
                       <Brain className="w-6 h-6 text-[#33ADAE]" />
@@ -661,24 +687,41 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                       Executive Bio-Report
                     </h3>
                   </div>
-                  <button
-                    onClick={() => setAiAnalysis(null)}
-                    className="text-zinc-400 text-xs font-bold hover:text-rose-500 transition-colors uppercase tracking-wider"
-                  >
-                    Reset
-                  </button>
+                  {isLocked ? (
+                    <div className="text-right shrink-0">
+                      <div className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">
+                        Next run in
+                      </div>
+                      <div className="text-xs font-mono font-black text-zinc-500 dark:text-zinc-300">
+                        {formatCountdown((nextAtMs ?? 0) - nowMs)}
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={generateBioSynergyReport}
+                      disabled={isGenerating}
+                      className="shrink-0 text-[#33ADAE] text-xs font-bold hover:text-[#2A9192] transition-colors uppercase tracking-wider disabled:opacity-50"
+                    >
+                      {isGenerating ? "Computing..." : "Re-run"}
+                    </button>
+                  )}
                 </div>
                 <div className="prose prose-sm prose-zinc max-w-none">
                   <div className="whitespace-pre-wrap leading-relaxed text-zinc-600 dark:text-zinc-300">
-                    {aiAnalysis}
+                    {bio.report.text}
                   </div>
                 </div>
+                {bioError && (
+                  <p className="mt-4 text-xs font-medium text-rose-500">
+                    {bioError}
+                  </p>
+                )}
                 <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
                   <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest bg-zinc-50 dark:bg-zinc-800 px-2 py-1 rounded">
-                    AI MODEL: GEMINI-PRO-VISION
+                    AI MODEL: {bio.report.model.toUpperCase()}
                   </span>
                   <span className="text-[10px] text-zinc-400 font-mono">
-                    {new Date().toLocaleTimeString()}
+                    {new Date(bio.report.createdAt).toLocaleString()}
                   </span>
                 </div>
               </div>

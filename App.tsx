@@ -18,6 +18,8 @@ import {
   Droplet,
   Leaf,
   Check,
+  ChevronDown,
+  Loader2,
 } from "lucide-react";
 import VideoFeed, { VideoFeedHandle } from "./components/VideoFeed";
 import SetupScreen from "./components/SetupScreen";
@@ -56,6 +58,12 @@ import FeatureGuide, { GuideStep } from "./components/FeatureGuide";
 
 import JSON5 from "json5";
 import { GeminiLiveService } from "./services/geminiLiveService";
+import { handleOverlayBack, useBackHandler } from "./services/backStack";
+import { clearViewMemory } from "./services/viewMemory";
+import {
+  notifySugarProgress,
+  cancelAllReminders,
+} from "./services/localNotifications";
 import {
   ConnectionState,
   HistoryItem,
@@ -134,7 +142,7 @@ function App() {
   const [currentView, setCurrentView] = useState<ViewType>("dashboard");
 
   // ─── Android Back Button Navigation ───────────────────────────────────────
-  const viewHistoryRef = useRef<ViewType[]>([]);
+  const viewHistoryRef = useRef<{ view: ViewType; scrollY: number }[]>([]);
   const tabBackHandlerRef = useRef<(() => boolean) | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
@@ -252,60 +260,101 @@ function App() {
     }
   };
 
-  /** Navigasi maju — push view sekarang ke history */
+  const mainShellReadyRef = useRef(false);
+  const currentViewRef = useRef<ViewType>(currentView);
+  currentViewRef.current = currentView;
+  // Posisi scroll yang dipulihkan setelah kembali ke view sebelumnya.
+  const pendingScrollRef = useRef<number | null>(null);
+
+  /** Navigasi maju — push view sekarang (beserta posisi scroll) ke history */
   const navigateTo = useCallback(
     (view: ViewType) => {
+      if (view === currentView) return;
       tabBackHandlerRef.current = null;
-      viewHistoryRef.current = [...viewHistoryRef.current, currentView];
+      viewHistoryRef.current = [
+        ...viewHistoryRef.current,
+        { view: currentView, scrollY: window.scrollY },
+      ];
       setCurrentView(view);
     },
     [currentView],
   );
 
-  /** Navigasi root dari NavBar — bersihkan seluruh history */
+  /** Navigasi root dari NavBar — bersihkan history dan ingatan tampilan */
   const navigateRoot = useCallback((view: ViewType) => {
     tabBackHandlerRef.current = null;
     viewHistoryRef.current = [];
+    pendingScrollRef.current = null;
+    clearViewMemory();
     setCurrentView(view);
+  }, []);
+
+  /** Pop satu view dari history. Mengembalikan false bila history kosong. */
+  const popView = useCallback((): boolean => {
+    const entry = viewHistoryRef.current[viewHistoryRef.current.length - 1];
+    if (!entry) return false;
+    viewHistoryRef.current = viewHistoryRef.current.slice(0, -1);
+    tabBackHandlerRef.current = null;
+    pendingScrollRef.current = entry.scrollY;
+    setCurrentView(entry.view);
+    return true;
   }, []);
 
   /** Kembali ke view sebelumnya atau dashboard */
   const goBack = useCallback(() => {
-    tabBackHandlerRef.current = null;
-    if (viewHistoryRef.current.length > 0) {
-      const previous =
-        viewHistoryRef.current[viewHistoryRef.current.length - 1];
-      viewHistoryRef.current = viewHistoryRef.current.slice(0, -1);
-      setCurrentView(previous);
-    } else {
+    if (!popView()) {
+      tabBackHandlerRef.current = null;
       setCurrentView("dashboard");
     }
-  }, []);
+  }, [popView]);
 
   /** Daftarkan handler back dari screen dengan inner tab */
   const setBackHandler = useCallback((handler: (() => boolean) | null) => {
     tabBackHandlerRef.current = handler;
   }, []);
 
-  /** Handler hardware back button Android */
+  /**
+   * Handler hardware back button Android. Urutan prioritas:
+   * overlay/modal → inner tab screen → view history → dashboard → konfirmasi keluar.
+   */
   const handleHardwareBack = useCallback(() => {
-    // 1. Beri kesempatan screen aktif menangani (misal inner tab)
-    if (tabBackHandlerRef.current) {
-      const handled = tabBackHandlerRef.current();
-      if (handled) return;
-    }
-    // 2. Pop dari view history
-    if (viewHistoryRef.current.length > 0) {
-      const previous =
-        viewHistoryRef.current[viewHistoryRef.current.length - 1];
-      viewHistoryRef.current = viewHistoryRef.current.slice(0, -1);
+    // 1. Modal, sheet, atau detail yang sedang terbuka
+    if (handleOverlayBack()) return;
+    // 2. Inner tab pada screen aktif (mis. Explore, Track)
+    if (tabBackHandlerRef.current?.()) return;
+    // 3. Halaman sebelumnya di history
+    if (popView()) return;
+    // 4. Halaman root selain Home (tab NavBar) — kembali ke Home
+    if (currentViewRef.current !== "dashboard") {
       tabBackHandlerRef.current = null;
-      setCurrentView(previous);
+      setCurrentView("dashboard");
       return;
     }
-    // 3. Sudah di root — tampilkan konfirmasi keluar
+    // 5. Sudah di Home — tampilkan konfirmasi keluar
+    if (!mainShellReadyRef.current) {
+      CapacitorApp.exitApp();
+      return;
+    }
     setShowExitConfirm(true);
-  }, []);
+  }, [popView]);
+
+  // Setelah kembali ke view sebelumnya, pulihkan posisi scroll terakhir.
+  // Konten bisa dimuat async, jadi coba beberapa kali sampai halaman cukup panjang.
+  useEffect(() => {
+    const target = pendingScrollRef.current;
+    if (target === null) return;
+    pendingScrollRef.current = null;
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout>;
+    const restore = () => {
+      window.scrollTo(0, target);
+      if (Math.abs(window.scrollY - target) > 2 && attempts++ < 15) {
+        timer = setTimeout(restore, 60);
+      }
+    };
+    restore();
+    return () => clearTimeout(timer);
+  }, [currentView]);
 
   useEffect(() => {
     if (!isNativePlatform()) return;
@@ -491,6 +540,37 @@ function App() {
     type: "food" | "drink";
     imageBase64: string;
   } | null>(null);
+  // Full analysis payload already returned by the identify scan, cached so
+  // confirming the identified name doesn't trigger a second API call.
+  const [cachedScanData, setCachedScanData] = useState<any | null>(null);
+  // Whether the scan result card is shown full-screen (true) or collapsed
+  // into the floating status pill above the bottom nav (false).
+  const [isScanPanelExpanded, setIsScanPanelExpanded] = useState(false);
+
+  // Overlay tingkat App yang harus tertutup lebih dulu oleh tombol back Android.
+  useBackHandler(showExitConfirm, () => setShowExitConfirm(false));
+  useBackHandler(showDeathWaiver, () => setShowDeathWaiver(false));
+  useBackHandler(showTriggerModal && !showDeathWaiver, () =>
+    setShowTriggerModal(false),
+  );
+  useBackHandler(isScanPanelExpanded && currentView === "dashboard", () =>
+    setIsScanPanelExpanded(false),
+  );
+  // Tour Home: back = lewati tour.
+  useBackHandler(
+    showHomeGuide &&
+      currentView === "dashboard" &&
+      isLoggedIn &&
+      isSetupComplete &&
+      !showOnboarding &&
+      !isFullScreenVideo,
+    handleFinishHomeGuide,
+  );
+  // Kamera: sama seperti tombol X — kembali ke halaman asal dan reset target add-on.
+  useBackHandler(currentView === "camera", () => {
+    goBack();
+    setAddOnTargetId(null);
+  });
 
   // --- SPECIAL MODE RESULTS ---
   const [labelResult, setLabelResult] = useState<LabelScanResult | null>(null);
@@ -500,6 +580,11 @@ function App() {
   const [receiptResult, setReceiptResult] = useState<ReceiptData | null>(null);
   const [versusResult, setVersusResult] = useState<VersusResult | null>(null);
   const [skinResult, setSkinResult] = useState<SkinAnalysis | null>(null);
+  // Halaman Medical: tombol back menutup hasil scan seperti tombol close-nya.
+  useBackHandler(currentView === "medical", () => {
+    setSkinResult(null);
+    goBack();
+  });
 
   // Versus Mode State Machine
   const [versusStage, setVersusStage] = useState<
@@ -525,13 +610,31 @@ function App() {
   const isOverLimit = ledger.consumed > ledger.limit;
 
   // --- NOTIFICATION BADGE STATE ---
-  const hasNotifications = useMemo(() => {
-    return (
-      ledger.consumed > ledger.limit ||
-      ledger.sugarDebt > 0 ||
-      (userStats.medicalConditions && userStats.medicalConditions.length > 0)
-    );
-  }, [ledger, userStats]);
+  // Badge mengikuti jumlah notifikasi BELUM DIBACA dari server (sebelumnya
+  // dihitung lokal dan hampir selalu menyala untuk user dengan kondisi medis).
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+  const hasNotifications = unreadNotifCount > 0;
+
+  // Cermin ledger terbaru — dipakai addHistoryItem untuk membaca total gula
+  // SEBELUM setLedger dari pemanggilnya ter-render.
+  const ledgerRef = useRef(ledger);
+  ledgerRef.current = ledger;
+
+  const refreshUnreadNotifCount = useCallback(async () => {
+    try {
+      setUnreadNotifCount(await api.getUnreadNotificationCount());
+    } catch {
+      // Offline / belum login → pertahankan nilai terakhir.
+    }
+  }, []);
+
+  useEffect(() => {
+    // Saat Alert Log terbuka, NotificationCenter yang mengelola state-nya.
+    if (!isLoggedIn || currentView === "notifications") return;
+    // Notifikasi server dibuat fire-and-forget setelah save history → beri jeda.
+    const t = setTimeout(refreshUnreadNotifCount, dashboardRefreshKey === 0 ? 0 : 1500);
+    return () => clearTimeout(t);
+  }, [isLoggedIn, currentView, dashboardRefreshKey, refreshUnreadNotifCount]);
 
   const applyServerProfile = useCallback(
     (server: api.FullUserProfileResponse) => {
@@ -826,6 +929,9 @@ function App() {
     } catch (e) {
       console.error("[Logout] API call failed, continuing anyway:", e);
     }
+    // Batalkan pengingat training/diet agar tidak bocor ke akun berikutnya
+    void cancelAllReminders();
+    setUnreadNotifCount(0);
     // Clear all persisted local state
     localStorage.removeItem("userStats");
     localStorage.removeItem("ledger");
@@ -915,6 +1021,18 @@ function App() {
 
   const addHistoryItem = async (item: HistoryItem) => {
     const normalizedItem = normalizeHistoryItemForDashboard(item);
+
+    // 0. Peringatan over-consume (notifikasi lokal). setLedger dari pemanggil
+    //    belum ter-render di titik ini, jadi ledgerRef masih berisi total SEBELUM item.
+    if (item.action === "consumed" && (item.sugarg || 0) > 0) {
+      const { consumed, limit } = ledgerRef.current;
+      void notifySugarProgress({
+        before: consumed,
+        after: consumed + item.sugarg,
+        limit,
+        itemName: item.name,
+      });
+    }
 
     // 1. Update UI langsung, tanpa menunggu backend
     setHistory((prev) => [normalizedItem, ...prev]);
@@ -1023,6 +1141,41 @@ function App() {
     };
     return { ...data, calories, sugar, glycemicIndex, macros };
   };
+
+  // Builds a PendingScanResult from an already-sanitized analysis payload,
+  // shared by the initial identify scan and the manual re-analyze flow.
+  const buildPendingItem = (
+    data: any,
+    base64Image?: string | null,
+  ): PendingScanResult => ({
+    name: data.name,
+    sugar: Math.round(data.sugar * 10) / 10,
+    calories: Math.round(data.calories * 10) / 10,
+    macros: {
+      protein: Math.round(data.macros.protein * 10) / 10,
+      carbs: Math.round(data.macros.carbs * 10) / 10,
+      fat: Math.round(data.macros.fat * 10) / 10,
+      fiber: Math.round(data.macros.fiber * 10) / 10,
+    },
+    vitamins: data.vitamins || [],
+    glycemicIndex: data.glycemicIndex,
+    verdict: data.verdict,
+    type: data.type === "drink" ? "drink" : "food",
+    confidence_score: data.confidence_score,
+    sugar_sources: data.sugar_sources,
+    visual_cues: data.visual_cues,
+    data_ref: data.data_ref,
+    focus_tax: data.focus_tax,
+    aging_grade: data.aging_grade,
+    sleep_penalty: data.sleep_penalty,
+    honest_name: data.honest_name,
+    imageBase64: base64Image || null,
+    ingredients: data.ingredients,
+    explanation: data.explanation,
+    transFat: data.transFat || data.trans_fat || data.transfat || 0,
+    salt: data.salt || data.sodium || data.natrium || 0,
+    organ_impact: data.organ_impact,
+  });
 
   // Sugar level presets for add-ons: scales the AI-detected sugar amount
   // relative to the detected/base amount (No Sugar = 0, Less = half, Normal = as detected).
@@ -1164,7 +1317,7 @@ function App() {
   };
 
   const handleManualScan = async () => {
-    if (isScanning) return;
+    if (hasActiveScanJob) return;
     const base64Image = uploadedImage || videoFeedRef.current?.getSnapshot();
     if (!base64Image) {
       updateStreamingLog("spy", "Error: No image.");
@@ -1193,6 +1346,8 @@ function App() {
 
     setIsScanning(true);
     setPendingItem(null);
+    setIdentifiedItem(null);
+    setCachedScanData(null);
     setLabelResult(null);
     setReceiptResult(null);
     setBarcodeResult(null);
@@ -1200,8 +1355,14 @@ function App() {
       setVersusResult(null);
     } // Only clear versus if not in versus mode
     setIsCorrecting(false);
+    setIsScanPanelExpanded(false);
     activeLogId.current = null;
     updateStreamingLog("spy", "Analyzing...");
+
+    // Don't make the user stare at a blocking camera screen while the AI
+    // works — head back immediately and let the floating status pill show
+    // progress in the background instead.
+    goBack();
 
     try {
       // --- VERSUS MODE LOGIC ---
@@ -1216,7 +1377,6 @@ function App() {
             setVersusResult(data);
             setVersusStage("idle");
             setUploadedImage(null);
-            goBack();
           } catch (err) {
             console.error("Failed to parse versus result:", err);
             alert("Failed to analyze comparison. Please try again.");
@@ -1276,7 +1436,6 @@ function App() {
                 };
                 handleUpdateHistoryItem(updatedItem);
                 setAddOnTargetId(null);
-                goBack();
                 updateStreamingLog("spy", `Add-on scan processed!`);
               }
               return;
@@ -1304,7 +1463,6 @@ function App() {
                 imageBase64: base64Image,
                 metadata: data,
               });
-              goBack();
             } else if (scanMode === "label") {
               setLabelResult(data);
               addHistoryItem({
@@ -1318,7 +1476,6 @@ function App() {
                 imageBase64: base64Image,
                 metadata: data,
               });
-              goBack();
             } else if (scanMode === "qr") {
               setBarcodeResult(data);
               addHistoryItem({
@@ -1332,15 +1489,19 @@ function App() {
                 imageBase64: base64Image,
                 metadata: data,
               });
-              goBack();
             } else {
               setIdentifiedItem({
                 name: data.name || "Unknown Item",
                 type: data.type === "drink" ? "drink" : "food",
                 imageBase64: base64Image,
               });
+              // The identify scan already returns the full analysis payload
+              // (macros, vitamins, verdict, etc.) — cache it so confirming
+              // the identified item doesn't re-request the same analysis.
+              setCachedScanData(
+                data && data.macros ? sanitizeNutritionalData(data) : null,
+              );
               setIsConfirmingScan(true);
-              goBack();
             }
           } catch (err) {
             console.error("Failed to parse scan result:", err);
@@ -1369,6 +1530,25 @@ function App() {
     const targetType = overrideType || manualType;
 
     if (!targetName || isScanning) return;
+
+    // Confirming the AI's original identification as-is (name/type
+    // unchanged) and we already have the full analysis from the identify
+    // scan — reuse it instead of firing a duplicate request.
+    if (
+      cachedScanData &&
+      identifiedItem &&
+      targetName === identifiedItem.name &&
+      (targetType || "food") === identifiedItem.type
+    ) {
+      setPendingItem(
+        buildPendingItem(cachedScanData, identifiedItem.imageBase64),
+      );
+      setIsConfirmingScan(false);
+      setIdentifiedItem(null);
+      setCachedScanData(null);
+      return;
+    }
+
     setIsScanning(true);
     setIsCorrecting(false);
     updateStreamingLog("spy", "Re-analyzing with manual input...");
@@ -1389,35 +1569,8 @@ function App() {
 
       if (response.success && response.data) {
         const data = sanitizeNutritionalData(response.data);
-        setPendingItem({
-          name: data.name,
-          sugar: Math.round(data.sugar * 10) / 10,
-          calories: Math.round(data.calories * 10) / 10,
-          macros: {
-            protein: Math.round(data.macros.protein * 10) / 10,
-            carbs: Math.round(data.macros.carbs * 10) / 10,
-            fat: Math.round(data.macros.fat * 10) / 10,
-            fiber: Math.round(data.macros.fiber * 10) / 10,
-          },
-          vitamins: data.vitamins || [],
-          glycemicIndex: data.glycemicIndex,
-          verdict: data.verdict,
-          type: data.type === "drink" ? "drink" : "food",
-          confidence_score: data.confidence_score,
-          sugar_sources: data.sugar_sources,
-          visual_cues: data.visual_cues,
-          data_ref: data.data_ref,
-          focus_tax: data.focus_tax,
-          aging_grade: data.aging_grade,
-          sleep_penalty: data.sleep_penalty,
-          honest_name: data.honest_name,
-          imageBase64: base64Image || null,
-          ingredients: data.ingredients,
-          explanation: data.explanation,
-          transFat: data.transFat || data.trans_fat || data.transfat || 0,
-          salt: data.salt || data.sodium || data.natrium || 0,
-          organ_impact: data.organ_impact,
-        });
+        setPendingItem(buildPendingItem(data, base64Image));
+        setCachedScanData(null);
         setIsConfirmingScan(false);
         setIdentifiedItem(null);
       }
@@ -1906,6 +2059,15 @@ function App() {
     });
   };
 
+  // Dialog "Exit App" hanya dirender di shell utama, jadi di layar pra-login
+  // (onboarding/login/legal/setup) back langsung menutup app.
+  mainShellReadyRef.current =
+    !isCheckingSession &&
+    !showOnboarding &&
+    isLoggedIn &&
+    !showLegal &&
+    isSetupComplete;
+
   if (isCheckingSession) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -2056,6 +2218,52 @@ function App() {
       }
     />
   );
+
+  const burnWorkoutTotal =
+    trainingPlan?.schedule.filter((block) => block.sugarImpact < 0).length ?? 0;
+
+  const completedBurnWorkouts = trainingPlan
+    ? completedWorkouts.filter((idx) => {
+        const block = trainingPlan.schedule[idx];
+
+        return !!block && block.sugarImpact < 0;
+      }).length
+    : 0;
+
+  const burnProgress =
+    burnWorkoutTotal > 0
+      ? Math.min(
+          100,
+          Math.round((completedBurnWorkouts / burnWorkoutTotal) * 100),
+        )
+      : 0;
+
+  // Whether there's an in-flight or unresolved scan the user hasn't acted
+  // on yet — drives the floating status pill and blocks starting a new scan.
+  const hasActiveScanJob =
+    isScanning ||
+    !!identifiedItem ||
+    !!pendingItem ||
+    !!labelResult ||
+    !!barcodeResult;
+
+  const scanJobPillLabel = identifiedItem
+    ? identifiedItem.name
+    : pendingItem
+      ? pendingItem.honest_name || pendingItem.name
+      : labelResult
+        ? "Label Analysis Ready"
+        : barcodeResult
+          ? "Barcode Analysis Ready"
+          : "Analyzing your scan...";
+
+  const isScanJobReady = !isScanning && hasActiveScanJob;
+
+  const openScanPanel = () => {
+    if (!isScanJobReady) return;
+    navigateRoot("dashboard");
+    setIsScanPanelExpanded(true);
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pb-10 transition-colors duration-500">
@@ -2275,6 +2483,7 @@ function App() {
             onExport={() => {}}
             onUpdateHistoryItem={handleUpdateHistoryItem}
             onScanAddOn={(item) => {
+              if (hasActiveScanJob) return;
               setAddOnTargetId(item.id);
               setScanMode("food");
               navigateTo("camera");
@@ -2326,6 +2535,7 @@ function App() {
             userProfile={userStats}
             ledger={ledger}
             onClose={goBack}
+            onMarkedAllRead={() => setUnreadNotifCount(0)}
           />
         ) : currentView === "camera" ? (
           <div className="fixed inset-0 z-100 bg-black">
@@ -2383,8 +2593,16 @@ function App() {
         ) : (
           <>
             {/* BIO REPORT / SCAN RESULT OVERLAY */}
-            {pendingItem || labelResult || barcodeResult || identifiedItem ? (
+            {(pendingItem || labelResult || barcodeResult || identifiedItem) &&
+            isScanPanelExpanded ? (
               <div className="px-4 pt-4 pb-24 min-h-screen bg-zinc-50 dark:bg-zinc-950">
+                <button
+                  onClick={() => setIsScanPanelExpanded(false)}
+                  className="flex items-center gap-1 mx-auto mb-3 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 text-[11px] font-bold uppercase tracking-wide"
+                >
+                  <ChevronDown className="w-3.5 h-3.5" />
+                  Minimize
+                </button>
                 <div
                   className={`bg-white dark:bg-zinc-900 rounded-3xl p-6 border shadow-sm min-h-25 flex flex-col justify-center relative overflow-hidden transition-all duration-500 ${pendingItem && pendingItem.sugar > 25 ? "border-rose-500/50 shadow-[0_0_20px_rgba(225,29,72,0.2)]" : "border-zinc-200 dark:border-zinc-800"}`}
                 >
@@ -3017,10 +3235,51 @@ function App() {
         )}
       </main>
 
+      {/* ─── Floating scan status pill — sits just above the bottom nav so
+          scanning never blocks the rest of the app ────────────────────── */}
+      {!isFullScreenVideo &&
+        currentView !== "notifications" &&
+        currentView !== "camera" &&
+        currentView !== "medical" &&
+        hasActiveScanJob &&
+        !isScanPanelExpanded && (
+          <button
+            onClick={openScanPanel}
+            className={`fixed left-1/2 -translate-x-1/2 bottom-20 z-95 w-[calc(100%-2rem)] max-w-[400px] flex items-center gap-3 px-4 py-3 rounded-2xl bg-zinc-900 dark:bg-zinc-800 text-white shadow-2xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 ${isScanJobReady ? "active:scale-95" : "cursor-default"}`}
+          >
+            <div className="w-8 h-8 rounded-full bg-teal-500/20 flex items-center justify-center shrink-0">
+              {isScanJobReady ? (
+                <Check className="w-4 h-4 text-teal-400" />
+              ) : (
+                <Loader2 className="w-4 h-4 text-teal-400 animate-spin" />
+              )}
+            </div>
+            <div className="flex-1 text-left min-w-0">
+              <div className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">
+                {isScanJobReady ? "Analysis Ready — Tap to View" : "Analyzing..."}
+              </div>
+              <div className="text-sm font-bold truncate">
+                {scanJobPillLabel}
+              </div>
+            </div>
+            {isScanJobReady && (
+              <ChevronDown className="w-4 h-4 text-zinc-400 rotate-180 shrink-0" />
+            )}
+          </button>
+        )}
+
       {!isFullScreenVideo &&
         currentView !== "notifications" &&
         currentView !== "camera" && (
-          <NavBar currentView={currentView} onChangeView={navigateRoot} />
+          <NavBar
+            currentView={currentView}
+            onChangeView={(view) =>
+              // Kamera dibuka di atas halaman asal (push) supaya back/X kembali
+              // ke halaman itu; tab lain me-reset history.
+              view === "camera" ? navigateTo("camera") : navigateRoot(view)
+            }
+            scanDisabled={hasActiveScanJob}
+          />
         )}
 
       {/* ─── Exit Confirmation Dialog ─────────────────────────────────── */}
