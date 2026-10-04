@@ -1135,6 +1135,10 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
 
     // --- CHAT MODE ---
     if (mode === 'chat') {
+        const hasStreamingPlaceholder = messages.some(
+            (msg) => msg.role === 'model' && msg.text.trim().length === 0,
+        );
+
         return (
             <div className="flex flex-col h-[calc(100dvh-130px)] md:h-[750px] bg-zinc-50 dark:bg-black rounded-3xl border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-in slide-in-from-right-4 duration-300 relative z-10 shadow-xl mx-[-10px] md:mx-0 mb-24">
                 <div className="bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 px-4 py-3 flex items-center justify-between">
@@ -1202,12 +1206,20 @@ const ConsultantScreen: React.FC<ConsultantScreenProps> = ({
                             </div>
                             <div className={`max-w-[85%] md:max-w-[80%] rounded-2xl p-3 md:p-4 shadow-sm text-sm md:text-base ${msg.role === 'user' ? 'bg-brand-600 text-white rounded-br-none' : 'bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-bl-none border border-zinc-200 dark:border-zinc-700'}`}>
                                 {msg.image && (<div className="mb-2 rounded-lg overflow-hidden border border-white/20"> <img src={`data:image/jpeg;base64,${msg.image}`} alt="User upload" className="max-w-full h-auto" /> </div>)}
-                                <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                                {msg.role === 'model' && msg.text.trim().length === 0 ? (
+                                    <div className="flex gap-1 py-1" aria-label="Dr. Moriesly is typing">
+                                        <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce"></span>
+                                        <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                                        <span className="w-2 h-2 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                                    </div>
+                                ) : (
+                                    <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                                )}
                                 <div className={`text-[9px] mt-1 opacity-50 ${msg.role === 'user' ? 'text-brand-200' : 'text-zinc-400'}`}>{msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                             </div>
                         </div>
                     ))}
-                    {isTyping && (
+                    {isTyping && !hasStreamingPlaceholder && (
                         <div className="flex items-end gap-2 md:gap-3">
                             <MorieslyChatAvatar className="w-8 h-8 md:w-10 md:h-10" />
                             <div className="bg-white dark:bg-zinc-800 rounded-2xl rounded-bl-none p-4 border border-zinc-200 dark:border-zinc-700">

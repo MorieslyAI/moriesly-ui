@@ -229,6 +229,7 @@ export interface FullUserProfileResponse {
   createdAt?: string;
   streak: number;
   lastCheckInDate: string | null;
+  checkInDates?: string[];
   currentXp: number;
   level: number;
   nextLevelXp: number;
@@ -274,6 +275,7 @@ export interface CheckInResponse {
   alreadyCheckedIn: boolean;
   streak: number;
   lastCheckInDate: string;
+  checkInDates?: string[];
   currentXp: number;
   level: number;
   nextLevelXp: number;

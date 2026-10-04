@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useRef,
   useEffect,
+  useLayoutEffect,
   useMemo,
 } from "react";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -108,6 +109,23 @@ import {
   endVideoCallSession,
   getSocketToken,
 } from "./services/api";
+
+const getDocumentScrollY = () =>
+  window.scrollY ||
+  document.scrollingElement?.scrollTop ||
+  document.documentElement.scrollTop ||
+  document.body.scrollTop ||
+  0;
+
+const scrollDocumentToY = (top: number) => {
+  window.scrollTo({ top, left: 0, behavior: "auto" });
+
+  const scrollingElement = document.scrollingElement;
+  if (scrollingElement) scrollingElement.scrollTop = top;
+
+  document.documentElement.scrollTop = top;
+  document.body.scrollTop = top;
+};
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState(() => {
@@ -273,8 +291,11 @@ function App() {
       tabBackHandlerRef.current = null;
       viewHistoryRef.current = [
         ...viewHistoryRef.current,
-        { view: currentView, scrollY: window.scrollY },
+        { view: currentView, scrollY: getDocumentScrollY() },
       ];
+      // View baru selalu mulai dari atas — posisi scroll lama hanya dipulihkan saat goBack().
+      pendingScrollRef.current = 0;
+      scrollDocumentToY(0);
       setCurrentView(view);
     },
     [currentView],
@@ -284,8 +305,10 @@ function App() {
   const navigateRoot = useCallback((view: ViewType) => {
     tabBackHandlerRef.current = null;
     viewHistoryRef.current = [];
-    pendingScrollRef.current = null;
     clearViewMemory();
+    // Ganti tab NavBar (mis. Diet -> Track) selalu mulai dari atas.
+    pendingScrollRef.current = 0;
+    scrollDocumentToY(0);
     setCurrentView(view);
   }, []);
 
@@ -304,6 +327,8 @@ function App() {
   const goBack = useCallback(() => {
     if (!popView()) {
       tabBackHandlerRef.current = null;
+      pendingScrollRef.current = 0;
+      scrollDocumentToY(0);
       setCurrentView("dashboard");
     }
   }, [popView]);
@@ -327,6 +352,8 @@ function App() {
     // 4. Halaman root selain Home (tab NavBar) — kembali ke Home
     if (currentViewRef.current !== "dashboard") {
       tabBackHandlerRef.current = null;
+      pendingScrollRef.current = 0;
+      scrollDocumentToY(0);
       setCurrentView("dashboard");
       return;
     }
@@ -338,22 +365,34 @@ function App() {
     setShowExitConfirm(true);
   }, [popView]);
 
-  // Setelah kembali ke view sebelumnya, pulihkan posisi scroll terakhir.
+  // Setelah pindah view: pulihkan posisi scroll terakhir jika kembali (goBack),
+  // atau mulai dari atas jika ini view baru (navigateTo/navigateRoot).
   // Konten bisa dimuat async, jadi coba beberapa kali sampai halaman cukup panjang.
   useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+  }, []);
+
+  useLayoutEffect(() => {
     const target = pendingScrollRef.current;
     if (target === null) return;
     pendingScrollRef.current = null;
     let attempts = 0;
     let timer: ReturnType<typeof setTimeout>;
+    let frame = 0;
     const restore = () => {
-      window.scrollTo(0, target);
-      if (Math.abs(window.scrollY - target) > 2 && attempts++ < 15) {
+      scrollDocumentToY(target);
+      if (Math.abs(getDocumentScrollY() - target) > 2 && attempts++ < 15) {
         timer = setTimeout(restore, 60);
       }
     };
     restore();
-    return () => clearTimeout(timer);
+    frame = window.requestAnimationFrame(restore);
+    return () => {
+      clearTimeout(timer);
+      window.cancelAnimationFrame(frame);
+    };
   }, [currentView]);
 
   useEffect(() => {
@@ -658,6 +697,7 @@ function App() {
           server.isWearableConnected ?? prev.isWearableConnected,
         streak: server.streak ?? prev.streak,
         lastCheckInDate: server.lastCheckInDate ?? prev.lastCheckInDate,
+        checkInDates: server.checkInDates ?? prev.checkInDates,
         currentXp: server.currentXp ?? prev.currentXp,
         level: server.level ?? prev.level,
         nextLevelXp: server.nextLevelXp ?? prev.nextLevelXp,
@@ -893,6 +933,7 @@ function App() {
       ...xpUpdate,
       streak: optimisticStreak,
       lastCheckInDate: today,
+      checkInDates: Array.from(new Set([...(prev.checkInDates ?? []), today])),
     }));
 
     // Persist to backend — server is the source of truth for streak/XP so a
@@ -903,6 +944,7 @@ function App() {
         ...prev,
         streak: result.streak,
         lastCheckInDate: result.lastCheckInDate,
+        checkInDates: result.checkInDates ?? prev.checkInDates,
         currentXp: result.currentXp,
         level: result.level,
         nextLevelXp: result.nextLevelXp,

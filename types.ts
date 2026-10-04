@@ -91,7 +91,8 @@ export interface UserProfile {
   currentXp: number;
   nextLevelXp: number;
   streak: number;
-  lastCheckInDate: string | null; 
+  lastCheckInDate: string | null;
+  checkInDates?: string[]; // Riwayat semua tanggal check-in (YYYY-MM-DD)
   rankTitle: string;
   medicalConditions?: string[]; // NEW: Synced from Setup
   agent?: string; // NEW: Selected agent ID

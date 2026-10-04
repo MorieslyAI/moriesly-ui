@@ -465,6 +465,14 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const todayStr = getLocalDateString();
   const hasCheckedInToday = userStats.lastCheckInDate === todayStr;
 
+  // Set tanggal check-in. lastCheckInDate ikut dimasukkan sebagai pengaman
+  // (mis. data lama di localStorage yang belum punya checkInDates).
+  const checkInDateSet = React.useMemo(() => {
+    const set = new Set<string>(userStats.checkInDates ?? []);
+    if (userStats.lastCheckInDate) set.add(userStats.lastCheckInDate);
+    return set;
+  }, [userStats.checkInDates, userStats.lastCheckInDate]);
+
   const calendarDays = React.useMemo(() => {
     const days = [];
     const today = new Date();
@@ -476,18 +484,9 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       d.setDate(today.getDate() + i);
       const dateStr = getLocalDateString(d);
 
-      let isCheckedIn = false;
-      if (userStats.lastCheckInDate) {
-        const lastCheckIn = new Date(userStats.lastCheckInDate);
-        lastCheckIn.setHours(0, 0, 0, 0);
-
-        const diffTime = lastCheckIn.getTime() - d.getTime();
-        const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
-
-        if (diffDays >= 0 && diffDays < userStats.streak) {
-          isCheckedIn = true;
-        }
-      }
+      // Hijau jika tanggal tsb ada di riwayat check-in (dari backend), jadi
+      // tetap hijau walaupun streak ter-reset karena ada hari yang terlewat.
+      let isCheckedIn = checkInDateSet.has(dateStr);
 
       if (justCheckedIn && dateStr === todayStr) {
         isCheckedIn = true;
@@ -504,7 +503,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       });
     }
     return days;
-  }, [userStats.lastCheckInDate, userStats.streak, justCheckedIn]);
+  }, [checkInDateSet, justCheckedIn]);
 
   const weeklyScrollRef = React.useRef<HTMLDivElement>(null);
 
