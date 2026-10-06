@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { HistoryItem, ConsumptionTrigger } from "../types";
+import { useBackHandler } from "../services/backStack";
 
 interface PsychoProfileProps {
   history: HistoryItem[];
@@ -109,6 +110,8 @@ const PsychoProfile: React.FC<PsychoProfileProps> = ({ history, limit }) => {
 
     return { dailyAvg, yearProjectionKg, comparison };
   }, [history]);
+
+  useBackHandler(showDetails, () => setShowDetails(false));
 
   // Radar Chart Helper
   const renderRadar = () => {

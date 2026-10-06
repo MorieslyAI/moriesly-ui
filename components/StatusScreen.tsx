@@ -61,7 +61,7 @@ const StatusScreen: React.FC = () => {
       const data = await getUserStatus();
       setStatus(data);
     } catch (e: any) {
-      setError(e?.message ?? 'Gagal memuat data status.');
+      setError(e?.message ?? 'Could not load status data.');
     } finally {
       setIsLoading(false);
     }
@@ -100,12 +100,12 @@ const StatusScreen: React.FC = () => {
     return (
       <div className="pb-24 flex flex-col items-center justify-center gap-4 py-20 animate-in fade-in duration-300">
         <AlertTriangle className="w-12 h-12 text-rose-400" />
-        <p className="text-zinc-500 text-sm text-center max-w-xs">{error ?? 'Data tidak tersedia.'}</p>
+        <p className="text-zinc-500 text-sm text-center max-w-xs">{error ?? 'Data is unavailable.'}</p>
         <button
           onClick={fetchStatus}
           className="flex items-center gap-2 px-4 py-2 bg-brand-500 text-white rounded-full text-sm font-bold shadow hover:bg-brand-600 transition-colors"
         >
-          <RefreshCw className="w-4 h-4" /> Coba Lagi
+          <RefreshCw className="w-4 h-4" /> Try Again
         </button>
       </div>
     );

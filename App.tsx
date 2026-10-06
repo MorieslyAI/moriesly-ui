@@ -127,6 +127,13 @@ const scrollDocumentToY = (top: number) => {
   document.body.scrollTop = top;
 };
 
+type LimitAlertState = {
+  title: string;
+  message: string;
+  detail?: string;
+  cta?: string;
+};
+
 function App() {
   const [showOnboarding, setShowOnboarding] = useState(() => {
     return localStorage.getItem("hasSeenOnboarding") !== "true";
@@ -410,6 +417,7 @@ function App() {
 
   const [addOnTargetId, setAddOnTargetId] = useState<string | null>(null); // NEW: Track which item is receiving an add-on
   const [isFullScreenVideo, setIsFullScreenVideo] = useState(false);
+  const [limitAlert, setLimitAlert] = useState<LimitAlertState | null>(null);
 
   const [dietPlan, setDietPlan] = useState<DietPlan | null>(null);
   const [trainingPlan, setTrainingPlan] = useState<OperationPlan | null>(null);
@@ -431,6 +439,8 @@ function App() {
       lastCheckInDate: null,
       rankTitle: "Rookie Agent",
       medicalConditions: [],
+      subscriptionPlan: "free",
+      subscriptionExpiresAt: null,
     };
     try {
       if (saved) {
@@ -695,6 +705,9 @@ function App() {
           p?.isManualSugarOverride ?? prev.isManualSugarOverride,
         isWearableConnected:
           server.isWearableConnected ?? prev.isWearableConnected,
+        subscriptionPlan: server.subscriptionPlan ?? prev.subscriptionPlan ?? "free",
+        subscriptionExpiresAt:
+          server.subscriptionExpiresAt ?? prev.subscriptionExpiresAt ?? null,
         streak: server.streak ?? prev.streak,
         lastCheckInDate: server.lastCheckInDate ?? prev.lastCheckInDate,
         checkInDates: server.checkInDates ?? prev.checkInDates,
@@ -984,6 +997,43 @@ function App() {
     setIsLoggedIn(false);
     setIsSetupComplete(false);
     navigateRoot("dashboard");
+  };
+
+  const showLimitOrPlanAlert = (err: any, fallbackMessage?: string) => {
+    const status = err?.status ?? err?.statusCode;
+    const code = err?.code;
+    const currentPlan = err?.currentPlan || userStats.subscriptionPlan || "free";
+    const planLabel = String(currentPlan)
+      .replace(/[_-]+/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+
+    if (status === 429 || code === "DAILY_LIMIT_REACHED") {
+      setLimitAlert({
+        title: "Daily Limit Reached",
+        message:
+          "You have reached today's scan limit. Your quota will refresh tomorrow.",
+        detail:
+          typeof err?.limit === "number"
+            ? `Current plan: ${planLabel} • Daily scan limit: ${err.limit}`
+            : `Current plan: ${planLabel}`,
+        cta: "Got it",
+      });
+      return true;
+    }
+
+    if (status === 403 || code === "PLAN_UPGRADE_REQUIRED") {
+      setLimitAlert({
+        title: "Plan Upgrade Required",
+        message:
+          fallbackMessage ||
+          "This feature is not available on your current plan.",
+        detail: `Current plan: ${planLabel}`,
+        cta: "Got it",
+      });
+      return true;
+    }
+
+    return false;
   };
 
   const handleSetupComplete = (
@@ -1352,7 +1402,9 @@ function App() {
       }
     } catch (err) {
       console.error("Skin scan error:", err);
-      alert("Scan gagal diproses. Pastikan kamu sudah login.");
+      if (!showLimitOrPlanAlert(err)) {
+        alert("Scan gagal diproses. Pastikan kamu sudah login.");
+      }
     } finally {
       setIsScanning(false);
     }
@@ -1554,9 +1606,7 @@ function App() {
     } catch (e: any) {
       console.error(e);
       updateStreamingLog("spy", "Scan Failed");
-      if (e.message && e.message.includes("Limit")) {
-        alert(e.message);
-      } else {
+      if (!showLimitOrPlanAlert(e)) {
         alert("Scan failed. Please check your connection or try again.");
       }
     } finally {
@@ -1791,12 +1841,12 @@ function App() {
               ...updatedVitamins[existingIndex],
               percent:
                 updatedVitamins[existingIndex].percent +
-                parseFloat(newVit.amount) * ratio,
+                (Number(newVit.percent) || 0) * ratio,
             };
           } else {
             updatedVitamins.push({
               ...newVit,
-              percent: parseFloat(newVit.amount) * ratio,
+              percent: (Number(newVit.percent) || 0) * ratio,
             });
           }
         });
@@ -1844,7 +1894,7 @@ function App() {
 
     addHistoryItem({
       id: uuidv4(),
-      name: pendingItem.honest_name || pendingItem.name,
+      name: pendingItem.name,
       sugarg: itemSugar,
       calories: action === "consumed" ? itemCalories : pendingItem.calories,
       macros:
@@ -2292,7 +2342,7 @@ function App() {
   const scanJobPillLabel = identifiedItem
     ? identifiedItem.name
     : pendingItem
-      ? pendingItem.honest_name || pendingItem.name
+      ? pendingItem.name
       : labelResult
         ? "Label Analysis Ready"
         : barcodeResult
@@ -2331,6 +2381,47 @@ function App() {
       />
 
       {/* MODALS */}
+      {limitAlert && (
+        <div className="fixed inset-0 z-[120] bg-zinc-950/50 dark:bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-sm rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden">
+            <div className="p-6">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center mb-5">
+                <svg
+                  className="w-6 h-6 text-amber-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.4}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
+                {limitAlert.title}
+              </h3>
+              <p className="mt-2 text-sm font-medium leading-relaxed text-zinc-500 dark:text-zinc-400">
+                {limitAlert.message}
+              </p>
+              {limitAlert.detail && (
+                <div className="mt-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/70 border border-zinc-100 dark:border-zinc-700 px-4 py-3 text-xs font-bold text-zinc-600 dark:text-zinc-300">
+                  {limitAlert.detail}
+                </div>
+              )}
+              <button
+                onClick={() => setLimitAlert(null)}
+                className="mt-6 w-full rounded-2xl bg-zinc-900 dark:bg-zinc-100 px-4 py-3 text-sm font-black text-white dark:text-zinc-900 transition-transform active:scale-[0.98]"
+              >
+                {limitAlert.cta || "Got it"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {receiptResult && (
         <div className="fixed inset-0 z-100 bg-zinc-900/40 dark:bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
           <div className="w-full max-w-lg">
@@ -2361,7 +2452,7 @@ function App() {
 
       {showDeathWaiver && pendingItem && (
         <DeathWaiver
-          itemName={pendingItem.honest_name || pendingItem.name}
+          itemName={pendingItem.name}
           sugarGrams={pendingItem.sugar}
           userProfile={userStats}
           onConfirm={() => finalizeDecision("consumed", "Habit")}
@@ -2825,11 +2916,9 @@ function App() {
                         </div>
                         <div className="flex justify-between items-start">
                           <h2
-                            className={`text-lg md:text-xl font-black leading-tight ${pendingItem.sugar > 20 && pendingItem.honest_name ? "text-rose-500 uppercase tracking-tight" : "text-zinc-900 dark:text-white"}`}
+                            className="text-lg md:text-xl font-black leading-tight text-zinc-900 dark:text-white"
                           >
-                            {pendingItem.sugar > 20 && pendingItem.honest_name
-                              ? pendingItem.honest_name
-                              : pendingItem.name}
+                            {pendingItem.name}
                           </h2>
                         </div>
                       </div>

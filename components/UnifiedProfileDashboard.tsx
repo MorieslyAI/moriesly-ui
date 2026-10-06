@@ -37,6 +37,51 @@ interface UnifiedProfileDashboardProps {
   onSettings: () => void;
 }
 
+function normalizeVitaminPercents(
+  vitamins: NonNullable<LedgerState["vitamins"]>,
+) {
+  const activeItems = vitamins
+    .map((item, index) => ({ index, value: Number(item.percent) || 0 }))
+    .filter((item) => item.value > 0);
+  const total = activeItems.reduce((sum, item) => sum + item.value, 0);
+
+  if (total <= 0) return vitamins;
+
+  const rounded = activeItems.map((item) => {
+    const rawTenths = (item.value / total) * 1000;
+    const tenths = Math.floor(rawTenths);
+    return {
+      index: item.index,
+      tenths,
+      remainder: rawTenths - tenths,
+    };
+  });
+
+  let remainingTenths =
+    1000 - rounded.reduce((sum, item) => sum + item.tenths, 0);
+  [...rounded]
+    .sort((a, b) => b.remainder - a.remainder)
+    .forEach((item) => {
+      if (remainingTenths <= 0) return;
+      item.tenths += 1;
+      remainingTenths -= 1;
+    });
+
+  const normalizedByIndex = new Map(
+    rounded.map((item) => [item.index, item.tenths / 10]),
+  );
+
+  return vitamins.map((item, index) => ({
+    ...item,
+    percent: normalizedByIndex.get(index) ?? 0,
+  }));
+}
+
+function formatVitaminPercent(percent: number) {
+  const rounded = Math.round(percent * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
 const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
   userProfile,
   history,
@@ -73,6 +118,29 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
     [history],
   );
   const totalScans = history.length;
+  const normalizedVitamins = useMemo(
+    () => normalizeVitaminPercents(ledger.vitamins || []),
+    [ledger.vitamins],
+  );
+  const subscriptionPlan = userProfile.subscriptionPlan || "free";
+  const subscriptionPlanLabel =
+    {
+      free: "Free",
+      pro: "Pro",
+      pro_max: "Pro Max",
+      whitelist: "Whitelist",
+    }[subscriptionPlan] ??
+    subscriptionPlan
+      .replace(/[_-]+/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  const hasPaidSubscription = subscriptionPlan !== "free";
+  const subscriptionExpiryLabel = userProfile.subscriptionExpiresAt
+    ? new Date(userProfile.subscriptionExpiresAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "No expiry";
 
   // Calculate a simplified "Health Score" based on available data
   const healthScore = useMemo(() => {
@@ -136,7 +204,10 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
       setBio(res);
       setActiveTab("analysis");
     } catch (e: any) {
-      if (e?.code === "BIO_SYNERGY_COOLDOWN" || e?.code === "BIO_SYNERGY_IN_PROGRESS") {
+      if (
+        e?.code === "BIO_SYNERGY_COOLDOWN" ||
+        e?.code === "BIO_SYNERGY_IN_PROGRESS"
+      ) {
         // Sudah dijalankan (mis. dari perangkat lain / double-tap) → sinkronkan
         // dengan server agar hasil terakhir + hitung mundur tampil.
         try {
@@ -211,6 +282,26 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                   <span className="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
                   EXP {userProfile.currentXp}
                 </div>
+                <div
+                  className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${
+                    subscriptionPlan === "free"
+                      ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700"
+                      : "bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border-teal-100 dark:border-teal-900/30"
+                  }`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      subscriptionPlan === "free" ? "bg-zinc-400" : "bg-teal-500"
+                    }`}
+                  ></span>
+                  PLAN {subscriptionPlanLabel}
+                </div>
+                {hasPaidSubscription && (
+                  <div className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full text-xs font-bold text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
+                    EXPIRES {subscriptionExpiryLabel}
+                  </div>
+                )}
                 {userProfile.medicalConditions?.map((c, i) => (
                   <span
                     key={i}
@@ -717,9 +808,6 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                   </p>
                 )}
                 <div className="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
-                  <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest bg-zinc-50 dark:bg-zinc-800 px-2 py-1 rounded">
-                    AI MODEL: {bio.report.model.toUpperCase()}
-                  </span>
                   <span className="text-[10px] text-zinc-400 font-mono">
                     {new Date(bio.report.createdAt).toLocaleString()}
                   </span>
@@ -866,18 +954,18 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
             </div>
 
             {/* Vitamins Section */}
-            {ledger.vitamins && ledger.vitamins.length > 0 && (
+            {normalizedVitamins.length > 0 && (
               <div className="bg-white dark:bg-zinc-900 p-6 rounded-[2rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 dark:text-zinc-400">
                     Micronutrients
                   </h4>
                   <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">
-                    {ledger.vitamins.length} Detected
+                    {normalizedVitamins.length} Detected
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  {ledger.vitamins.map((v, i) => (
+                  {normalizedVitamins.map((v, i) => (
                     <div
                       key={i}
                       className="px-4 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-xl flex items-center gap-2 shadow-sm"
@@ -887,7 +975,7 @@ const UnifiedProfileDashboard: React.FC<UnifiedProfileDashboardProps> = ({
                         {v.name}
                       </span>
                       <span className="text-xs font-black text-emerald-500 ml-1">
-                        {v.percent}%
+                        {formatVitaminPercent(v.percent)}%
                       </span>
                     </div>
                   ))}

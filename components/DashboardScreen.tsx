@@ -457,6 +457,27 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [isCheckingIn, setIsCheckingIn] = React.useState(false);
   const [showTrainingModal, setShowTrainingModal] = React.useState(false);
 
+  const timeRangeOptions = React.useMemo(
+    () =>
+      [
+        { value: "24H", label: "24h", days: 1 },
+        { value: "7D", label: "7d", days: 7 },
+        { value: "30D", label: "30d", days: 30 },
+        { value: "90D", label: "90d", days: 90 },
+      ] as const satisfies ReadonlyArray<{
+        value: TimeRange;
+        label: string;
+        days: number;
+      }>,
+    [],
+  );
+
+  const selectedTimeRange =
+    timeRangeOptions.find((option) => option.value === timeRange) ??
+    timeRangeOptions[0];
+  const activeRangeMetrics =
+    rangeMetrics?.timeRange === timeRange ? rangeMetrics : null;
+
   const [recoveryPercent, setRecoveryPercent] = React.useState(0);
   const [hydrationPercentBar, setHydrationPercentBar] = React.useState(0);
   const [stressPercent, setStressPercent] = React.useState(0);
@@ -734,12 +755,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   const metabolicScore = React.useMemo(() => {
     // 1. Prioritaskan data dari Backend
-    if (
-      timeRange !== "24H" &&
-      rangeMetrics &&
-      rangeMetrics.metabolicScore !== undefined
-    ) {
-      return rangeMetrics.metabolicScore;
+    if (activeRangeMetrics && activeRangeMetrics.metabolicScore !== undefined) {
+      return activeRangeMetrics.metabolicScore;
     }
     if (dashboardData) return dashboardData.healthMetrics.metabolicScore;
 
@@ -764,47 +781,21 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
     // Kembalikan rata-rata
     return Math.round(totalScore / consumedItems.length);
-  }, [timeRange, rangeMetrics, dashboardData, dailyHistory]);
+  }, [activeRangeMetrics, dashboardData, dailyHistory]);
 
   // When backend range metrics are available use them; fall back to client-side
   // estimation using today-only history (accurate only for the current day).
   const metabolicTrend = React.useMemo(() => {
-    if (rangeMetrics) return rangeMetrics.metabolicTrend;
+    if (activeRangeMetrics) return activeRangeMetrics.metabolicTrend;
 
-    // Client-side fallback (today's data only – inaccurate for 7D/30D)
+    // Client-side fallback (today's data only – inaccurate for multi-day ranges)
     if (dailyHistory.length === 0) return 0;
     const now = new Date(selectedDate);
     const startTime = new Date(now);
-    let seconds = 0;
-    let days = 0;
-    switch (timeRange) {
-      case "30S":
-        seconds = 30;
-        break;
-      case "1M":
-        seconds = 60;
-        break;
-      case "15M":
-        seconds = 15 * 60;
-        break;
-      case "1H":
-        seconds = 3600;
-        break;
-      case "24H":
-        days = 1;
-        break;
-      case "7D":
-        days = 7;
-        break;
-      case "30D":
-        days = 30;
-        break;
-    }
-    if (seconds > 0) startTime.setSeconds(now.getSeconds() - seconds);
-    else startTime.setDate(now.getDate() - days);
+    const days = selectedTimeRange.days;
+    startTime.setDate(now.getDate() - days);
     const prevStart = new Date(startTime);
-    if (seconds > 0) prevStart.setSeconds(startTime.getSeconds() - seconds);
-    else prevStart.setDate(startTime.getDate() - days);
+    prevStart.setDate(startTime.getDate() - days);
 
     const calcScore = (hist: HistoryItem[]) => {
       const consumed = hist.filter((i) => i.action === "consumed");
@@ -838,10 +829,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     );
     return prev === 0 ? cur : cur - prev;
   }, [
-    rangeMetrics,
+    activeRangeMetrics,
     history,
     selectedDate,
-    timeRange,
+    selectedTimeRange.days,
     dailyHistory,
     metabolicScore,
   ]);
@@ -911,8 +902,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   const energyTrend = React.useMemo(() => {
     // Prefer backend data which covers multi-day windows accurately
-    if (rangeMetrics) {
-      const diff = rangeMetrics.energyTrend;
+    if (activeRangeMetrics) {
+      const diff = activeRangeMetrics.energyTrend;
       return { val: Math.abs(diff).toFixed(1), isPositive: diff >= 0 };
     }
 
@@ -920,36 +911,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     if (dailyHistory.length === 0) return { val: 0, isPositive: true };
     const now = new Date(selectedDate);
     const startTime = new Date(now);
-    let seconds = 0;
-    let days = 0;
-    switch (timeRange) {
-      case "30S":
-        seconds = 30;
-        break;
-      case "1M":
-        seconds = 60;
-        break;
-      case "15M":
-        seconds = 15 * 60;
-        break;
-      case "1H":
-        seconds = 3600;
-        break;
-      case "24H":
-        days = 1;
-        break;
-      case "7D":
-        days = 7;
-        break;
-      case "30D":
-        days = 30;
-        break;
-    }
-    if (seconds > 0) startTime.setSeconds(now.getSeconds() - seconds);
-    else startTime.setDate(now.getDate() - days);
+    const days = selectedTimeRange.days;
+    startTime.setDate(now.getDate() - days);
     const prevStart = new Date(startTime);
-    if (seconds > 0) prevStart.setSeconds(startTime.getSeconds() - seconds);
-    else prevStart.setDate(startTime.getDate() - days);
+    prevStart.setDate(startTime.getDate() - days);
 
     const calcEnergy = (hist: HistoryItem[]) => {
       if (hist.length === 0) return 0;
@@ -975,7 +940,13 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     );
     const diff = prevE === 0 ? curE : curE - prevE;
     return { val: Math.abs(diff).toFixed(1), isPositive: diff >= 0 };
-  }, [rangeMetrics, history, selectedDate, timeRange, dailyHistory]);
+  }, [
+    activeRangeMetrics,
+    history,
+    selectedDate,
+    selectedTimeRange.days,
+    dailyHistory,
+  ]);
 
   const adsData = React.useMemo(() => {
     const isSugarHigh = filteredConsumed > ledger.limit;
@@ -1355,8 +1326,53 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
     },
   ];
 
-  // Merge ledger vitamins with the complete list
-  const vitamins = ALL_VITAMINS.map((defaultVit) => {
+  const normalizeVitaminPercents = <T extends { percent: number }>(
+    items: T[],
+  ): T[] => {
+    const activeIndexes = items
+      .map((item, index) => ({ index, value: Number(item.percent) || 0 }))
+      .filter((item) => item.value > 0);
+    const total = activeIndexes.reduce((sum, item) => sum + item.value, 0);
+
+    if (total <= 0) return items;
+
+    const rounded = activeIndexes.map((item) => {
+      const rawTenths = (item.value / total) * 1000;
+      const tenths = Math.floor(rawTenths);
+      return {
+        index: item.index,
+        tenths,
+        remainder: rawTenths - tenths,
+      };
+    });
+
+    let remainingTenths =
+      1000 - rounded.reduce((sum, item) => sum + item.tenths, 0);
+    [...rounded]
+      .sort((a, b) => b.remainder - a.remainder)
+      .forEach((item) => {
+        if (remainingTenths <= 0) return;
+        item.tenths += 1;
+        remainingTenths -= 1;
+      });
+
+    const normalizedByIndex = new Map(
+      rounded.map((item) => [item.index, item.tenths / 10]),
+    );
+
+    return items.map((item, index) => ({
+      ...item,
+      percent: normalizedByIndex.get(index) ?? 0,
+    }));
+  };
+
+  const formatVitaminPercent = (percent: number) => {
+    const rounded = Math.round(percent * 10) / 10;
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+  };
+
+  // Merge ledger vitamins with the complete list, then normalize active items to 100%.
+  const vitamins = normalizeVitaminPercents(ALL_VITAMINS.map((defaultVit) => {
     const tracked = (ledger.vitamins || []).find((v) => {
       const vName = v.name.toLowerCase();
       return (
@@ -1373,7 +1389,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
       };
     }
     return defaultVit;
-  });
+  }));
 
   // --- BLINDSPOT INTEL LOGIC ---
   const [isIntelExpanded, setIsIntelExpanded] = React.useState(false);
@@ -2621,7 +2637,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-lg">{vit.icon}</span>
                           <span className="text-[10px] font-black text-brand-600">
-                            {vit.percent}%
+                            {formatVitaminPercent(vit.percent)}%
                           </span>
                         </div>
                         <div className="text-[11px] font-black text-zinc-900 dark:text-zinc-100 truncate">
@@ -3407,7 +3423,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                       <Loader2 className="w-3 h-3 text-zinc-400 animate-spin" />
                     ) : (
                       <span className="text-[11px] font-black text-zinc-600 dark:text-zinc-300">
-                        {timeRange}
+                        {selectedTimeRange.label}
                       </span>
                     )}
                     <div className="flex flex-col ml-1">
@@ -3427,32 +3443,22 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                         onClick={() => setIsTimeRangeDropdownOpen(false)}
                       />
                       <div className="absolute left-0 mt-2 w-28 bg-white dark:bg-zinc-900 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 dark:border-zinc-700 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-                        {(
-                          [
-                            "30S",
-                            "1M",
-                            "15M",
-                            "1H",
-                            "24H",
-                            "7D",
-                            "30D",
-                          ] as const
-                        ).map((range) => (
+                        {timeRangeOptions.map((option) => (
                           <button
-                            key={range}
+                            key={option.value}
                             onClick={() => {
-                              setTimeRange(range);
+                              setTimeRange(option.value);
                               setIsTimeRangeDropdownOpen(false);
                             }}
                             className={`w-full text-left px-4 py-2.5 text-[11px] font-black transition-colors
                               ${
-                                timeRange === range
+                                timeRange === option.value
                                   ? "bg-zinc-900 text-white dark:bg-brand-600 dark:text-white"
                                   : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700"
                               }
                             `}
                           >
-                            {range}
+                            {option.label}
                           </button>
                         ))}
                       </div>
@@ -3725,8 +3731,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   {energyTrend.isPositive ? "↑" : "↓"} {energyTrend.val}%
                 </div>
                 <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400">
-                  vs last {timeRange}
-                  {rangeMetrics ? "" : " (est.)"}
+                  vs last {selectedTimeRange.label}
+                  {activeRangeMetrics ? "" : " (est.)"}
                 </span>
               </div>
             </div>
@@ -4148,7 +4154,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
                 <div className="flex flex-col items-end">
                   <span className="text-[11px] font-black text-zinc-900 dark:text-zinc-100">
-                    {vit.percent}%
+                    {formatVitaminPercent(vit.percent)}%
                   </span>
                   <div className="w-8 h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full mt-1 overflow-hidden">
                     <div
@@ -4250,7 +4256,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
                                   {vit.name}
                                 </span>
                                 <span className="text-xs font-black text-brand-600 dark:text-brand-400">
-                                  {vit.percent}%
+                                  {formatVitaminPercent(vit.percent)}%
                                 </span>
                               </div>
                               <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">

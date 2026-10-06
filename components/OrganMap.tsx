@@ -365,7 +365,7 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
 
               {/* Horizontal Slider */}
               <div
-                  className="flex-1 overflow-hidden relative"
+                  className="flex-1 min-h-[300px] overflow-hidden relative pb-3"
                   onTouchStart={e => { sliderTouchStartX.current = e.touches[0].clientX; }}
                   onTouchEnd={e => {
                       const diff = sliderTouchStartX.current - e.changedTouches[0].clientX;
@@ -385,10 +385,10 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                           return (
                               <div
                                   key={organ.id}
-                                  className="min-w-full h-full p-4 flex flex-col gap-3"
+                                  className="w-full shrink-0 h-full px-4 flex flex-col"
                               >
                                   {/* Card */}
-                                  <div className={`relative overflow-hidden rounded-2xl border flex-1 flex flex-col ${
+                                  <div className={`relative overflow-hidden rounded-2xl border h-full min-h-[300px] flex flex-col ${
                                       isCritical
                                           ? 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/50'
                                           : isWarning
@@ -448,24 +448,26 @@ const OrganMap: React.FC<OrganMapProps> = ({ ledger, sugar: propSugar, calories:
                                           )}
                                       </div>
                                   </div>
-
-                                  {/* Prev / Next nav */}
-                                  <div className="flex gap-2">
-                                      <button
-                                          onClick={() => setActiveCard(c => Math.max(c - 1, 0))}
-                                          disabled={activeCard === 0}
-                                          className="flex-1 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-bold text-xs uppercase disabled:opacity-30 transition-opacity"
-                                      >← Prev</button>
-                                      <span className="flex items-center text-[10px] font-black text-zinc-400">{activeCard + 1}/{organData.length}</span>
-                                      <button
-                                          onClick={() => setActiveCard(c => Math.min(c + 1, organData.length - 1))}
-                                          disabled={activeCard === organData.length - 1}
-                                          className="flex-1 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-bold text-xs uppercase disabled:opacity-30 transition-opacity"
-                                      >Next →</button>
-                                  </div>
               </div>
                           );
                       })}
+                  </div>
+              </div>
+
+              {/* Prev / Next nav */}
+              <div className="px-4 pb-4 shrink-0">
+                  <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                      <button
+                          onClick={() => setActiveCard(c => Math.max(c - 1, 0))}
+                          disabled={activeCard === 0}
+                          className="py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-bold text-xs uppercase disabled:opacity-30 transition-opacity"
+                      >← Prev</button>
+                      <span className="min-w-[2.5rem] text-center text-[10px] font-black text-zinc-400">{activeCard + 1}/{organData.length}</span>
+                      <button
+                          onClick={() => setActiveCard(c => Math.min(c + 1, organData.length - 1))}
+                          disabled={activeCard === organData.length - 1}
+                          className="py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 font-bold text-xs uppercase disabled:opacity-30 transition-opacity"
+                      >Next →</button>
                   </div>
               </div>
              

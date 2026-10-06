@@ -50,9 +50,20 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     const message = (data as any)?.error ?? `Request failed: ${res.status}`;
-    const err = new Error(message) as Error & { status: number; code?: string };
+    const err = new Error(message) as Error & {
+      status: number;
+      code?: string;
+      currentPlan?: string;
+      limit?: number;
+      limitType?: string;
+      remaining?: number;
+    };
     err.status = res.status;
     err.code = (data as any)?.code;
+    err.currentPlan = (data as any)?.currentPlan;
+    err.limit = (data as any)?.limit;
+    err.limitType = (data as any)?.limitType;
+    err.remaining = (data as any)?.remaining;
     throw err;
   }
 
@@ -235,6 +246,8 @@ export interface FullUserProfileResponse {
   nextLevelXp: number;
   rankTitle: string;
   isWearableConnected?: boolean;
+  subscriptionPlan?: string;
+  subscriptionExpiresAt?: string | null;
   profile?: {
     name: string;
     gender: "male" | "female";
@@ -373,7 +386,7 @@ export async function getDashboardHistoryMonthSummary(
   );
 }
 
-export type TimeRange = "30S" | "1M" | "15M" | "1H" | "24H" | "7D" | "30D";
+export type TimeRange = "24H" | "7D" | "30D" | "90D";
 
 export interface RangeMetricsResponse {
   timeRange: TimeRange;

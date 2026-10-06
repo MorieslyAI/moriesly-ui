@@ -98,6 +98,8 @@ export interface UserProfile {
   agent?: string; // NEW: Selected agent ID
   email?: string;
   isWearableConnected?: boolean;
+  subscriptionPlan?: string;
+  subscriptionExpiresAt?: string | null;
   archetypeId?: 'desk' | 'field' | 'heavy' | 'custom';
   goalMode?: 'cut' | 'maintain' | 'bulk' | 'custom';
   customSugarLimit?: number | null;
